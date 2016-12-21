@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NoSpoilersNba</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="title_activity_tt">tt</string>
+</resources>
