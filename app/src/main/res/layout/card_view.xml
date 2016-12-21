@@ -20,7 +20,7 @@
             android:text="Home vs Away"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
-            android:textSize="14dp"/>
+            android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/firstTeam"
@@ -28,9 +28,9 @@
             android:layout_height="wrap_content"
             android:text="Name"
             android:gravity="center_vertical"
-            android:textSize="10dp"
-            android:layout_below="@id/title"
-            android:layout_marginTop="10dp"
+            android:textSize="14dp"
+            android:layout_centerVertical="true"
+
             android:layout_marginLeft="5dp"/>
 
         <TextView
@@ -39,46 +39,55 @@
             android:layout_height="wrap_content"
             android:text="Surname"
             android:gravity="center_vertical"
-            android:textSize="10dp"
+            android:layout_centerVertical="true"
+            android:textSize="14dp"
             android:layout_below="@id/title"
             android:layout_toRightOf="@id/firstTeam"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="50dp"
             />
 
         <Button
-            android:text="Q1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/button" />
-
-        <Button
             android:text="Q2"
+            android:textColor="@color/cardview_light_background"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="1dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/button"
-            android:layout_toEndOf="@+id/button"
+            android:layout_alignParentRight="true"
+            android:background="@color/colorPrimaryDark"
             android:id="@+id/button2" />
 
         <Button
-            android:text="Q3"
+            android:text="Q1"
+            android:textColor="@color/cardview_light_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button3"
-            android:layout_below="@+id/button"
-            android:layout_centerHorizontal="true" />
+            android:layout_toStartOf="@id/button2"
+            android:background="@color/colorPrimaryDark"
+            android:id="@+id/button"
+            android:layout_toLeftOf="@id/button2" />
 
         <Button
             android:text="Q4"
+            android:textColor="@color/cardview_light_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button4"
+            android:layout_marginLeft="1dp"
+            android:background="@color/colorPrimaryDark"
             android:layout_alignBaseline="@+id/button3"
             android:layout_alignBottom="@+id/button3"
-            android:layout_toRightOf="@+id/button3"
-            android:layout_toEndOf="@+id/button3" />
+            android:layout_alignParentRight="true" />
+
+        <Button
+            android:text="Q3"
+            android:textColor="@color/cardview_light_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button3"
+            android:background="@color/colorPrimaryDark"
+            android:layout_below="@+id/button"
+            android:layout_toLeftOf="@id/button4"/>
 
     </RelativeLayout>
 

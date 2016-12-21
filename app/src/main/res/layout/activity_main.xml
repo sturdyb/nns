@@ -10,15 +10,54 @@
     tools:context="com.example.takomar.nospoilersnba.MainActivity"
     android:orientation="vertical">
 
-    <Button
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+
+    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:layout_weight="1"
+    android:orientation="horizontal"
+    android:layout_gravity="left"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="pick date"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/cardview_light_background"
+            android:id="@+id/pickDate"
+            android:onClick="showDatePickerDialog" />
+
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="pick date"
-        android:id="@+id/pickDate"
-        android:onClick="showDatePickerDialog" />
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_gravity="right"
+        android:gravity="right">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:background="@color/colorAccent"
+            android:text="Openload"
+            android:id="@+id/pairButton"
+            android:onClick="pairWithOpenload"/>
+    </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
