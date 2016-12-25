@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -50,10 +49,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:gravity="center"
-            android:background="@color/colorAccent"
+            android:background="@android:color/holo_blue_light"
             android:text="Openload"
+            android:textColor="@color/cardview_light_background"
             android:id="@+id/pairButton"
+            android:autoLink="all"
             android:onClick="pairWithOpenload"/>
+
     </LinearLayout>
     </LinearLayout>
 

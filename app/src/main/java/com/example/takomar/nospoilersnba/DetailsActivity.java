@@ -15,15 +15,27 @@ import android.widget.TextView;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    private int getDpInPx(int dp){
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        TableLayout tl=(TableLayout)findViewById(R.id.tableBox);
 
+        TableLayout nameCol=(TableLayout)findViewById(R.id.tableName);
+        TableRow nameHeader = (TableRow) LayoutInflater.from(this).inflate(R.layout.name_col, null);
+        TextView headerName = ((TextView)nameHeader.findViewById(R.id.name));
+
+        int dpAsPixels = getDpInPx(2);
+        headerName.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
+        headerName.setText("Name");
+        nameCol.addView(nameHeader);
+
+        TableLayout tl=(TableLayout)findViewById(R.id.tableBox);
         TableRow header = (TableRow) LayoutInflater.from(this).inflate(R.layout.header_line, null);
-        ((TextView)header.findViewById(R.id.name)).setText("Name");
-        ((TextView)header.findViewById(R.id.pos)).setText("Pos");
         ((TextView)header.findViewById(R.id.min)).setText("Mins");
         ((TextView)header.findViewById(R.id.fgm)).setText("FGM");
         ((TextView)header.findViewById(R.id.fga)).setText("FGA");
@@ -39,7 +51,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         String s= getIntent().getStringExtra("GameID");
         String q= getIntent().getStringExtra("Quarter");
-        new GameDetailRetriever(this, tl).execute(s, q);
+        new GameDetailRetriever(this, tl, nameCol).execute(s, q);
 
     }
 

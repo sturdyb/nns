@@ -58,12 +58,8 @@ public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> 
             if (inputStream != null) {
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
                     buffer.append(line + "\n");
                 }
             }
@@ -86,7 +82,6 @@ public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> 
                         gameInfo.visitorTeam = match.substring(x + 1, x + 4);
                         gameInfo.homeTeam = match.substring(x+4);
 
-                        
                         gamesToday.add(gameInfo);
                     }
                 }
@@ -106,8 +101,6 @@ public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> 
 
     protected void onPostExecute(List<GameInfo> result) {
         mGamesAdaptor.changeDate(result);
-
-
     }
 
 }

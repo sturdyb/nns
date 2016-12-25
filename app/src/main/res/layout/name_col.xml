@@ -1,0 +1,13 @@
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/name"
+        android:gravity="center"
+        android:background="@drawable/cell_shape"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:textStyle="bold"/>
+
+</TableRow>

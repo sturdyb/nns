@@ -2,10 +2,8 @@ package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.ViewDebug;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -31,10 +29,12 @@ import java.util.Map;
 
 public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, List<PlayerInfo>> > {
 
-    private TableLayout mtl;
+    private TableLayout mNamesCol;
+    private TableLayout mDetailTable;
     private Context mContext;
-    public GameDetailRetriever(Context context, TableLayout tl){
-        mtl = tl;
+    public GameDetailRetriever(Context context, TableLayout tl, TableLayout namesLayout){
+        mNamesCol = namesLayout;
+        mDetailTable = tl;
         mContext = context;
     }
     @Override
@@ -43,8 +43,8 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
         try {
             String myUrl = "http://stats.nba.com/stats/boxscoretraditionalv2?EndPeriod=0&EndRange="
-            + params[1] +"&GameID=" +
-                    params[0]
+                    + params[1]
+                    +"&GameID=" + params[0]
                     + "&RangeType=2&Season=2016-17&SeasonType=Regular+Season&StartPeriod=0&StartRange=0";
             URL url = new URL(myUrl);
             // Create the request to OpenWeatherMap, and open the connection
@@ -120,15 +120,21 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
         for (List<PlayerInfo> oneTeam : result.values())
         {
+            TableRow teamName = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
             TableRow rowTeam = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
-            ((TextView)rowTeam.findViewById(R.id.name)).setText(oneTeam.get(0).team);
-            mtl.addView(rowTeam);
+            ((TextView)teamName.findViewById(R.id.name)).setText(oneTeam.get(0).team);
+            mNamesCol.addView(teamName);
+            mDetailTable.addView(rowTeam);
 
             for(PlayerInfo player : oneTeam)
             {
+                TableRow nameRow = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
+                if (player.pos.isEmpty())
+                    ((TextView)nameRow.findViewById(R.id.name)).setText(player.name);
+                else
+                    ((TextView)nameRow.findViewById(R.id.name)).setText(player.name + " - " + player.pos);
                 TableRow row = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
-                ((TextView)row.findViewById(R.id.name)).setText(player.name);
-                ((TextView)row.findViewById(R.id.pos)).setText(player.pos);
+
                 ((TextView)row.findViewById(R.id.min)).setText(player.mins);
                 ((TextView)row.findViewById(R.id.fgm)).setText("" + player.fgm);
                 ((TextView)row.findViewById(R.id.fga)).setText("" + player.fga);
@@ -140,14 +146,12 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 ((TextView)row.findViewById(R.id.blk)).setText("" + player.blk);
                 ((TextView)row.findViewById(R.id.to)).setText("" + player.to);
                 ((TextView)row.findViewById(R.id.pts)).setText("" + player.pts);
-
-                mtl.addView(row);
+                mNamesCol.addView(nameRow);
+                mDetailTable.addView(row);
             }
         }
-
-        mtl.requestLayout();
-
-
+        mNamesCol.requestLayout();
+        mDetailTable.requestLayout();
     }
 
 }

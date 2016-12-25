@@ -26,6 +26,30 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final Calendar cal = Calendar.getInstance();
+    private static int selectedYear = cal.get(Calendar.YEAR);
+    private static int selectedMonth = cal.get(Calendar.MONTH);
+    private static int selectedDay = cal.get(Calendar.DAY_OF_MONTH);
+
+    @NonNull
+    private String getEndPeriod( int buttonId)
+    {
+        if (buttonId == R.id.button){
+            Toast.makeText(getApplicationContext(), "quarter 1", Toast.LENGTH_SHORT).show();
+            return "7200";
+        }
+        if (buttonId == R.id.button2){
+            Toast.makeText(getApplicationContext(), "quarter 2", Toast.LENGTH_SHORT).show();
+            return "14400";
+        }
+        if (buttonId == R.id.button3){
+            Toast.makeText(getApplicationContext(), "quarter 3", Toast.LENGTH_SHORT).show();
+            return "21600";
+        }
+        Toast.makeText(getApplicationContext(), "quarter 4", Toast.LENGTH_SHORT).show();
+        return "28800";
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,30 +68,11 @@ public class MainActivity extends AppCompatActivity {
         ga.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(View view, String gameId) {
-
                 Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
                 intent.putExtra("GameID", gameId);
-
-                if (view.getId() == R.id.button){
-                    Toast.makeText(getApplicationContext(), "quarter 1", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("Quarter", "7200");
-                }
-                else if (view.getId() == R.id.button2){
-                    Toast.makeText(getApplicationContext(), "quarter 2", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("Quarter", "14400");
-                }
-                else if (view.getId() == R.id.button3){
-                    Toast.makeText(getApplicationContext(), "quarter 3", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("Quarter", "21600");
-                }
-                else if (view.getId() == R.id.button4){
-                    Toast.makeText(getApplicationContext(), "quarter 4", Toast.LENGTH_SHORT).show();
-                    intent.putExtra("Quarter", "28800");
-                }
-
+                intent.putExtra("Quarter", getEndPeriod(view.getId()));
 
                 startActivity(intent);
-
             }
         });
 
@@ -80,26 +85,26 @@ public class MainActivity extends AppCompatActivity {
         datePicker.setText(yesterdayNba);
 
         new GamesRetriever(getApplicationContext(), ga).execute(yesterdayNba);
-
     }
+
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(
+                    getActivity(), R.style.DialogTheme,
+                    this, selectedYear, selectedMonth, selectedDay);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar cal = Calendar.getInstance();
+            selectedYear = year;
+            selectedMonth = month;
+            selectedDay = day;
             cal.set(year, month, day);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -107,15 +112,15 @@ public class MainActivity extends AppCompatActivity {
 
             Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
             datePick.setText(selectedDate);
+
             RecyclerView recView = (RecyclerView) getActivity().findViewById(R.id.cardList);
             new GamesRetriever(getContext(), (GamesAdaptor)recView.getAdapter()).execute(selectedDate);
-
-
         }
     }
 
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
+
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
     public void pairWithOpenload(View v) {
