@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         Button datePicker = (Button) findViewById(R.id.pickDate);
         datePicker.setText(yesterdayNba);
 
-        new GamesRetriever(getApplicationContext(), ga).execute(yesterdayNba);
+        new GamesRetriever(this, ga).execute(yesterdayNba);
     }
 
     public static class DatePickerFragment extends DialogFragment

@@ -2,80 +2,94 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.takomar.nospoilersnba.MainActivity"
-    android:orientation="vertical">
+    tools:context="com.example.takomar.nospoilersnba.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
 
-    <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-        android:layout_weight="1"
-    android:orientation="horizontal"
-    android:layout_gravity="left"
-        android:gravity="center">
-
-        <Button
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="pick date"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@color/cardview_light_background"
-            android:id="@+id/pickDate"
-            android:onClick="showDatePickerDialog" />
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:layout_gravity="right"
-        android:gravity="right">
+            <Button
+                android:id="@+id/pickDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/colorPrimaryDark"
+                android:onClick="showDatePickerDialog"
+                android:text="pick date"
+                android:textColor="@color/cardview_light_background" />
 
+        </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:gravity="center"
-            android:background="@android:color/holo_blue_light"
-            android:text="Openload"
-            android:textColor="@color/cardview_light_background"
-            android:id="@+id/pairButton"
-            android:autoLink="all"
-            android:onClick="pairWithOpenload"/>
+            android:layout_weight="1"
+            android:gravity="right"
+            android:orientation="horizontal">
 
+
+            <Button
+                android:id="@+id/pairButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:autoLink="all"
+                android:background="@android:color/holo_blue_light"
+                android:gravity="center"
+                android:onClick="pairWithOpenload"
+                android:text="Openload"
+                android:textColor="@color/cardview_light_background" />
+
+        </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linlaHeaderProgress"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/pbHeaderProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ProgressBar>
     </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.takomar.nospoilersnba.MainActivity">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/cardList"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.example.takomar.nospoilersnba.MainActivity">
 
 
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cardList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </RelativeLayout>
 
 </LinearLayout>

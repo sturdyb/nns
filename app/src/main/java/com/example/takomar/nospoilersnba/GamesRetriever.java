@@ -1,13 +1,11 @@
 package com.example.takomar.nospoilersnba;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,11 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by takomar on 11/12/16.
@@ -33,12 +27,16 @@ import java.util.ListIterator;
 public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> {
 
     private Context mContext;
-    private RecyclerView mgamesToday;
     private GamesAdaptor mGamesAdaptor;
+    private LinearLayout linlaHeaderProgress;
     public GamesRetriever (Context context, GamesAdaptor gamesAdaptor){
         mContext = context;
         mGamesAdaptor = gamesAdaptor;
+        linlaHeaderProgress =
+        (LinearLayout)
+                ((Activity)mContext).findViewById(R.id.linlaHeaderProgress);
     }
+
     @Override
     protected List<GameInfo> doInBackground(String... params) {
         List<GameInfo> gamesToday = new ArrayList<>();
@@ -90,8 +88,6 @@ public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> 
 
         } catch (IOException e) {
             Log.e("TTTAG", "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attempting
-            // to parse it.
         } catch (JSONException e) {
             Log.e("TTTAG", e.getMessage(), e);
             e.printStackTrace();
@@ -99,8 +95,15 @@ public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> 
         return gamesToday;
     }
 
+    @Override
+    protected void onPreExecute() {
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
+    }
+
     protected void onPostExecute(List<GameInfo> result) {
+
         mGamesAdaptor.changeDate(result);
+        linlaHeaderProgress.setVisibility(View.GONE);
     }
 
 }
