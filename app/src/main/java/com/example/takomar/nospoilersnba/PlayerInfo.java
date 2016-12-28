@@ -19,5 +19,6 @@ public class PlayerInfo {
     protected int stl;
     protected int blk;
     protected int to;
+    protected int fouls;
 
 }

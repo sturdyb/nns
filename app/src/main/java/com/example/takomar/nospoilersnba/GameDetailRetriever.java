@@ -96,7 +96,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                         player.blk = currentGame.getInt(23);
                         player.to = currentGame.getInt(24);
                         player.pts = currentGame.getInt(26);
-
+                        player.fouls = currentGame.getInt(25);
                         if (playersInfo.get(player.team) == null)
                             playersInfo.put(player.team, new ArrayList<PlayerInfo>());
 
@@ -136,16 +136,16 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 TableRow row = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
 
                 ((TextView)row.findViewById(R.id.min)).setText(player.mins);
-                ((TextView)row.findViewById(R.id.fgm)).setText("" + player.fgm);
-                ((TextView)row.findViewById(R.id.fga)).setText("" + player.fga);
-                ((TextView)row.findViewById(R.id.tgm)).setText("" + player.tgm);
-                ((TextView)row.findViewById(R.id.tga)).setText("" + player.tga);
+                ((TextView)row.findViewById(R.id.fgm)).setText(player.fgm + "/" + player.fga);
+                ((TextView)row.findViewById(R.id.tgm)).setText(player.tgm + "/" + player.tga);
+
                 ((TextView)row.findViewById(R.id.reb)).setText("" + player.reb);
                 ((TextView)row.findViewById(R.id.stl)).setText("" + player.stl);
                 ((TextView)row.findViewById(R.id.ass)).setText("" + player.ast);
                 ((TextView)row.findViewById(R.id.blk)).setText("" + player.blk);
                 ((TextView)row.findViewById(R.id.to)).setText("" + player.to);
                 ((TextView)row.findViewById(R.id.pts)).setText("" + player.pts);
+                ((TextView)row.findViewById(R.id.fouls)).setText("" + player.fouls);
                 mNamesCol.addView(nameRow);
                 mDetailTable.addView(row);
             }

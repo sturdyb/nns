@@ -5,9 +5,10 @@
     <TextView
         android:id="@+id/name"
         android:gravity="center"
-        android:background="@drawable/cell_shape"
+        android:background="@drawable/hdr_cell_shape"
+        android:textColor="@color/cardview_light_background"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
-        android:textStyle="bold"/>
+        android:textStyle="normal"/>
 
 </TableRow>
