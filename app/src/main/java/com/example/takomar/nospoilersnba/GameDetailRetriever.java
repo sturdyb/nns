@@ -29,12 +29,23 @@ import java.util.Map;
 
 public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, List<PlayerInfo>> > {
 
-    private TableLayout mNamesCol;
-    private TableLayout mDetailTable;
+    private TableLayout mAwayNamesCol;
+    private TableLayout mAwayDetailTable;
+    private String mAwayTeam;
+    private TableLayout mHomeNamesCol;
+    private TableLayout mHomeDetailTable;
+    private String mHomeTeam;
     private Context mContext;
-    public GameDetailRetriever(Context context, TableLayout tl, TableLayout namesLayout){
-        mNamesCol = namesLayout;
-        mDetailTable = tl;
+    public GameDetailRetriever(
+            Context context,
+            String hometeam, TableLayout homeTl, TableLayout homeNamesCol,
+            String awayteam, TableLayout awayTl, TableLayout awayNamesCol){
+        mHomeTeam = hometeam;
+        mAwayTeam = awayteam;
+        mHomeDetailTable = homeTl;
+        mAwayDetailTable = awayTl;
+        mHomeNamesCol = homeNamesCol;
+        mAwayNamesCol = awayNamesCol;
         mContext = context;
     }
     @Override
@@ -47,7 +58,6 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                     +"&GameID=" + params[0]
                     + "&RangeType=2&Season=2016-17&SeasonType=Regular+Season&StartPeriod=0&StartRange=0";
             URL url = new URL(myUrl);
-            // Create the request to OpenWeatherMap, and open the connection
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Referer", "http://stats.nba.com/scores/");
             urlConnection.setRequestMethod("GET");
@@ -76,14 +86,17 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 
                 if (gameHeader.equals("PlayerStats"))
                 {
-
                     JSONArray rows = games.getJSONArray("rowSet");
                     for (int i = 0; i < rows.length(); ++i) {
 
                         PlayerInfo player = new PlayerInfo();
                         JSONArray currentGame = rows.getJSONArray(i);
                         player.team = currentGame.getString(2);
-                        player.name = currentGame.getString(5);
+
+                        String name = currentGame.getString(5);
+                        int family = name.indexOf(' ');
+                        player.name = name.charAt(0) +". " + name.substring(family + 1);
+
                         player.pos = currentGame.getString(6);
                         player.mins = currentGame.getString(8);
                         player.fgm = currentGame.getInt(9);
@@ -120,12 +133,21 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
         for (List<PlayerInfo> oneTeam : result.values())
         {
-            TableRow teamName = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
-            TableRow rowTeam = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
-            ((TextView)teamName.findViewById(R.id.name)).setText(oneTeam.get(0).team);
-            mNamesCol.addView(teamName);
-            mDetailTable.addView(rowTeam);
 
+            TableLayout namesCol;
+            TableLayout boxScore;
+            if (oneTeam.get(0).team.equals(mHomeTeam))
+            {
+                namesCol = mHomeNamesCol;
+                boxScore = mHomeDetailTable;
+            }
+            else
+            {
+                namesCol = mAwayNamesCol;
+                boxScore = mAwayDetailTable;
+            }
+
+            int i = 0;
             for(PlayerInfo player : oneTeam)
             {
                 TableRow nameRow = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
@@ -136,8 +158,8 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 TableRow row = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
 
                 ((TextView)row.findViewById(R.id.min)).setText(player.mins);
-                ((TextView)row.findViewById(R.id.fgm)).setText(player.fgm + "/" + player.fga);
-                ((TextView)row.findViewById(R.id.tgm)).setText(player.tgm + "/" + player.tga);
+                ((TextView)row.findViewById(R.id.fgm)).setText(player.fgm + "-" + player.fga);
+                ((TextView)row.findViewById(R.id.tgm)).setText(player.tgm + "-" + player.tga);
 
                 ((TextView)row.findViewById(R.id.reb)).setText("" + player.reb);
                 ((TextView)row.findViewById(R.id.stl)).setText("" + player.stl);
@@ -146,12 +168,21 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 ((TextView)row.findViewById(R.id.to)).setText("" + player.to);
                 ((TextView)row.findViewById(R.id.pts)).setText("" + player.pts);
                 ((TextView)row.findViewById(R.id.fouls)).setText("" + player.fouls);
-                mNamesCol.addView(nameRow);
-                mDetailTable.addView(row);
+
+                if(i % 2 != 0) {
+                    nameRow.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
+                    row.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
+                }
+                i++;
+
+                namesCol.addView(nameRow);
+                boxScore.addView(row);
             }
         }
-        mNamesCol.requestLayout();
-        mDetailTable.requestLayout();
+        mHomeDetailTable.requestLayout();
+        mAwayDetailTable.requestLayout();
+        mHomeNamesCol.requestLayout();
+        mAwayNamesCol.requestLayout();
     }
 
 }

@@ -27,7 +27,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view , String gameId);
+        void onItemClick(View view , GameInfoHolder gameInfo);
     }
     private OnItemClickListener mItemClickListener;
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -57,7 +57,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         @Override
         public void onClick(View v) {
             if (mItemClickListener != null) {
-                mItemClickListener.onItemClick(v, gameId);
+                mItemClickListener.onItemClick(v, this);
             }
         }
     }

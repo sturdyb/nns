@@ -67,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
         ga.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, String gameId) {
+            public void onItemClick(View view, GamesAdaptor.GameInfoHolder gameInfo) {
                 Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
-                intent.putExtra("GameID", gameId);
+                intent.putExtra("GameID", gameInfo.gameId);
+                intent.putExtra("Home", gameInfo.homeTeam.getText());
+                intent.putExtra("Away", gameInfo.visitorTeam.getText());
                 intent.putExtra("Quarter", getEndPeriod(view.getId()));
 
                 startActivity(intent);

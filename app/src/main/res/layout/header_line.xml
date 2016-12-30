@@ -2,67 +2,78 @@
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:background="@drawable/hdr_cell_shape"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/min"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/pts"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/fgm"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
 
     <TextView
         android:id="@+id/tgm"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/reb"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/stl"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/ass"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/blk"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/to"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/fouls"
-        android:padding="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>

@@ -4,11 +4,11 @@
     android:orientation="horizontal">
     <TextView
         android:id="@+id/name"
+        android:width="150dp"
         android:gravity="center"
-        android:background="@drawable/hdr_cell_shape"
-        android:textColor="@color/cardview_light_background"
         android:paddingLeft="3dp"
-        android:paddingRight="3dp"
+        android:paddingRight="6dp"
+        android:textColor="@android:color/black"
         android:textStyle="normal"/>
 
 </TableRow>

@@ -2,40 +2,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingTop="10dp">
 
     <ScrollView
         android:id="@+id/layout"
-        android:layout_height="match_parent"
-        android:scrollbars="horizontal|vertical"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
 
         android:scrollbarStyle="outsideInset"
-        android:fillViewport="true">
+        android:scrollbars="horizontal|vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="vertical">
 
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/tableName" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        </TableLayout>
-        <HorizontalScrollView
-            android:id="@+id/horizontalView"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal|vertical"
-            android:layout_width="wrap_content">
+                <TableLayout
+                    android:id="@+id/namesTable1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
 
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/tableBox" >
-            </TableLayout>
-        </HorizontalScrollView>
+                </TableLayout>
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontalView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="horizontal|vertical">
+
+                    <TableLayout
+                        android:id="@+id/boxScore1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </HorizontalScrollView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:orientation="horizontal">
+
+                <TableLayout
+                    android:id="@+id/namesTable2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                </TableLayout>
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontalView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="horizontal|vertical">
+
+                    <TableLayout
+                        android:id="@+id/boxScore2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </HorizontalScrollView>
+            </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>
