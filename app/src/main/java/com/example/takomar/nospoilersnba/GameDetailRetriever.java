@@ -1,6 +1,7 @@
 package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,9 +72,6 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
                     buffer.append(line + "\n");
                 }
             }
@@ -128,56 +126,74 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         }
         return playersInfo;
     }
+    private void fillStats(PlayerInfo stats, TableLayout namesCol, TableLayout boxScore, boolean isOdd)
+    {
+        TableRow nameRow = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
 
+        if(stats.name == null) {
+            ((TextView) nameRow.findViewById(R.id.name)).setText("Totals");
+            ((TextView) nameRow.findViewById(R.id.name)).setTypeface(Typeface.DEFAULT_BOLD);
+        }
+        else
+            if (stats.pos.isEmpty())
+                ((TextView)nameRow.findViewById(R.id.name)).setText(stats.name);
+            else
+                ((TextView)nameRow.findViewById(R.id.name)).setText(stats.name + " - " + stats.pos);
+
+        TableRow row = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
+
+        ((TextView)row.findViewById(R.id.min)).setText(stats.mins);
+        ((TextView)row.findViewById(R.id.fgm)).setText(stats.fgm + "-" + stats.fga);
+        ((TextView)row.findViewById(R.id.tgm)).setText(stats.tgm + "-" + stats.tga);
+        ((TextView)row.findViewById(R.id.reb)).setText("" + stats.reb);
+        ((TextView)row.findViewById(R.id.stl)).setText("" + stats.stl);
+        ((TextView)row.findViewById(R.id.ass)).setText("" + stats.ast);
+        ((TextView)row.findViewById(R.id.blk)).setText("" + stats.blk);
+        ((TextView)row.findViewById(R.id.to)).setText("" + stats.to);
+        ((TextView)row.findViewById(R.id.pts)).setText("" + stats.pts);
+        ((TextView)row.findViewById(R.id.fouls)).setText("" + stats.fouls);
+
+        if(isOdd) {
+            nameRow.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
+            row.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
+        }
+
+        namesCol.addView(nameRow);
+        boxScore.addView(row);
+    }
     protected void onPostExecute(Map<String, List<PlayerInfo>> result) {
 
         for (List<PlayerInfo> oneTeam : result.values())
         {
-
             TableLayout namesCol;
             TableLayout boxScore;
-            if (oneTeam.get(0).team.equals(mHomeTeam))
-            {
+            if (oneTeam.get(0).team.equals(mHomeTeam)) {
                 namesCol = mHomeNamesCol;
                 boxScore = mHomeDetailTable;
-            }
-            else
-            {
+            } else {
                 namesCol = mAwayNamesCol;
                 boxScore = mAwayDetailTable;
             }
-
-            int i = 0;
+            boolean isOdd = false;
+            PlayerInfo totalStats = new PlayerInfo();
             for(PlayerInfo player : oneTeam)
             {
-                TableRow nameRow = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
-                if (player.pos.isEmpty())
-                    ((TextView)nameRow.findViewById(R.id.name)).setText(player.name);
-                else
-                    ((TextView)nameRow.findViewById(R.id.name)).setText(player.name + " - " + player.pos);
-                TableRow row = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.detail_line, null);
+                fillStats(player, namesCol, boxScore, isOdd);
+                totalStats.pts += player.pts;
+                totalStats.fgm += player.fgm;
+                totalStats.fga += player.fga;
+                totalStats.tgm += player.tgm;
+                totalStats.tga += player.tga;
+                totalStats.ast += player.ast;
+                totalStats.blk += player.blk;
+                totalStats.to  += player.to;
+                totalStats.reb += player.reb;
+                totalStats.stl += player.stl;
+                totalStats.fouls += player.fouls;
 
-                ((TextView)row.findViewById(R.id.min)).setText(player.mins);
-                ((TextView)row.findViewById(R.id.fgm)).setText(player.fgm + "-" + player.fga);
-                ((TextView)row.findViewById(R.id.tgm)).setText(player.tgm + "-" + player.tga);
-
-                ((TextView)row.findViewById(R.id.reb)).setText("" + player.reb);
-                ((TextView)row.findViewById(R.id.stl)).setText("" + player.stl);
-                ((TextView)row.findViewById(R.id.ass)).setText("" + player.ast);
-                ((TextView)row.findViewById(R.id.blk)).setText("" + player.blk);
-                ((TextView)row.findViewById(R.id.to)).setText("" + player.to);
-                ((TextView)row.findViewById(R.id.pts)).setText("" + player.pts);
-                ((TextView)row.findViewById(R.id.fouls)).setText("" + player.fouls);
-
-                if(i % 2 != 0) {
-                    nameRow.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
-                    row.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
-                }
-                i++;
-
-                namesCol.addView(nameRow);
-                boxScore.addView(row);
+                isOdd = !isOdd;
             }
+            fillStats(totalStats, namesCol, boxScore, isOdd);
         }
         mHomeDetailTable.requestLayout();
         mAwayDetailTable.requestLayout();
