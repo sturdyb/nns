@@ -16,7 +16,6 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@color/cardview_light_background"
             android:text="Home vs Away"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"

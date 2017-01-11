@@ -1,5 +1,8 @@
 package com.example.takomar.nospoilersnba;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +19,10 @@ import java.util.List;
 
 public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHolder>{
     private List<GameInfo> gameList;
+    private Context mContext;
 
-    public GamesAdaptor(List<GameInfo> games) {
+    public GamesAdaptor(Context context, List<GameInfo> games) {
+        mContext = context;
         gameList = games;
     }
     public void changeDate(List<GameInfo> games) {
@@ -53,6 +58,11 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             q3.setOnClickListener(this);
             q4.setOnClickListener(this);
         }
+        public void isFavorite() {
+            itemView.setBackgroundColor(mContext.getResources().getColor(R.color.fav_blue));
+
+        }
+
 
         @Override
         public void onClick(View v) {
@@ -73,7 +83,13 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
 
     @Override
     public void onBindViewHolder(GameInfoHolder holder, int position) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String favTeam = sharedPref.getString("favTeam","");
         final GameInfo ci = gameList.get(position);
+
+        if(ci.homeTeam.equals(favTeam) || ci.visitorTeam.equals(favTeam))
+            holder.isFavorite();
+
         holder.homeTeam.setText(ci.homeTeam);
         holder.visitorTeam.setText(ci.visitorTeam);
         holder.gameId = ci.gameID;

@@ -13,7 +13,7 @@
         <item name="windowNoTitle">true</item>
     </style>
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
-    <item name="colorAccent">@android:color/holo_blue_light</item>
+    <item name="colorAccent">@color/holo_blue_light</item>
 </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
