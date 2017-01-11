@@ -1,5 +1,6 @@
 package com.example.takomar.nospoilersnba;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -8,6 +9,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,10 +61,29 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        String home = getIntent().getStringExtra("Home");
-        String away = getIntent().getStringExtra("Away");
+        final String home = getIntent().getStringExtra("Home");
+        final String away = getIntent().getStringExtra("Away");
+        final String gameID= getIntent().getStringExtra("GameID");
+        final String quarter= getIntent().getStringExtra("Quarter");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(home + " vs " + away);
+
+        Button overtime = (Button)findViewById(R.id.overtime);
+        overtime.setVisibility(View.GONE);
+        overtime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int q = Integer.parseInt(quarter) + 3000;
+                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                intent.putExtra("GameID", gameID);
+                intent.putExtra("Home", home);
+                intent.putExtra("Away", away);
+                intent.putExtra("Quarter", "" + q);
+
+                startActivity(intent);
+            }
+        });
 
         TableLayout nameCol=(TableLayout)findViewById(R.id.namesTable1);
         TableLayout tl=(TableLayout)findViewById(R.id.boxScore1);
@@ -71,10 +93,7 @@ public class DetailsActivity extends AppCompatActivity {
         TableLayout tl2=(TableLayout)findViewById(R.id.boxScore2);
         createHeaders(away, nameCol2, tl2, true);
 
-
-        String s= getIntent().getStringExtra("GameID");
-        String q= getIntent().getStringExtra("Quarter");
-        new GameDetailRetriever(this, home, tl, nameCol, away, tl2, nameCol2).execute(s, q);
+        new GameDetailRetriever(this, home, tl, nameCol, away, tl2, nameCol2).execute(gameID, quarter);
 
     }
 

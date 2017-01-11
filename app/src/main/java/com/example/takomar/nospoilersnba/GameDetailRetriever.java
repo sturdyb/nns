@@ -1,10 +1,13 @@
 package com.example.takomar.nospoilersnba;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -37,6 +40,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
     private TableLayout mHomeDetailTable;
     private String mHomeTeam;
     private Context mContext;
+    private String mRange;
     public GameDetailRetriever(
             Context context,
             String hometeam, TableLayout homeTl, TableLayout homeNamesCol,
@@ -54,6 +58,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         Map<String, List<PlayerInfo>> playersInfo = new HashMap<>();
 
         try {
+            mRange = params[1];
             String myUrl = "http://stats.nba.com/stats/boxscoretraditionalv2?EndPeriod=0&EndRange="
                     + params[1]
                     +"&GameID=" + params[0]
@@ -162,12 +167,14 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         boxScore.addView(row);
     }
     protected void onPostExecute(Map<String, List<PlayerInfo>> result) {
-
+        int totalsHome = 0;
+        int totalsAway = 0;
         for (List<PlayerInfo> oneTeam : result.values())
         {
             TableLayout namesCol;
             TableLayout boxScore;
-            if (oneTeam.get(0).team.equals(mHomeTeam)) {
+            boolean isHomeTeam = oneTeam.get(0).team.equals(mHomeTeam);
+            if (isHomeTeam) {
                 namesCol = mHomeNamesCol;
                 boxScore = mHomeDetailTable;
             } else {
@@ -193,12 +200,20 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
                 isOdd = !isOdd;
             }
+            if (isHomeTeam)
+                totalsHome = totalStats.pts;
+            else
+                totalsAway = totalStats.pts;
+
             fillStats(totalStats, namesCol, boxScore, isOdd);
         }
+        Button overtime = (Button) ((Activity)mContext).findViewById(R.id.overtime);
+        if(totalsAway == totalsHome && mRange.equals("28800"))
+            overtime.setVisibility(View.VISIBLE);
+
         mHomeDetailTable.requestLayout();
         mAwayDetailTable.requestLayout();
         mHomeNamesCol.requestLayout();
         mAwayNamesCol.requestLayout();
     }
-
 }

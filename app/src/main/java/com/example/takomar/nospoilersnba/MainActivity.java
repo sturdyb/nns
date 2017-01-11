@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recViewList.setLayoutManager(llm);
-
         List<GameInfo> gameInfos = new ArrayList<>();
         GamesAdaptor ga = new GamesAdaptor(gameInfos);
         recViewList.setAdapter(ga);
