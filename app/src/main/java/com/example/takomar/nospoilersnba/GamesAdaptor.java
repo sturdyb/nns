@@ -3,6 +3,7 @@ package com.example.takomar.nospoilersnba;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,16 +54,32 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             Button q2 = (Button) v.findViewById(R.id.button2);
             Button q3 = (Button) v.findViewById(R.id.button3);
             Button q4 = (Button) v.findViewById(R.id.button4);
+
             q1.setOnClickListener(this);
             q2.setOnClickListener(this);
             q3.setOnClickListener(this);
             q4.setOnClickListener(this);
+//            q1.setBackgroundColor(mContext.getResources().getColor(android.R.color.darker_gray));
+//            q2.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
+//            q3.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
+//            q4.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
+//            q1.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+//            q2.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+//            q3.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+//            q4.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+            //itemView.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
+            //CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
+            //cardView.setCardBackgroundColor(mContext.getResources().getColor(android.R.color.holo_blue_dark));
+            itemView.findViewById(R.id.card_frame).setVisibility(View.INVISIBLE);
         }
         public void isFavorite() {
-            itemView.setBackgroundColor(mContext.getResources().getColor(R.color.fav_blue));
-
+            itemView.findViewById(R.id.card_frame).setVisibility(View.VISIBLE);
+           // itemView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
         }
-
+        public void isNormal() {
+            itemView.findViewById(R.id.card_frame).setVisibility(View.INVISIBLE);
+            // itemView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
+        }
 
         @Override
         public void onClick(View v) {
@@ -89,6 +106,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
 
         if(ci.homeTeam.equals(favTeam) || ci.visitorTeam.equals(favTeam))
             holder.isFavorite();
+        else
+            holder.isNormal();
 
         holder.homeTeam.setText(ci.homeTeam);
         holder.visitorTeam.setText(ci.visitorTeam);

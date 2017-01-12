@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
+        else if (id == R.id.openload) {
+            pairWithOpenload();
+        }
+
         return super.onOptionsItemSelected(item);
     }
     public static class DatePickerFragment extends DialogFragment
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
-    public void pairWithOpenload(View v) {
+    public void pairWithOpenload() {
         Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://openload.co/pair"));
         startActivity(intent);
     }

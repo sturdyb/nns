@@ -5,4 +5,8 @@
           android:title="Favorite team"
           android:orderInCategory="100"
           app:showAsAction="never" />
+    <item android:id="@+id/openload"
+        android:title="Pair with openload"
+        android:orderInCategory="101"
+        app:showAsAction="never" />
 </menu>

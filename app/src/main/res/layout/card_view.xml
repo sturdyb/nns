@@ -1,49 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/card_view"
+    android:id="@+id/card_view_outer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    android:layout_margin="5dp">
+    android:layout_gravity="center"
+    card_view:cardBackgroundColor="@android:color/transparent"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="0dp">
 
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="3dp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="0dp" >
+        <FrameLayout
+            android:id="@+id/card_frame"
+            android:background="@drawable/frame"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:text="Home vs Away"
-            android:gravity="center_vertical"
-            android:textColor="@android:color/black"
-            android:textSize="16dp"/>
-
-        <TextView
             android:id="@+id/firstTeam"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:gravity="center_vertical"
-            android:textSize="14dp"
+            android:text="PHI"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:textColor="@android:color/black"
             android:layout_centerVertical="true"
-
             android:layout_marginLeft="5dp"/>
 
         <TextView
             android:id="@+id/SecondTeam"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:text="Surname"
-            android:gravity="center_vertical"
-            android:layout_centerVertical="true"
-            android:textSize="14dp"
-            android:layout_below="@id/title"
+            android:text="MIA"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:textColor="@android:color/black"
             android:layout_toRightOf="@id/firstTeam"
             android:layout_marginLeft="50dp"
-            />
+            android:layout_alignTop="@+id/firstTeam" />
 
         <Button
             android:text="Q2"
@@ -53,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/my_button"
             android:id="@+id/button2" />
 
         <Button
@@ -63,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="1dp"
             android:layout_toStartOf="@id/button2"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/my_button"
             android:id="@+id/button"
             android:layout_toLeftOf="@id/button2" />
 
@@ -74,7 +81,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/button4"
             android:layout_marginLeft="1dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/my_button"
             android:layout_alignBaseline="@+id/button3"
             android:layout_alignBottom="@+id/button3"
             android:layout_alignParentRight="true" />
@@ -85,12 +92,49 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button3"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/my_button"
             android:layout_below="@+id/button"
             android:layout_toLeftOf="@id/button4"/>
+
+        <TextView
+            android:id="@+id/homeText"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:text="Home"
+            android:gravity="top|center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="8sp"
+            android:layout_below="@+id/firstTeam"
+            android:layout_alignLeft="@+id/firstTeam"
+            android:layout_alignStart="@+id/firstTeam" />
+
+        <TextView
+            android:id="@+id/awayText"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:text="Away"
+            android:gravity="top|center"
+            android:textColor="@color/red"
+            android:textSize="8sp"
+            android:layout_below="@+id/SecondTeam"
+            android:layout_alignLeft="@+id/SecondTeam"
+            android:layout_alignStart="@+id/SecondTeam" />
+
+        <TextView
+            android:text="vs"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:id="@+id/vsText"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:layout_alignBaseline="@+id/firstTeam"
+            android:layout_alignBottom="@+id/firstTeam"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/firstTeam" />
 
     </RelativeLayout>
 
 
+    </android.support.v7.widget.CardView>
 
 </android.support.v7.widget.CardView>

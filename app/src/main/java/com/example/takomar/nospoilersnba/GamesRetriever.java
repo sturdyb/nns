@@ -2,7 +2,9 @@ package com.example.takomar.nospoilersnba;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -92,6 +94,22 @@ public class GamesRetriever  extends AsyncTask<String, Integer, List<GameInfo>> 
             Log.e("TTTAG", e.getMessage(), e);
             e.printStackTrace();
         }
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String favTeam = sharedPref.getString("favTeam","");
+
+        int favPosition = 0;
+        for (GameInfo game : gamesToday)
+            if(game.visitorTeam.equals(favTeam) || game.homeTeam.equals(favTeam)) {
+                favPosition = gamesToday.indexOf(game);
+                break;
+            }
+        if (favPosition > 0) {
+            GameInfo temp = gamesToday.get(0);
+            gamesToday.set(0, gamesToday.get(favPosition));
+            gamesToday.set(favPosition, temp);
+        }
+
+
         return gamesToday;
     }
 
