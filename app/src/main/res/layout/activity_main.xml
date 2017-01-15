@@ -15,19 +15,40 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/pickDate"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/my_button"
-                android:onClick="showDatePickerDialog"
-                android:text="pick date"
-                android:textColor="@color/cardview_light_background" />
+        <ImageButton
+            android:id="@+id/prev"
+            android:src="@drawable/ic_navigate_next_white_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="-1"
+            android:layout_marginRight="2dp"
+            android:layout_gravity="center"
+            android:background="@drawable/my_button"
+            android:onClick="goToPrevDate" />
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/pickDate"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/my_button"
+            android:onClick="showDatePickerDialog"
+            android:text="pick date"
+            android:textColor="@color/cardview_light_background" />
+
+        <ImageButton
+            android:id="@+id/next"
+            android:src="@drawable/ic_navigate_next_white_24dp"
+            android:layout_marginLeft="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/my_button"
+            android:onClick="goToNextDate" />
+
+    </LinearLayout>
 
 
     <LinearLayout
@@ -44,8 +65,7 @@
             android:layout_height="wrap_content"></ProgressBar>
     </LinearLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/activity_vertical_margin"

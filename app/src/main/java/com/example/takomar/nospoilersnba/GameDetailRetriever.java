@@ -56,6 +56,8 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
     @Override
     protected Map<String, List<PlayerInfo>> doInBackground(String... params) {
         Map<String, List<PlayerInfo>> playersInfo = new HashMap<>();
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
 
         try {
             mRange = params[1];
@@ -64,7 +66,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                     +"&GameID=" + params[0]
                     + "&RangeType=2&Season=2016-17&SeasonType=Regular+Season&StartPeriod=0&StartRange=0";
             URL url = new URL(myUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Referer", "http://stats.nba.com/scores/");
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -73,7 +75,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             StringBuffer buffer = new StringBuffer();
             if (inputStream != null) {
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -120,15 +122,25 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                     }
                 }
             }
-
-
         } catch (IOException e) {
             Log.e("TTTAG", "Error ", e);
 
         } catch (JSONException e) {
             Log.e("TTTAG", e.getMessage(), e);
             e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                    Log.e("TTTAG", "Error closing stream", e);
+                }
+            }
         }
+
         return playersInfo;
     }
     private void fillStats(PlayerInfo stats, TableLayout namesCol, TableLayout boxScore, boolean isOdd)

@@ -59,26 +59,12 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             q2.setOnClickListener(this);
             q3.setOnClickListener(this);
             q4.setOnClickListener(this);
-//            q1.setBackgroundColor(mContext.getResources().getColor(android.R.color.darker_gray));
-//            q2.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
-//            q3.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
-//            q4.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
-//            q1.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-//            q2.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-//            q3.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-//            q4.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-            //itemView.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
-            //CardView cardView = (CardView) itemView.findViewById(R.id.card_view);
-            //cardView.setCardBackgroundColor(mContext.getResources().getColor(android.R.color.holo_blue_dark));
-            itemView.findViewById(R.id.card_frame).setVisibility(View.INVISIBLE);
         }
         public void isFavorite() {
             itemView.findViewById(R.id.card_frame).setVisibility(View.VISIBLE);
-           // itemView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
         }
         public void isNormal() {
             itemView.findViewById(R.id.card_frame).setVisibility(View.INVISIBLE);
-            // itemView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
         }
 
         @Override
@@ -93,7 +79,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public GameInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.
                 from(parent.getContext()).
-                inflate(R.layout.card_view, parent, false);
+                inflate(R.layout.card_view_linear, parent, false);
 
         return new GameInfoHolder(itemView);
     }

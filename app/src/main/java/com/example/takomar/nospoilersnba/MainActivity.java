@@ -3,25 +3,21 @@ package com.example.takomar.nospoilersnba;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,11 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final Calendar cal = Calendar.getInstance();
-    private static int selectedYear = cal.get(Calendar.YEAR);
-    private static int selectedMonth = cal.get(Calendar.MONTH);
-    private static int selectedDay = cal.get(Calendar.DAY_OF_MONTH);
-
+    private static SimpleDateFormat dateFormatApp = new SimpleDateFormat("MM/dd/yyyy");
     @NonNull
     private String getEndPeriod( int buttonId)
     {
@@ -54,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         return "28800";
     }
 
+    private String getYestedayDefaultDate() {
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return dateFormatApp.format(cal.getTime());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,14 +60,15 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recViewList = (RecyclerView) findViewById(R.id.cardList);
         recViewList.setHasFixedSize(true);
+
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recViewList.setLayoutManager(llm);
         List<GameInfo> gameInfos = new ArrayList<>();
-        GamesAdaptor ga = new GamesAdaptor(this, gameInfos);
-        recViewList.setAdapter(ga);
+        GamesAdaptor gamesAdaptor = new GamesAdaptor(this, gameInfos);
+        recViewList.setAdapter(gamesAdaptor);
 
-        ga.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
+        gamesAdaptor.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(View view, GamesAdaptor.GameInfoHolder gameInfo) {
                 Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
@@ -81,15 +81,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
-        String yesterdayNba = dateFormat.format(cal.getTime());
 
         Button datePicker = (Button) findViewById(R.id.pickDate);
-        datePicker.setText(yesterdayNba);
+        String yesterday = getYestedayDefaultDate();
+        datePicker.setText(yesterday);
 
-        new GamesRetriever(this, ga).execute(yesterdayNba);
+        new GamesRetriever(this, gamesAdaptor).execute(yesterday);
     }
 
     @Override
@@ -119,6 +116,21 @@ public class MainActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             // Create a new instance of DatePickerDialog and return it
+            String text = (String) ((Button)getActivity().findViewById(R.id.pickDate)).getText();
+            Calendar calendar = Calendar.getInstance();
+            int selectedYear = 0;
+            int selectedMonth = 0;
+            int selectedDay = 0;
+            try {
+                Date selectedDate = dateFormatApp.parse(text);
+                calendar.setTime(selectedDate);
+                selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
+                selectedMonth = calendar.get(Calendar.MONTH);
+                selectedYear = calendar.get(Calendar.YEAR);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             return new DatePickerDialog(
                     getActivity(), R.style.DialogTheme,
                     this, selectedYear, selectedMonth, selectedDay);
@@ -126,9 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar cal = Calendar.getInstance();
-            selectedYear = year;
-            selectedMonth = month;
-            selectedDay = day;
             cal.set(year, month, day);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -146,6 +155,42 @@ public class MainActivity extends AppCompatActivity {
         DialogFragment newFragment = new DatePickerFragment();
 
         newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+    public void goToNextDate(View v) {
+        Button pickDate = ((Button)findViewById(R.id.pickDate));
+        String text = (String) pickDate.getText();
+        String next = null;
+        try {
+            Date currentDate = dateFormatApp.parse(text);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            calendar.add(Calendar.DATE, 1);
+            next = dateFormatApp.format(calendar.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        RecyclerView recView = (RecyclerView) findViewById(R.id.cardList);
+        pickDate.setText(next);
+        new GamesRetriever(this, (GamesAdaptor)recView.getAdapter()).execute(next);
+    }
+    public void goToPrevDate(View v) {
+        Button pickDate = ((Button)findViewById(R.id.pickDate));
+        String text = (String) pickDate.getText();
+        String prev = null;
+        try {
+            Date currentDate = dateFormatApp.parse(text);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            calendar.add(Calendar.DATE, -1);
+            prev = dateFormatApp.format(calendar.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        RecyclerView recView = (RecyclerView) findViewById(R.id.cardList);
+        pickDate.setText(prev);
+        new GamesRetriever(this, (GamesAdaptor)recView.getAdapter()).execute(prev);
     }
     public void pairWithOpenload() {
         Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://openload.co/pair"));
