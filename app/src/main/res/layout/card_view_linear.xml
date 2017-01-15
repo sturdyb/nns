@@ -40,75 +40,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/firstTeam"
                         android:layout_height="wrap_content"
-                        android:layout_width="50dp"
-                        android:text="PHI"
-                        android:gravity="center"
-                        android:layout_gravity="center|bottom"
-                        android:textSize="16dp"
-                        android:textColor="@android:color/black" />
-
-                    <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="vs"
-                        android:id="@+id/vsText"
-                        android:gravity="center"
-                        android:layout_gravity="center|bottom"
+                        android:layout_marginLeft="10dp"
+                        android:text="PHI"
+                        android:gravity="center|left"
+                        android:layout_gravity="center|left"
+                        android:textSize="16dp"
                         android:textColor="@android:color/black" />
 
                     <TextView
-                        android:id="@+id/SecondTeam"
+                        android:id="@+id/homeText"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_width="50dp"
-                        android:text="MIA"
+                        android:layout_marginLeft="10dp"
+                        android:text="Home"
+                        android:layout_gravity="center|left"
                         android:gravity="center"
-                        android:layout_gravity="center|bottom"
-                        android:textSize="16dp"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="8sp" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:layout_weight="1">
 
                     <TextView
-                        android:id="@+id/homeText"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:text="Home"
-                        android:gravity="top|center"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="8sp"
-                        android:layout_below="@+id/firstTeam"
-                        android:layout_alignLeft="@+id/firstTeam"
-                        android:layout_alignStart="@+id/firstTeam" />
-
-                    <TextView
+                        android:id="@+id/SecondTeam"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="vs"
+                        android:layout_marginLeft="10dp"
+                        android:text="MIA"
                         android:gravity="center"
-                        android:layout_gravity="center|bottom"
-                        android:textColor="@color/cardview_light_background" />
+                        android:layout_gravity="left|center"
+                        android:textSize="16dp"
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:id="@+id/awayText"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:text="Away"
-                        android:gravity="top|center"
+                        android:layout_gravity="left|center"
                         android:textColor="@color/red"
-                        android:textSize="8sp"
-                        android:layout_below="@+id/SecondTeam"
-                        android:layout_alignLeft="@+id/SecondTeam"
-                        android:layout_alignStart="@+id/SecondTeam" />
+                        android:textSize="8sp" />
                 </LinearLayout>
 
             </LinearLayout>

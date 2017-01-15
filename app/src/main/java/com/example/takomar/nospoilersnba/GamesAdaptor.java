@@ -86,11 +86,10 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
 
     @Override
     public void onBindViewHolder(GameInfoHolder holder, int position) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String favTeam = sharedPref.getString("favTeam","");
         final GameInfo ci = gameList.get(position);
 
-        if(ci.homeTeam.equals(favTeam) || ci.visitorTeam.equals(favTeam))
+        if(Helper.isTeamFavorite(mContext, ci.homeTeam) ||
+           Helper.isTeamFavorite(mContext, ci.visitorTeam))
             holder.isFavorite();
         else
             holder.isNormal();

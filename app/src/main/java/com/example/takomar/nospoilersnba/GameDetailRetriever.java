@@ -96,7 +96,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
                         PlayerInfo player = new PlayerInfo();
                         JSONArray currentGame = rows.getJSONArray(i);
-                        player.team = currentGame.getString(2);
+                        player.team = Helper.CodeNameTeam.get(currentGame.getString(2));
 
                         String name = currentGame.getString(5);
                         int family = name.indexOf(' ');

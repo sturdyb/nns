@@ -80,8 +80,8 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
                         gameInfo.gameID = currentGame.getString(2);
                         String match = currentGame.getString(5);
                         int x = match.indexOf("/");
-                        gameInfo.visitorTeam = match.substring(x + 1, x + 4);
-                        gameInfo.homeTeam = match.substring(x + 4);
+                        gameInfo.visitorTeam = Helper.CodeNameTeam.get(match.substring(x + 1, x + 4));
+                        gameInfo.homeTeam = Helper.CodeNameTeam.get(match.substring(x + 4));
 
                         gamesToday.add(gameInfo);
                     }
@@ -105,12 +105,11 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
             }
         }
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String favTeam = sharedPref.getString("favTeam", "");
 
         int favPosition = 0;
         for (GameInfo game : gamesToday)
-            if (game.visitorTeam.equals(favTeam) || game.homeTeam.equals(favTeam)) {
+            if (Helper.isTeamFavorite(mContext, game.visitorTeam) ||
+                    Helper.isTeamFavorite(mContext, game.homeTeam)) {
                 favPosition = gamesToday.indexOf(game);
                 break;
             }
