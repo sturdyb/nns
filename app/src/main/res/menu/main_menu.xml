@@ -2,9 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_settings"
-          android:title="Favorite team"
+          android:title="Favorite teams"
           android:orderInCategory="100"
-          app:showAsAction="never" />
+          android:icon="@drawable/ic_star_white_24dp"
+          app:showAsAction="ifRoom" />
     <item android:id="@+id/openload"
         android:title="Pair with openload"
         android:orderInCategory="101"

@@ -44,7 +44,6 @@ import java.util.Map;
 
 
 public class Helper {
-    static final int NOT_FAVORITE = 101;
     static final Map<String, String> CodeNameTeam = ImmutableMap.<String, String>builder()
             .put("ATL", 	"Hawks")
             .put("BKN", 	"Nets")
@@ -80,23 +79,17 @@ public class Helper {
             .put("WST",     "West")
             .build();
 
-    static public int getFavoritePosition(Context context, String team) {
+    static public boolean isTeamFavorite(Context context, String team) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String[] favTeams = sharedPref.getString(context.getString(R.string.favTeam),"").split(",");
 
-        int index = 0;
         for (String favTeam : favTeams)
         {
             boolean isFavCode = team.equals(CodeNameTeam.get(favTeam.toUpperCase()));
             if (isFavCode || team.equalsIgnoreCase(favTeam))
-                return index;
-            index++;
+                return true;
         }
-        return NOT_FAVORITE;
-    }
-
-    static public boolean isTeamFavorite(Context context, String team) {
-        return getFavoritePosition(context, team) != NOT_FAVORITE;
+        return false;
      }
 
     static public int getQuarter(int quarterTime) {

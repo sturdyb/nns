@@ -56,8 +56,6 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
     @Override
     protected Map<String, List<PlayerInfo>> doInBackground(String... params) {
         Map<String, List<PlayerInfo>> playersInfo = new HashMap<>();
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
 
         try {
             mRange = params[1];
@@ -65,29 +63,14 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             String seasonType = "Regular+Season";
             if (gameId.startsWith("003"))
                 seasonType = "All+Star";
-            String myUrl = "http://stats.nba.com/stats/boxscoretraditionalv2?EndPeriod=0&EndRange="
-                    + params[1]
+            String myUrl =
+                    "http://stats.nba.com/stats/boxscoretraditionalv2?" +
+                    "EndPeriod=0&EndRange=" + params[1]
                     +"&GameID=" + gameId
                     + "&RangeType=2&Season=2016-17"
                     + "&SeasonType=" + seasonType
                     + "&StartPeriod=0&StartRange=0";
-            URL url = new URL(myUrl);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("Referer", "http://stats.nba.com/scores/");
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream != null) {
-                Log.v("YO", myUrl);
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-            }
+            StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
 
             if (buffer.length() != 0) {
                 JSONObject forecastJson = new JSONObject(buffer.toString());
@@ -128,23 +111,9 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                     }
                 }
             }
-        } catch (IOException e) {
-            Log.e("TTTAG", "Error ", e);
-
         } catch (JSONException e) {
-            Log.e("TTTAG", e.getMessage(), e);
+            Log.e("SpoilErr", e.getMessage(), e);
             e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e("TTTAG", "Error closing stream", e);
-                }
-            }
         }
 
         return playersInfo;

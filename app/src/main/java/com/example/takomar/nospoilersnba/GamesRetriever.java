@@ -45,29 +45,13 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
     @Override
     protected List<GameInfo> doInBackground(String... params) {
         List<GameInfo> gamesToday = new ArrayList<>();
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
 
         try {
-            String myUrl =
-                    "http://stats.nba.com/stats/scoreboardV2?DayOffset=0&LeagueID=00&gameDate=" +
-                            params[0];
-            URL url = new URL(myUrl);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("Referer", "http://stats.nba.com/scores/");
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
+            String myUrl = "http://stats.nba.com/stats/scoreboardV2?" +
+                           "DayOffset=0&LeagueID=00&gameDate=" +
+                           params[0];
 
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream != null) {
-                Log.v("YO", myUrl);
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-            }
+            StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
 
             if (buffer.length() != 0) {
                 JSONObject forecastJson = new JSONObject(buffer.toString());
@@ -90,37 +74,24 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
                     }
                 }
             }
-        } catch (IOException e) {
-            Log.e("TTTAG", "Error ", e);
         } catch (JSONException e) {
-            Log.e("TTTAG", e.getMessage(), e);
+            Log.e("SpoilErr", e.getMessage(), e);
             e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e("TTTAG", "Error closing stream", e);
-                }
-            }
         }
 
-        Map<Integer, Integer> favPositions = new HashMap();
-        for (GameInfo game : gamesToday) {
-            int newPosition = Math.min(
-                    Helper.getFavoritePosition(mContext, game.visitorTeam),
-                    Helper.getFavoritePosition(mContext, game.homeTeam));
-            if (newPosition != Helper.NOT_FAVORITE)
-                favPositions.put(newPosition, gamesToday.indexOf(game));
-        }
+        List<Integer> favPositions = new ArrayList<>();
+        for (GameInfo game : gamesToday)
+            if (Helper.isTeamFavorite(mContext, game.visitorTeam) ||
+                Helper.isTeamFavorite(mContext, game.homeTeam))
+                favPositions.add(gamesToday.indexOf(game));
+
         if (!favPositions.isEmpty()) {
-            for (Integer newPos : favPositions.keySet()) {
-                GameInfo temp = gamesToday.get(newPos);
-                gamesToday.set(newPos, gamesToday.get(favPositions.get(newPos)));
-                gamesToday.set(favPositions.get(newPos), temp);
+            int index = 0;
+            for (Integer favPos : favPositions) {
+                GameInfo temp = gamesToday.get(favPos);
+                gamesToday.set(favPos, gamesToday.get(index));
+                gamesToday.set(index, temp);
+                index++;
             }
         }
         

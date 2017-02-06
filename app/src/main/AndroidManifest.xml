@@ -30,4 +30,5 @@
                 android:value="com.example.takomar.nospoilersnba.MainActivity" />
         </activity>
     </application>
+
 </manifest>
