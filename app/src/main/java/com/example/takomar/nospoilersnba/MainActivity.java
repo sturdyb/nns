@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
+
         return dateFormatApp.format(cal.getTime());
     }
 

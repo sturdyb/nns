@@ -36,6 +36,7 @@ public class UrlHelper {
                     buffer.append(line + "\n");
                 }
                 return buffer;
+                
             }
 
         } catch (IOException e) {

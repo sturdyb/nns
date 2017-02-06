@@ -5,7 +5,8 @@
           android:title="Favorite teams"
           android:orderInCategory="100"
           android:icon="@drawable/ic_star_white_24dp"
-          app:showAsAction="ifRoom" />
+          app:showAsAction="ifRoom"
+        />
     <item android:id="@+id/openload"
         android:title="Pair with openload"
         android:orderInCategory="101"
