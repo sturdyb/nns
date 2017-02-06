@@ -67,7 +67,9 @@ public class DetailsActivity extends AppCompatActivity {
         final String quarter= getIntent().getStringExtra("Quarter");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(home + " vs " + away);
+        int qNb = Helper.getQuarter(Integer.parseInt(quarter));
+
+        toolbar.setTitle(home + " vs " + away + " : " + (qNb == 5 ? "Overtime" : "Quarter " + qNb));
 
         Button overtime = (Button)findViewById(R.id.overtime);
         overtime.setVisibility(View.GONE);

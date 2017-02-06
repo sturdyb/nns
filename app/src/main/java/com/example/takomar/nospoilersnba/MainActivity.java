@@ -31,19 +31,15 @@ public class MainActivity extends AppCompatActivity {
     private String getEndPeriod( int buttonId)
     {
         if (buttonId == R.id.button){
-            Toast.makeText(getApplicationContext(), "quarter 1", Toast.LENGTH_SHORT).show();
-            return "7200";
+            return getString(R.string.q1time);
         }
         if (buttonId == R.id.button2){
-            Toast.makeText(getApplicationContext(), "quarter 2", Toast.LENGTH_SHORT).show();
-            return "14400";
+            return getString(R.string.q2time);
         }
         if (buttonId == R.id.button3){
-            Toast.makeText(getApplicationContext(), "quarter 3", Toast.LENGTH_SHORT).show();
-            return "21600";
+            return getString(R.string.q3time);
         }
-        Toast.makeText(getApplicationContext(), "quarter 4", Toast.LENGTH_SHORT).show();
-        return "28800";
+        return getString(R.string.q4time);
     }
 
     private String getYestedayDefaultDate() {

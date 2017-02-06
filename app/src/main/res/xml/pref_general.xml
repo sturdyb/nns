@@ -4,9 +4,9 @@
     android:layout_height="match_parent">
 
     <EditTextPreference
-        android:title="Choose your favorite team code"
-        android:key="favTeam"
-        android:defaultValue="GSW"
+        android:title="Choose your favorite teams(comma separated)"
+        android:key="@string/favTeam"
+        android:defaultValue="GSW,Cavaliers"
         android:inputType="text"
         android:singleLine="true"/>
 

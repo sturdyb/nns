@@ -20,7 +20,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by takomar on 11/12/16.
@@ -59,6 +61,7 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream != null) {
+                Log.v("YO", myUrl);
                 reader = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -105,18 +108,20 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
             }
         }
 
-
-        int favPosition = 0;
-        for (GameInfo game : gamesToday)
-            if (Helper.isTeamFavorite(mContext, game.visitorTeam) ||
-                    Helper.isTeamFavorite(mContext, game.homeTeam)) {
-                favPosition = gamesToday.indexOf(game);
-                break;
+        Map<Integer, Integer> favPositions = new HashMap();
+        for (GameInfo game : gamesToday) {
+            int newPosition = Math.min(
+                    Helper.getFavoritePosition(mContext, game.visitorTeam),
+                    Helper.getFavoritePosition(mContext, game.homeTeam));
+            if (newPosition != Helper.NOT_FAVORITE)
+                favPositions.put(newPosition, gamesToday.indexOf(game));
+        }
+        if (!favPositions.isEmpty()) {
+            for (Integer newPos : favPositions.keySet()) {
+                GameInfo temp = gamesToday.get(newPos);
+                gamesToday.set(newPos, gamesToday.get(favPositions.get(newPos)));
+                gamesToday.set(favPositions.get(newPos), temp);
             }
-        if (favPosition > 0) {
-            GameInfo temp = gamesToday.get(0);
-            gamesToday.set(0, gamesToday.get(favPosition));
-            gamesToday.set(favPosition, temp);
         }
         
         return gamesToday;

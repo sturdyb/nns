@@ -61,10 +61,16 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
 
         try {
             mRange = params[1];
+            String gameId = params[0];
+            String seasonType = "Regular+Season";
+            if (gameId.startsWith("003"))
+                seasonType = "All+Star";
             String myUrl = "http://stats.nba.com/stats/boxscoretraditionalv2?EndPeriod=0&EndRange="
                     + params[1]
-                    +"&GameID=" + params[0]
-                    + "&RangeType=2&Season=2016-17&SeasonType=Regular+Season&StartPeriod=0&StartRange=0";
+                    +"&GameID=" + gameId
+                    + "&RangeType=2&Season=2016-17"
+                    + "&SeasonType=" + seasonType
+                    + "&StartPeriod=0&StartRange=0";
             URL url = new URL(myUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Referer", "http://stats.nba.com/scores/");
@@ -74,7 +80,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream != null) {
-
+                Log.v("YO", myUrl);
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
@@ -220,7 +226,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             fillStats(totalStats, namesCol, boxScore, isOdd);
         }
         Button overtime = (Button) ((Activity)mContext).findViewById(R.id.overtime);
-        if(totalsAway == totalsHome && mRange.equals("28800"))
+        if(totalsAway == totalsHome && mRange.equals(mContext.getString(R.string.q4time)))
             overtime.setVisibility(View.VISIBLE);
 
         mHomeDetailTable.requestLayout();

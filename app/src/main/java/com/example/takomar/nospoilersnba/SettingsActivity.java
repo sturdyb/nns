@@ -21,7 +21,7 @@ public class SettingsActivity extends PreferenceActivity
 
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
-        bindPreferenceSummaryToValue(findPreference("favTeam"));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.favTeam)));
 
     }
 
