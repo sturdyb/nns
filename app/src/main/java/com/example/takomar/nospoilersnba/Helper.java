@@ -1,9 +1,11 @@
 package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.core.deps.guava.collect.ImmutableMap;
+import android.support.annotation.NonNull;
 
 import java.util.Map;
 
@@ -44,7 +46,7 @@ import java.util.Map;
 
 
 public class Helper {
-
+    static final String[] MenuItems = { "All games", "Favorite teams", "Settings"};
     static final Map<String, String> CodeNameTeam = ImmutableMap.<String, String>builder()
             .put("ATL", 	"Hawks")
             .put("BKN", 	"Nets")
@@ -98,6 +100,44 @@ public class Helper {
         if (quart % 1 != 0)
             return 5;
         return (int) quart;
+    }
+
+    @NonNull
+    static private String getEndPeriod(Context context, int buttonId)
+    {
+        if (buttonId == R.id.button){
+            return context.getString(R.string.q1time);
+        }
+        if (buttonId == R.id.button2){
+            return context.getString(R.string.q2time);
+        }
+        if (buttonId == R.id.button3){
+            return context.getString(R.string.q3time);
+        }
+        return context.getString(R.string.q4time);
+    }
+
+    static public void showGameDetails(
+            Context context, GamesAdaptor.GameInfoHolder gameInfo, int viewId)
+    {
+        Intent intent = new Intent(context, DetailsActivity.class);
+        intent.putExtra("GameID", gameInfo.gameId);
+        intent.putExtra("Home", gameInfo.homeTeam.getText());
+        intent.putExtra("Away", gameInfo.visitorTeam.getText());
+        intent.putExtra("Quarter", getEndPeriod(context, viewId));
+
+        context.startActivity(intent);
+    }
+    static public void showGameDetails(
+            Context context, FavGamesAdaptor.GameInfoHolder gameInfo, int viewId)
+    {
+        Intent intent = new Intent(context, DetailsActivity.class);
+        intent.putExtra("GameID", gameInfo.gameId);
+        intent.putExtra("Home", gameInfo.homeTeam.getText());
+        intent.putExtra("Away", gameInfo.visitorTeam.getText());
+        intent.putExtra("Quarter", getEndPeriod(context, viewId));
+
+        context.startActivity(intent);
     }
 
 }

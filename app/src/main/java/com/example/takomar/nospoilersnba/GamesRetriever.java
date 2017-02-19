@@ -19,7 +19,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,29 +30,45 @@ import java.util.Map;
  * Created by takomar on 11/12/16.
  */
 
-public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
+public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
     private Context mContext;
     private GamesAdaptor mGamesAdaptor;
     private LinearLayout linlaHeaderProgress;
+    private Date mDate;
+    private boolean mForCache;
 
-    public GamesRetriever(Context context, GamesAdaptor gamesAdaptor) {
+    public GamesRetriever(Context context, GamesAdaptor gamesAdaptor, boolean forCache) {
         mContext = context;
         mGamesAdaptor = gamesAdaptor;
+        mForCache = forCache;
         linlaHeaderProgress =
                 (LinearLayout)
                         ((Activity) mContext).findViewById(R.id.linlaHeaderProgress);
     }
 
+    private GameInfo fillGameInfo(JSONArray currentGame) throws JSONException, ParseException {
+        GameInfo gameInfo = new GameInfo();
+        gameInfo.gameID = currentGame.getString(2);
+
+        String match = currentGame.getString(5);
+        int x = match.indexOf("/");
+        gameInfo.visitorTeam = Helper.CodeNameTeam.get(match.substring(x + 1, x + 4));
+        gameInfo.homeTeam = Helper.CodeNameTeam.get(match.substring(x + 4));
+        gameInfo.gameDate = mDate;
+        return  gameInfo;
+    }
+
     @Override
-    protected List<GameInfo> doInBackground(String... params) {
+    protected List<GameInfo> doInBackground(Date... params) {
         List<GameInfo> gamesToday = new ArrayList<>();
 
         try {
+            mDate = params[0];
             String myUrl = "http://stats.nba.com/stats/scoreboardV2?" +
                            "DayOffset=0&LeagueID=00&gameDate=" +
-                           params[0];
-
+                            UrlHelper.dateFormatUrl.format(mDate);
+            Log.v("SpoilDbg", "Start" + UrlHelper.dateFormatUrl.format(mDate));
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
 
             if (buffer.length() != 0) {
@@ -61,21 +79,14 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
 
                 if (gameHeader.equals("GameHeader")) {
                     JSONArray rows = games.getJSONArray("rowSet");
-                    for (int i = 0; i < rows.length(); ++i) {
-                        GameInfo gameInfo = new GameInfo();
-                        JSONArray currentGame = rows.getJSONArray(i);
-                        gameInfo.gameID = currentGame.getString(2);
-                        String match = currentGame.getString(5);
-                        int x = match.indexOf("/");
-                        gameInfo.visitorTeam = Helper.CodeNameTeam.get(match.substring(x + 1, x + 4));
-                        gameInfo.homeTeam = Helper.CodeNameTeam.get(match.substring(x + 4));
-
-                        gamesToday.add(gameInfo);
-                    }
+                    for (int i = 0; i < rows.length(); ++i)
+                        gamesToday.add(fillGameInfo(rows.getJSONArray(i)));
                 }
             }
         } catch (JSONException e) {
             Log.e("SpoilErr", e.getMessage(), e);
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
@@ -100,13 +111,18 @@ public class GamesRetriever extends AsyncTask<String, Integer, List<GameInfo>> {
 
     @Override
     protected void onPreExecute() {
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
+        if (!mForCache)
+            linlaHeaderProgress.setVisibility(View.VISIBLE);
     }
 
     protected void onPostExecute(List<GameInfo> result) {
-
-        mGamesAdaptor.changeDate(result);
-        linlaHeaderProgress.setVisibility(View.GONE);
+     //   Log.v("SpoilDbg", "End");
+        if (mForCache)
+            mGamesAdaptor.fillCache(result, mDate);
+        else {
+            mGamesAdaptor.addGames(result, mDate);
+            linlaHeaderProgress.setVisibility(View.GONE);
+        }
     }
 
 }
