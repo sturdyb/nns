@@ -1,9 +1,7 @@
 package com.example.takomar.nospoilersnba;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,34 +23,51 @@ import java.util.Map;
  */
 
 public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHolder>{
-    private Map<Date, List<GameInfo>> allGames;
-    private List<GameInfo> gamesByDate;
-    private Context mContext;
+    protected Map<Date, List<GameInfo>> allGames;
+    protected List<GameInfo> gamesToList;
+    protected Context mContext;
+    protected List<GamesRetriever> cacheTasks = new ArrayList<>();
 
     public GamesAdaptor(Context context) {
+        Log.v("SpoilChk", "adaptor created");
         allGames = new HashMap<>();
-        gamesByDate = new ArrayList<>();
+        gamesToList = new ArrayList<>();
         mContext = context;
 
     }
+
+    protected void addCacheTask(GamesRetriever task) {
+        cacheTasks.add(task);
+    }
+    protected boolean alreadyLoaded(Date date) {
+        return  allGames.containsKey(date);
+    }
+
+    protected void addGamesFromDate(Date gameDate) {
+        if (!alreadyLoaded(gameDate))
+            addCacheTask((GamesRetriever)
+                    new GamesRetriever(mContext, this, true).
+                            executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gameDate));
+    }
+
+    public List<GamesRetriever> getCacheTasks() {
+        return cacheTasks;
+    }
+
     public void fillCache(List<GameInfo> games, Date gameDate){
         allGames.put(gameDate, games);
     }
+
     public void addGames(List<GameInfo> games, Date gameDate) {
         fillCache(games, gameDate);
+        gamesToList.addAll(games);
+    }
 
-        gamesByDate = games;
-        notifyDataSetChanged();
-    }
-    private void addGamesFromDate(Date gameDate) {
-        if (!allGames.containsKey(gameDate)) {
-            new GamesRetriever(mContext, this, true).
-                    executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gameDate);
-        }
-    }
     public void changeDate(Date gameDate) {
-        if (allGames.containsKey(gameDate)) {
-            gamesByDate = allGames.get(gameDate);
+        gamesToList.clear();
+
+        if (alreadyLoaded(gameDate)) {
+            gamesToList.addAll(allGames.get(gameDate));
             notifyDataSetChanged();
         }
         else
@@ -84,12 +99,14 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public class GameInfoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected TextView homeTeam;
         protected TextView visitorTeam;
+        protected TextView gameDate;
         protected String gameId;
 
         public GameInfoHolder(View v) {
             super(v);
             homeTeam =  (TextView) v.findViewById(R.id.firstTeam);
             visitorTeam = (TextView)  v.findViewById(R.id.SecondTeam);
+            gameDate = (TextView)  v.findViewById(R.id.dateGame);
             Button q1 = (Button) v.findViewById(R.id.button);
             Button q2 = (Button) v.findViewById(R.id.button2);
             Button q3 = (Button) v.findViewById(R.id.button3);
@@ -125,29 +142,30 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         return new GameInfoHolder(itemView);
     }
 
-    @Override
-    public void onBindViewHolder(GameInfoHolder holder, int position) {
-        final GameInfo ci = gamesByDate.get(position);
-
-        if(Helper.isTeamFavorite(mContext, ci.homeTeam) ||
-           Helper.isTeamFavorite(mContext, ci.visitorTeam))
-            holder.isFavorite();
-        else
-            holder.isNormal();
-
+    public void setGameInformation(GameInfoHolder holder, final GameInfo ci ) {
         holder.homeTeam.setText(ci.homeTeam);
         holder.visitorTeam.setText(ci.visitorTeam);
         holder.gameId = ci.gameID;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("YO", "onClick: " +  ci.homeTeam);
             }
         });
     }
 
     @Override
+    public void onBindViewHolder(GameInfoHolder holder, int position) {
+        final GameInfo ci = gamesToList.get(position);
+        setGameInformation(holder, ci);
+        if(Helper.isTeamFavorite(mContext, ci.homeTeam) ||
+           Helper.isTeamFavorite(mContext, ci.visitorTeam))
+            holder.isFavorite();
+        else
+            holder.isNormal();
+    }
+
+    @Override
     public int getItemCount() {
-        return gamesByDate.size();
+        return gamesToList.size();
     }
 }

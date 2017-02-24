@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,20 +32,19 @@ import java.util.Map;
  */
 
 public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
-
-    private Context mContext;
-    private GamesAdaptor mGamesAdaptor;
+    protected SimpleDateFormat dateFormatUrl = new SimpleDateFormat("MM/d/yyyy");
+    protected Context mContext;
+    protected GamesAdaptor mGamesAdaptor;
     private LinearLayout linlaHeaderProgress;
-    private Date mDate;
-    private boolean mForCache;
+    protected Date mDate;
+    protected boolean mForCache;
 
     public GamesRetriever(Context context, GamesAdaptor gamesAdaptor, boolean forCache) {
         mContext = context;
         mGamesAdaptor = gamesAdaptor;
         mForCache = forCache;
-        linlaHeaderProgress =
-                (LinearLayout)
-                        ((Activity) mContext).findViewById(R.id.linlaHeaderProgress);
+        linlaHeaderProgress = (LinearLayout)((Activity) mContext)
+                                                .findViewById(R.id.linlaHeaderProgress);
     }
 
     private GameInfo fillGameInfo(JSONArray currentGame) throws JSONException, ParseException {
@@ -59,36 +59,45 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
         return  gameInfo;
     }
 
-    @Override
-    protected List<GameInfo> doInBackground(Date... params) {
+    protected  List<GameInfo> retrieveGames(Date date) {
         List<GameInfo> gamesToday = new ArrayList<>();
 
         try {
-            mDate = params[0];
             String myUrl = "http://stats.nba.com/stats/scoreboardV2?" +
-                           "DayOffset=0&LeagueID=00&gameDate=" +
-                            UrlHelper.dateFormatUrl.format(mDate);
-            Log.v("SpoilDbg", "Start" + UrlHelper.dateFormatUrl.format(mDate));
+                    "DayOffset=0&LeagueID=00&gameDate=" +
+                    dateFormatUrl.format(date);
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
+            if (buffer.length() == 0)
+                return null;
 
-            if (buffer.length() != 0) {
-                JSONObject forecastJson = new JSONObject(buffer.toString());
-                JSONArray myResults = forecastJson.getJSONArray("resultSets");
-                JSONObject games = myResults.getJSONObject(0);
-                String gameHeader = games.getString("name");
+            JSONObject forecastJson = new JSONObject(buffer.toString());
+            JSONArray myResults = forecastJson.getJSONArray("resultSets");
+            JSONObject games = myResults.getJSONObject(0);
+            String gameHeader = games.getString("name");
 
-                if (gameHeader.equals("GameHeader")) {
-                    JSONArray rows = games.getJSONArray("rowSet");
-                    for (int i = 0; i < rows.length(); ++i)
-                        gamesToday.add(fillGameInfo(rows.getJSONArray(i)));
-                }
+            if (gameHeader.equals("GameHeader")) {
+                JSONArray rows = games.getJSONArray("rowSet");
+                for (int i = 0; i < rows.length(); ++i)
+                    gamesToday.add(fillGameInfo(rows.getJSONArray(i)));
             }
+
         } catch (JSONException e) {
             Log.e("SpoilErr", e.getMessage(), e);
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return gamesToday;
+    }
+
+    @Override
+    protected List<GameInfo> doInBackground(Date... params) {
+
+        mDate = (Date) params[0].clone();
+        Log.v("Spoilwtf", "Daily " + this.toString() + " date " + dateFormatUrl.format(mDate) + (mForCache ? " y" : " n"));
+        List<GameInfo> gamesToday = retrieveGames(mDate);
+        if (gamesToday == null)
+            return null;
 
         List<Integer> favPositions = new ArrayList<>();
         for (GameInfo game : gamesToday)
@@ -117,12 +126,14 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
     protected void onPostExecute(List<GameInfo> result) {
      //   Log.v("SpoilDbg", "End");
-        if (mForCache)
-            mGamesAdaptor.fillCache(result, mDate);
-        else {
-            mGamesAdaptor.addGames(result, mDate);
-            linlaHeaderProgress.setVisibility(View.GONE);
-        }
+        if (result != null &&!isCancelled())
+            if (mForCache)
+                mGamesAdaptor.fillCache(result, mDate);
+             else {
+                mGamesAdaptor.addGames(result, mDate);
+                mGamesAdaptor.notifyDataSetChanged();
+                linlaHeaderProgress.setVisibility(View.GONE);
+            }
     }
 
 }

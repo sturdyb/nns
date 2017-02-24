@@ -7,4 +7,5 @@
     <string name="q1time">7200</string>
     <string name="q2time">14400</string>
     <string name="q3time">21600</string>
+    <string name="defaultFav">GSW,Cavaliers</string>
 </resources>

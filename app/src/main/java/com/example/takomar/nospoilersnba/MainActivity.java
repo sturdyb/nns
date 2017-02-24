@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static SimpleDateFormat dateFormatApp = new SimpleDateFormat("EEE, MMM d yyyy");
+    private SimpleDateFormat dateFormatApp = new SimpleDateFormat("EEE, MMM d yyyy");
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.clear(Calendar.MINUTE);
-        cal.clear(Calendar.SECOND);
-        cal.clear(Calendar.MILLISECOND);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
         cal.add(Calendar.DATE, -1);
 
         return cal.getTime();
@@ -121,9 +121,10 @@ public class MainActivity extends AppCompatActivity {
         createGamesAdaptor();
 
         Button datePicker = (Button) findViewById(R.id.pickDate);
-        datePicker.setText(dateFormatApp.format(getInitialDate()));
+        Date initialDate = getInitialDate();
+        gamesAdaptor.changeDate(initialDate);
+        datePicker.setText(dateFormatApp.format(initialDate));
 
-        gamesAdaptor.changeDate(getInitialDate());
 
     }
     @Override
@@ -153,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectItem(int position) {
-        Log.v("SpoilDbg", mDrawerList.getCheckedItemCount() + " " +
-                mDrawerList.getCheckedItemPosition());
+//        Log.v("SpoilDbg", mDrawerList.getCheckedItemCount() + " " +
+  //              mDrawerList.getCheckedItemPosition());
         if (position == 1)
            startActivity(new Intent(getApplicationContext(), FavActivity.class));
         else if (position == 0)
@@ -184,12 +185,11 @@ public class MainActivity extends AppCompatActivity {
     }
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
+        SimpleDateFormat dateFormatApp = new SimpleDateFormat("EEE, MMM d yyyy");
 
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            // Create a new instance of DatePickerDialog and return it
             String text = (String) ((Button)getActivity().findViewById(R.id.pickDate)).getText();
             Calendar calendar = Calendar.getInstance();
             int selectedYear = 0;
@@ -213,17 +213,15 @@ public class MainActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar cal = Calendar.getInstance();
             cal.set(year, month, day);
+            cal.set(Calendar.HOUR, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
 
             Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
             datePick.setText(dateFormatApp.format(cal.getTime()));
 
             RecyclerView recView = (RecyclerView) getActivity().findViewById(R.id.cardList);
-            String selectedDate = UrlHelper.dateFormatUrl.format(cal.getTime());
-            try {
-                cal.setTime(UrlHelper.dateFormatUrl.parse(selectedDate));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
             ((GamesAdaptor)recView.getAdapter()).changeDate(cal.getTime());
         }
     }
@@ -258,7 +256,6 @@ public class MainActivity extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(currentDate);
             calendar.add(Calendar.DATE, -1);
-            String prev = UrlHelper.dateFormatUrl.format(calendar.getTime());
             RecyclerView recView = (RecyclerView) findViewById(R.id.cardList);
             ((GamesAdaptor)recView.getAdapter()).changeDate(calendar.getTime());
 

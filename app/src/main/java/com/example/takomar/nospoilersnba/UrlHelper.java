@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
  */
 
 public class UrlHelper {
-    static final SimpleDateFormat dateFormatUrl = new SimpleDateFormat("MM/dd/yyyy");
     static public StringBuffer retrieveJSONBuffer(String urlLink) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;

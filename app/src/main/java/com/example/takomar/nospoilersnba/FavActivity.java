@@ -1,40 +1,21 @@
 package com.example.takomar.nospoilersnba;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.ListView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-
-import static android.os.AsyncTask.THREAD_POOL_EXECUTOR;
 
 public class FavActivity extends MainActivity {
 
-    private static SimpleDateFormat dateFormatApp = new SimpleDateFormat("MMM d, yyyy");
+    private SimpleDateFormat dateFormatApp = new SimpleDateFormat("MMM d, yyyy");
     private FavGamesAdaptor gamesAdaptor;
 
     @Override

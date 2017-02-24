@@ -6,7 +6,7 @@
     <EditTextPreference
         android:title="Choose your favorite teams(comma separated)"
         android:key="@string/favTeam"
-        android:defaultValue="GSW,Cavaliers"
+        android:defaultValue="@string/defaultFav"
         android:inputType="text"
         android:singleLine="true"/>
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,57 +12,53 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by takomar on 11/12/16.
  */
 
-public class FavGamesAdaptor extends RecyclerView.Adapter<FavGamesAdaptor.GameInfoHolder>{
-    private Map<Date, List<GameInfo>> allGames;
-    private List<GameInfo> gamesByWeek;
-    private Context mContext;
+public class FavGamesAdaptor extends GamesAdaptor{
     private LinearLayout linlaHeaderProgress;
     private List<TeamGamesRetriever> myTasks = new ArrayList<>();
-    private List<TeamGamesRetriever> cacheTasks = new ArrayList<>();
 
     public FavGamesAdaptor(Context context) {
-        allGames = new HashMap<>();
-        gamesByWeek = new ArrayList<>();
-        mContext = context;
+        super(context);
     }
-    public void fillCache(List<GameInfo> games, Date gameDate){
-        allGames.put(gameDate, games);
-    }
-    public void addGames(List<GameInfo> games, Date gameDate) {
-        fillCache(games, gameDate);
 
-        gamesByWeek.addAll(games);
-       // updateScreen();
-    }
-    private void addGamesFromDate(Date gameDate) {
-        if (!allGames.containsKey(gameDate)) {
-            cacheTasks.add((TeamGamesRetriever)
+    @Override
+    protected void addGamesFromDate(Date gameDate) {
+        if (!alreadyLoaded(gameDate)) {
+            addCacheTask((GamesRetriever)
                     new TeamGamesRetriever(mContext, this, true).
                     executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gameDate));
         }
     }
+
     public void updateScreen()
     {
+        Collections.sort(gamesToList, new Comparator<GameInfo>() {
+            @Override
+            public int compare(GameInfo lhs, GameInfo rhs) {
+                return lhs.gameDate.compareTo(rhs.gameDate) ;
+            }
+        });
         linlaHeaderProgress.setVisibility(View.GONE);
         notifyDataSetChanged();
     }
 
     public void changeDate(Date firstDate) {
-        gamesByWeek.clear();
+        gamesToList.clear();
 
-        for (TeamGamesRetriever task : cacheTasks)
+        for (GamesRetriever task : cacheTasks)
             if (task.getStatus() != AsyncTask.Status.FINISHED)
                 task.cancel(true);
         cacheTasks.clear();
@@ -72,15 +67,14 @@ public class FavGamesAdaptor extends RecyclerView.Adapter<FavGamesAdaptor.GameIn
         calendar.setTime(firstDate);
         calendar.add(Calendar.DATE, 7);
         Date endDate = calendar.getTime();
-        linlaHeaderProgress =
-                (LinearLayout)
-                        ((Activity) mContext).findViewById(R.id.linlaHeaderProgress);
+        linlaHeaderProgress = (LinearLayout) ((Activity) mContext)
+                                                .findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         calendar.setTime(firstDate);
         while (firstDate.before(endDate))
         {
-            if (allGames.containsKey(firstDate)) {
-                gamesByWeek.addAll(allGames.get(firstDate));
+            if (alreadyLoaded(firstDate)) {
+                gamesToList.addAll(allGames.get(firstDate));
             }
             else
                 myTasks.add((TeamGamesRetriever) new TeamGamesRetriever(
@@ -115,7 +109,7 @@ public class FavGamesAdaptor extends RecyclerView.Adapter<FavGamesAdaptor.GameIn
                         allDone = true;
                         for (TeamGamesRetriever task : myTasks)
                             if (task.getStatus() != AsyncTask.Status.FINISHED) {
-                                Thread.sleep(500);
+                                Thread.sleep(200);
                                 allDone = false;
                             }
                     }
@@ -137,82 +131,17 @@ public class FavGamesAdaptor extends RecyclerView.Adapter<FavGamesAdaptor.GameIn
 
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, Context context, GameInfoHolder gameInfo);
-    }
-    private OnItemClickListener mItemClickListener;
-    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mItemClickListener = mItemClickListener;
-    }
-
-
-    public class GameInfoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        protected TextView homeTeam;
-        protected TextView visitorTeam;
-        protected String gameId;
-
-        public GameInfoHolder(View v) {
-            super(v);
-            homeTeam =  (TextView) v.findViewById(R.id.firstTeam);
-            visitorTeam = (TextView)  v.findViewById(R.id.SecondTeam);
-            Button q1 = (Button) v.findViewById(R.id.button);
-            Button q2 = (Button) v.findViewById(R.id.button2);
-            Button q3 = (Button) v.findViewById(R.id.button3);
-            Button q4 = (Button) v.findViewById(R.id.button4);
-            ImageView iv = (ImageView) v.findViewById(R.id.search_button);
-            iv.setOnClickListener(this);
-            q1.setOnClickListener(this);
-            q2.setOnClickListener(this);
-            q3.setOnClickListener(this);
-            q4.setOnClickListener(this);
-        }
-        public void isFavorite() {
-            itemView.findViewById(R.id.card_frame).setVisibility(View.VISIBLE);
-        }
-        public void isNormal() {
-            itemView.findViewById(R.id.card_frame).setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mItemClickListener != null) {
-                mItemClickListener.onItemClick(v, mContext, this);
-            }
-        }
-    }
-
-    @Override
-    public GameInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.
-                from(parent.getContext()).
-                inflate(R.layout.card_view_linear, parent, false);
-
-        return new GameInfoHolder(itemView);
-    }
-
     @Override
     public void onBindViewHolder(GameInfoHolder holder, int position) {
-        final GameInfo ci = gamesByWeek.get(position);
-
-        if(Helper.isTeamFavorite(mContext, ci.homeTeam) ||
-           Helper.isTeamFavorite(mContext, ci.visitorTeam))
-            holder.isFavorite();
-        else
-            holder.isNormal();
-
-        holder.homeTeam.setText(ci.homeTeam);
-        holder.visitorTeam.setText(ci.visitorTeam);
-        holder.gameId = ci.gameID;
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("YO", "onClick: " +  ci.homeTeam);
-            }
-        });
+        final GameInfo ci = gamesToList.get(position);
+        setGameInformation(holder, ci);
+        SimpleDateFormat dateFormatApp = new SimpleDateFormat("EEE, MMM d");
+        holder.gameDate.setText(dateFormatApp.format(ci.gameDate));
+        holder.gameDate.setVisibility(View.VISIBLE);
     }
 
     @Override
     public int getItemCount() {
-        return gamesByWeek.size();
+        return gamesToList.size();
     }
 }

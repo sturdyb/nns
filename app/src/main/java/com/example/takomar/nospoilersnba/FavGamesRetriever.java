@@ -104,25 +104,25 @@ public class FavGamesRetriever extends AsyncTask<String, Integer, List<GameInfo>
 
     protected void onPostExecute(List<GameInfo> result) {
 
-       // mGamesAdaptor.changeDate(result);
-        try {
-            Date lastDate = UrlHelper.dateFormatUrl.parse(mDateTo);
-            Date lastRetrievedDate = result.isEmpty() ?
-                    UrlHelper.dateFormatUrl.parse(mDateFrom) :
-                    result.get(0).gameDate;
-            while (lastDate.compareTo(lastRetrievedDate) > 0)
-            {
-                Calendar c = Calendar.getInstance();
-                c.setTime(lastRetrievedDate);
-                c.add(Calendar.DATE, 1);
-                lastRetrievedDate = c.getTime();
-                //new TeamGamesRetriever(mContext, mGamesAdaptor).executeOnExecutor(THREAD_POOL_EXECUTOR,
-                   //     UrlHelper.dateFormatUrl.format(lastRetrievedDate), "1610612744");
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        linlaHeaderProgress.setVisibility(View.GONE);
+        // mGamesAdaptor.changeDate(result);
+        //  try {
+//            Date lastDate = UrlHelper.dateFormatUrl.parse(mDateTo);
+//            Date lastRetrievedDate = result.isEmpty() ?
+//                    UrlHelper.dateFormatUrl.parse(mDateFrom) :
+//                    result.get(0).gameDate;
+//            while (lastDate.compareTo(lastRetrievedDate) > 0)
+//            {
+//                Calendar c = Calendar.getInstance();
+//                c.setTime(lastRetrievedDate);
+//                c.add(Calendar.DATE, 1);
+//                lastRetrievedDate = c.getTime();
+//                //new TeamGamesRetriever(mContext, mGamesAdaptor).executeOnExecutor(THREAD_POOL_EXECUTOR,
+//                   //     UrlHelper.dateFormatUrl.format(lastRetrievedDate), "1610612744");
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        linlaHeaderProgress.setVisibility(View.GONE);
+        //}
     }
-
 }

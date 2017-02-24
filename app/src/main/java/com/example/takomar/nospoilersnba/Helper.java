@@ -84,7 +84,9 @@ public class Helper {
 
     static public boolean isTeamFavorite(Context context, String team) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String[] favTeams = sharedPref.getString(context.getString(R.string.favTeam),"").split(",");
+        String[] favTeams = sharedPref.getString(
+                context.getString(R.string.favTeam),
+                context.getString(R.string.defaultFav)).split(",");
 
         for (String favTeam : favTeams)
         {
@@ -128,16 +130,4 @@ public class Helper {
 
         context.startActivity(intent);
     }
-    static public void showGameDetails(
-            Context context, FavGamesAdaptor.GameInfoHolder gameInfo, int viewId)
-    {
-        Intent intent = new Intent(context, DetailsActivity.class);
-        intent.putExtra("GameID", gameInfo.gameId);
-        intent.putExtra("Home", gameInfo.homeTeam.getText());
-        intent.putExtra("Away", gameInfo.visitorTeam.getText());
-        intent.putExtra("Quarter", getEndPeriod(context, viewId));
-
-        context.startActivity(intent);
-    }
-
 }
