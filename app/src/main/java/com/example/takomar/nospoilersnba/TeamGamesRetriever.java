@@ -32,7 +32,7 @@ public class TeamGamesRetriever extends GamesRetriever {
     protected List<GameInfo> doInBackground(Date... params) {
         mDate = (Date) params[0].clone();
         Log.v("Spoilwtf", this.toString() + " date " + dateFormatUrl.format(mDate) + (mForCache ? " y" : " n"));
-        List<GameInfo> gamesToday = retrieveGames(mDate);
+        List<GameInfo> gamesToday = retrieveGames(mDate, false);
         if (gamesToday == null)
             return null;
 

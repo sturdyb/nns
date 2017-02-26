@@ -43,7 +43,7 @@ public class FavActivity extends MainActivity {
         gamesAdaptor.SetOnItemClickListener(new FavGamesAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Context context, FavGamesAdaptor.GameInfoHolder gameInfo) {
-                if(view.getId() == R.id.search_button) {
+                if(view.getId() == R.id.buttonSearch) {
                     String query =
                             gameInfo.homeTeam.getText() + " " +
                                     gameInfo.visitorTeam.getText() +

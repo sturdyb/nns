@@ -11,4 +11,11 @@ public class GameInfo {
     protected String visitorTeam;
     protected String gameID;
     protected Date gameDate;
+    protected int homePts;
+    protected int visitorPts;
+
+    @Override
+    public boolean equals(Object o) {
+        return gameID.equals(((GameInfo)o).gameID);
+    }
 }

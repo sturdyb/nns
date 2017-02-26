@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
     private String mHomeTeam;
     private Context mContext;
     private String mRange;
+    private LinearLayout linlaHeaderProgress;
+
     public GameDetailRetriever(
             Context context,
             String hometeam, TableLayout homeTl, TableLayout homeNamesCol,
@@ -52,7 +55,35 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         mHomeNamesCol = homeNamesCol;
         mAwayNamesCol = awayNamesCol;
         mContext = context;
+        linlaHeaderProgress = (LinearLayout)((Activity) mContext)
+                .findViewById(R.id.linlaHeaderProgress);
     }
+
+    private PlayerInfo createPlayerInfo(JSONArray playerJSON) throws JSONException {
+        PlayerInfo player = new PlayerInfo();
+        player.team = Helper.CodeNameTeam.get(playerJSON.getString(2));
+
+        String name = playerJSON.getString(5);
+        int family = name.indexOf(' ');
+        player.name = name.charAt(0) +". " + name.substring(family + 1);
+
+        player.pos = playerJSON.getString(6);
+        player.mins = playerJSON.getString(8);
+        player.fgm = playerJSON.getInt(9);
+        player.fga = playerJSON.getInt(10);
+        player.tgm = playerJSON.getInt(12);
+        player.tga = playerJSON.getInt(13);
+        player.reb = playerJSON.getInt(20);
+        player.ast = playerJSON.getInt(21);
+        player.stl = playerJSON.getInt(22);
+        player.blk = playerJSON.getInt(23);
+        player.to = playerJSON.getInt(24);
+        player.pts = playerJSON.getInt(26);
+        player.fouls = playerJSON.getInt(25);
+
+        return  player;
+    }
+
     @Override
     protected Map<String, List<PlayerInfo>> doInBackground(String... params) {
         Map<String, List<PlayerInfo>> playersInfo = new HashMap<>();
@@ -66,10 +97,11 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             String myUrl =
                     "http://stats.nba.com/stats/boxscoretraditionalv2?" +
                     "EndPeriod=0&EndRange=" + params[1]
-                    +"&GameID=" + gameId
+                    + "&GameID=" + gameId
                     + "&RangeType=2&Season=2016-17"
                     + "&SeasonType=" + seasonType
                     + "&StartPeriod=0&StartRange=0";
+            Log.v("SpoilDtl", myUrl);
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
 
             if (buffer.length() != 0) {
@@ -77,33 +109,12 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 JSONArray myResults = forecastJson.getJSONArray("resultSets");
                 JSONObject games = myResults.getJSONObject(0);
                 String gameHeader = games.getString("name");
-                
+
                 if (gameHeader.equals("PlayerStats"))
                 {
                     JSONArray rows = games.getJSONArray("rowSet");
                     for (int i = 0; i < rows.length(); ++i) {
-
-                        PlayerInfo player = new PlayerInfo();
-                        JSONArray currentGame = rows.getJSONArray(i);
-                        player.team = Helper.CodeNameTeam.get(currentGame.getString(2));
-
-                        String name = currentGame.getString(5);
-                        int family = name.indexOf(' ');
-                        player.name = name.charAt(0) +". " + name.substring(family + 1);
-
-                        player.pos = currentGame.getString(6);
-                        player.mins = currentGame.getString(8);
-                        player.fgm = currentGame.getInt(9);
-                        player.fga = currentGame.getInt(10);
-                        player.tgm = currentGame.getInt(12);
-                        player.tga = currentGame.getInt(13);
-                        player.reb = currentGame.getInt(20);
-                        player.ast = currentGame.getInt(21);
-                        player.stl = currentGame.getInt(22);
-                        player.blk = currentGame.getInt(23);
-                        player.to = currentGame.getInt(24);
-                        player.pts = currentGame.getInt(26);
-                        player.fouls = currentGame.getInt(25);
+                        PlayerInfo player = createPlayerInfo(rows.getJSONArray(i));
                         if (playersInfo.get(player.team) == null)
                             playersInfo.put(player.team, new ArrayList<PlayerInfo>());
 
@@ -117,8 +128,17 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         }
 
         return playersInfo;
+    }@Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mHomeDetailTable.removeAllViews();
+        mHomeNamesCol.removeAllViews();
+        mAwayDetailTable.removeAllViews();
+        mAwayNamesCol.removeAllViews();
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
     }
-    private void fillStats(PlayerInfo stats, TableLayout namesCol, TableLayout boxScore, boolean isOdd)
+
+     private void fillStats(PlayerInfo stats, TableLayout namesCol, TableLayout boxScore, boolean isOdd)
     {
         TableRow nameRow = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
 
@@ -153,7 +173,48 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         namesCol.addView(nameRow);
         boxScore.addView(row);
     }
+    private int getDpInPx(int dp){
+        float scale = mContext.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+    private void createHeaders(String teamName, TableLayout namesCol, TableLayout body, boolean isAway)
+    {
+        TableRow nameHeader = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.name_col, null);
+        TextView headerName = ((TextView)nameHeader.findViewById(R.id.name));
+        headerName.setTextColor(mContext.getResources().getColor(R.color.cardview_light_background));
+        if(isAway)
+            nameHeader.setBackgroundColor(mContext.getResources().getColor(R.color.red));
+        else
+            nameHeader.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+
+        int dpAsPixels = getDpInPx(3);
+        headerName.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
+        headerName.setText(teamName);
+        headerName.setTypeface(null, Typeface.BOLD);
+        namesCol.addView(nameHeader);
+
+        TableRow header = (TableRow) LayoutInflater.from(mContext).inflate(R.layout.header_line, null);
+        if(isAway)
+            header.setBackgroundColor(mContext.getResources().getColor(R.color.red));
+        else
+            header.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+        ((TextView)header.findViewById(R.id.min)).setText("MIN");
+        ((TextView)header.findViewById(R.id.pts)).setText("PTS");
+        ((TextView)header.findViewById(R.id.fgm)).setText("FG");
+        ((TextView)header.findViewById(R.id.tgm)).setText("3PTS");
+        ((TextView)header.findViewById(R.id.reb)).setText("REB");
+        ((TextView)header.findViewById(R.id.stl)).setText("STL");
+        ((TextView)header.findViewById(R.id.ass)).setText("ASS");
+        ((TextView)header.findViewById(R.id.blk)).setText("BLK");
+        ((TextView)header.findViewById(R.id.to)).setText("TO");
+        ((TextView)header.findViewById(R.id.fouls)).setText("FLS");
+        body.addView(header);
+    }
+
     protected void onPostExecute(Map<String, List<PlayerInfo>> result) {
+        createHeaders(mHomeTeam, mHomeNamesCol, mHomeDetailTable, false);
+        createHeaders(mAwayTeam, mAwayNamesCol, mAwayDetailTable, true);
+
         int totalsHome = 0;
         int totalsAway = 0;
         for (List<PlayerInfo> oneTeam : result.values())
@@ -195,8 +256,11 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             fillStats(totalStats, namesCol, boxScore, isOdd);
         }
         Button overtime = (Button) ((Activity)mContext).findViewById(R.id.overtime);
-        if(totalsAway == totalsHome && mRange.equals(mContext.getString(R.string.q4time)))
+
+        if(totalsAway > 0 && totalsAway == totalsHome && mRange.compareTo(mContext.getString(R.string.q4time)) >= 0)
             overtime.setVisibility(View.VISIBLE);
+
+        linlaHeaderProgress.setVisibility(View.GONE);
 
         mHomeDetailTable.requestLayout();
         mAwayDetailTable.requestLayout();

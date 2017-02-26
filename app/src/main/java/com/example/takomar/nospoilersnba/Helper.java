@@ -97,6 +97,11 @@ public class Helper {
         return false;
      }
 
+    static public boolean shouldShowScores(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getBoolean(context.getString(R.string.spoilType), false);
+    }
+
     static public int getQuarter(int quarterTime) {
         double quart = quarterTime / 7200.0;
         if (quart % 1 != 0)
@@ -105,7 +110,7 @@ public class Helper {
     }
 
     @NonNull
-    static private String getEndPeriod(Context context, int buttonId)
+    static public String getEndPeriod(Context context, int buttonId)
     {
         if (buttonId == R.id.button){
             return context.getString(R.string.q1time);

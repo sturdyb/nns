@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -99,6 +100,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public class GameInfoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected TextView homeTeam;
         protected TextView visitorTeam;
+        protected TextView homeScore;
+        protected TextView visitorScore;
         protected TextView gameDate;
         protected String gameId;
 
@@ -107,11 +110,14 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             homeTeam =  (TextView) v.findViewById(R.id.firstTeam);
             visitorTeam = (TextView)  v.findViewById(R.id.SecondTeam);
             gameDate = (TextView)  v.findViewById(R.id.dateGame);
+            homeScore = (TextView)  v.findViewById(R.id.firstScore);
+            visitorScore = (TextView)  v.findViewById(R.id.secondScore);
+
             Button q1 = (Button) v.findViewById(R.id.button);
             Button q2 = (Button) v.findViewById(R.id.button2);
             Button q3 = (Button) v.findViewById(R.id.button3);
             Button q4 = (Button) v.findViewById(R.id.button4);
-            ImageView iv = (ImageView) v.findViewById(R.id.search_button);
+            ImageView iv = (ImageView) v.findViewById(R.id.buttonSearch);
             iv.setOnClickListener(this);
             q1.setOnClickListener(this);
             q2.setOnClickListener(this);
@@ -120,9 +126,19 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         }
         public void isFavorite() {
             itemView.findViewById(R.id.card_frame).setVisibility(View.VISIBLE);
+            homeScore.setVisibility(View.INVISIBLE);
+            visitorScore.setVisibility(View.INVISIBLE);
         }
         public void isNormal() {
             itemView.findViewById(R.id.card_frame).setVisibility(View.INVISIBLE);
+            if(Helper.shouldShowScores(itemView.getContext())) {
+                homeScore.setVisibility(View.VISIBLE);
+                visitorScore.setVisibility(View.VISIBLE);
+            }
+            else {
+                homeScore.setVisibility(View.INVISIBLE);
+                visitorScore.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
@@ -137,7 +153,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public GameInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.
                 from(parent.getContext()).
-                inflate(R.layout.card_view_linear, parent, false);
+                inflate(R.layout.card_view_testing_sc, parent, false);
 
         return new GameInfoHolder(itemView);
     }
@@ -157,6 +173,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public void onBindViewHolder(GameInfoHolder holder, int position) {
         final GameInfo ci = gamesToList.get(position);
         setGameInformation(holder, ci);
+        holder.homeScore.setText(ci.homePts + "");
+        holder.visitorScore.setText(ci.visitorPts + "");
         if(Helper.isTeamFavorite(mContext, ci.homeTeam) ||
            Helper.isTeamFavorite(mContext, ci.visitorTeam))
             holder.isFavorite();

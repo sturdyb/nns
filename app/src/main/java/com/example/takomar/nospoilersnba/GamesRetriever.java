@@ -59,13 +59,36 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
         return  gameInfo;
     }
 
-    protected  List<GameInfo> retrieveGames(Date date) {
+    private void fillDetails(List<GameInfo> games, JSONArray teamDetails) throws JSONException {
+        if(teamDetails.optInt(21) == 0) //game not started yet
+            return ;
+
+        GameInfo key = new GameInfo();
+        key.gameID = teamDetails.getString(2);
+        GameInfo game = games.get(games.indexOf(key));
+
+        if (game != null) {
+            String teamAbbr = teamDetails.getString(4);
+            if (Helper.CodeNameTeam.get(teamAbbr).equals(game.homeTeam))
+                game.homePts = teamDetails.getInt(21);
+            else
+                game.visitorPts = teamDetails.getInt(21);
+
+            Log.v("Spoilwtf", game.homeTeam + " " + game.homePts + " " +
+                              game.visitorTeam + " " + game.visitorPts);
+        }
+
+    }
+
+    protected  List<GameInfo> retrieveGames(Date date, boolean retrieveDetails) {
         List<GameInfo> gamesToday = new ArrayList<>();
 
         try {
             String myUrl = "http://stats.nba.com/stats/scoreboardV2?" +
                     "DayOffset=0&LeagueID=00&gameDate=" +
                     dateFormatUrl.format(date);
+
+            //Log.v("SpoilUrl", myUrl);
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
             if (buffer.length() == 0)
                 return null;
@@ -79,6 +102,16 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
                 JSONArray rows = games.getJSONArray("rowSet");
                 for (int i = 0; i < rows.length(); ++i)
                     gamesToday.add(fillGameInfo(rows.getJSONArray(i)));
+            }
+
+            if (retrieveDetails) {
+                JSONObject gamesDetails = myResults.getJSONObject(1);
+                gameHeader = gamesDetails.getString("name");
+                if (gameHeader.equals("LineScore")) {
+                    JSONArray rows = gamesDetails.getJSONArray("rowSet");
+                    for (int i = 0; i < rows.length(); ++i)
+                        fillDetails(gamesToday, rows.getJSONArray(i));
+                }
             }
 
         } catch (JSONException e) {
@@ -95,7 +128,7 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
         mDate = (Date) params[0].clone();
         Log.v("Spoilwtf", "Daily " + this.toString() + " date " + dateFormatUrl.format(mDate) + (mForCache ? " y" : " n"));
-        List<GameInfo> gamesToday = retrieveGames(mDate);
+        List<GameInfo> gamesToday = retrieveGames(mDate, true);
         if (gamesToday == null)
             return null;
 

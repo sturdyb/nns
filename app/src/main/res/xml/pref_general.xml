@@ -9,7 +9,11 @@
         android:defaultValue="@string/defaultFav"
         android:inputType="text"
         android:singleLine="true"/>
-
+    <CheckBoxPreference
+        android:title="Don't spoil my favorite teams only"
+        android:key="@string/spoilType"
+        android:summaryOn="Scores will be hidden only for your favorite teams"
+        android:summaryOff="No scores are displayed in the main screen" />
 
 
 </PreferenceScreen>

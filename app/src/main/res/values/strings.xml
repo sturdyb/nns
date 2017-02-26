@@ -8,4 +8,5 @@
     <string name="q2time">14400</string>
     <string name="q3time">21600</string>
     <string name="defaultFav">GSW,Cavaliers</string>
+    <string name="spoilType">spoilType</string>
 </resources>

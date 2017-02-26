@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         gamesAdaptor.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Context context, GamesAdaptor.GameInfoHolder gameInfo) {
-                if(view.getId() == R.id.search_button) {
+                if(view.getId() == R.id.buttonSearch) {
                     String query =
                             gameInfo.homeTeam.getText() + " " +
                                     gameInfo.visitorTeam.getText() +
@@ -154,8 +154,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectItem(int position) {
-//        Log.v("SpoilDbg", mDrawerList.getCheckedItemCount() + " " +
-  //              mDrawerList.getCheckedItemPosition());
         if (position == 1)
            startActivity(new Intent(getApplicationContext(), FavActivity.class));
         else if (position == 0)
