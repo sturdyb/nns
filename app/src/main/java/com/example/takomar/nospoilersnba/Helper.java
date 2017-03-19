@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.core.deps.guava.collect.ImmutableMap;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,7 +49,7 @@ import java.util.Map;
 
 
 public class Helper {
-    static final String[] MenuItems = { "All games", "Favorite teams", "Settings"};
+    static final String[] MenuItems = { "All games", "Favorite teams", "Standings", "Settings"};
     static final Map<String, String> CodeNameTeam = ImmutableMap.<String, String>builder()
             .put("ATL", 	"Hawks")
             .put("BKN", 	"Nets")
@@ -97,6 +100,16 @@ public class Helper {
         return false;
      }
 
+     static List<GameInfo> retrieveFavoriteTeams(Context context, List<GameInfo> games) {
+         List<GameInfo> favGames = new ArrayList<>();
+         for (GameInfo gameInfo : games)
+             if (Helper.isTeamFavorite(context, gameInfo.visitorTeam) ||
+                     Helper.isTeamFavorite(context, gameInfo.homeTeam)) {
+                 favGames.add(gameInfo);
+             }
+             return favGames;
+     }
+
     static public boolean shouldShowScores(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getBoolean(context.getString(R.string.spoilType), false);
@@ -125,7 +138,7 @@ public class Helper {
     }
 
     static public void showGameDetails(
-            Context context, GamesAdaptor.GameInfoHolder gameInfo, int viewId)
+            Context context, SimpleGamesAdaptor.GameInfoHolder gameInfo, int viewId)
     {
         Intent intent = new Intent(context, DetailsActivity.class);
         intent.putExtra("GameID", gameInfo.gameId);
@@ -135,4 +148,5 @@ public class Helper {
 
         context.startActivity(intent);
     }
+
 }

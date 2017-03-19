@@ -7,12 +7,12 @@ import java.util.Date;
  */
 
 public class GameInfo {
-    protected String homeTeam;
-    protected String visitorTeam;
-    protected String gameID;
-    protected Date gameDate;
-    protected int homePts;
-    protected int visitorPts;
+    public String homeTeam;
+    public String visitorTeam;
+    public String gameID;
+    public Date gameDate;
+    public int homePts;
+    public int visitorPts;
 
     @Override
     public boolean equals(Object o) {

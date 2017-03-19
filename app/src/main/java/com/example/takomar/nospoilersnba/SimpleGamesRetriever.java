@@ -1,50 +1,35 @@
 package com.example.takomar.nospoilersnba;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
+
+import com.example.takomar.nospoilersnba.component.IRetrieveExecutorStrategy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by takomar on 11/12/16.
  */
 
-public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
+public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
     protected SimpleDateFormat dateFormatUrl = new SimpleDateFormat("MM/d/yyyy");
     protected Context mContext;
-    protected GamesAdaptor mGamesAdaptor;
-    private LinearLayout linlaHeaderProgress;
+    private IRetrieveExecutorStrategy mStrategy;
     protected Date mDate;
     protected boolean mForCache;
 
-    public GamesRetriever(Context context, GamesAdaptor gamesAdaptor, boolean forCache) {
+    public SimpleGamesRetriever(Context context, IRetrieveExecutorStrategy strategy) {
         mContext = context;
-        mGamesAdaptor = gamesAdaptor;
-        mForCache = forCache;
-        linlaHeaderProgress = (LinearLayout)((Activity) mContext)
-                                                .findViewById(R.id.linlaHeaderProgress);
+        mStrategy = strategy;
     }
 
     private GameInfo fillGameInfo(JSONArray currentGame) throws JSONException, ParseException {
@@ -88,7 +73,7 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
                     "DayOffset=0&LeagueID=00&gameDate=" +
                     dateFormatUrl.format(date);
 
-            //Log.v("SpoilUrl", myUrl);
+            Log.v("SpoilUrl", myUrl);
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
             if (buffer.length() == 0)
                 return null;
@@ -153,20 +138,13 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
     @Override
     protected void onPreExecute() {
-        if (!mForCache)
-            linlaHeaderProgress.setVisibility(View.VISIBLE);
+        mStrategy.preExecute();
     }
 
     protected void onPostExecute(List<GameInfo> result) {
      //   Log.v("SpoilDbg", "End");
         if (result != null &&!isCancelled())
-            if (mForCache)
-                mGamesAdaptor.fillCache(result, mDate);
-             else {
-                mGamesAdaptor.addGames(result, mDate);
-                mGamesAdaptor.notifyDataSetChanged();
-                linlaHeaderProgress.setVisibility(View.GONE);
-            }
+            mStrategy.postExecute(result, mDate);
     }
 
 }

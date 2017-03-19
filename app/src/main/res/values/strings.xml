@@ -9,4 +9,10 @@
     <string name="q3time">21600</string>
     <string name="defaultFav">GSW,Cavaliers</string>
     <string name="spoilType">spoilType</string>
+    <string name="title_activity_my_test">MyTest</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

@@ -128,7 +128,9 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         }
 
         return playersInfo;
-    }@Override
+    }
+
+    @Override
     protected void onPreExecute() {
         super.onPreExecute();
         mHomeDetailTable.removeAllViews();

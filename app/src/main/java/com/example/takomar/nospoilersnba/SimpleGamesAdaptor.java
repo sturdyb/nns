@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,73 +23,24 @@ import java.util.Map;
  * Created by takomar on 11/12/16.
  */
 
-public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHolder>{
-    protected Map<Date, List<GameInfo>> allGames;
-    protected List<GameInfo> gamesToList;
-    protected Context mContext;
-    protected List<GamesRetriever> cacheTasks = new ArrayList<>();
+public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.GameInfoHolder>{
+    private List<GameInfo> gamesToList = new ArrayList<>();
+    private Context mContext;
+    private boolean mShowDate;
 
-    public GamesAdaptor(Context context) {
-        Log.v("SpoilChk", "adaptor created");
-        allGames = new HashMap<>();
-        gamesToList = new ArrayList<>();
+    public SimpleGamesAdaptor(Context context) {
         mContext = context;
-
+        Log.v("SpoilChk", "adaptor created");
     }
 
-    protected void addCacheTask(GamesRetriever task) {
-        cacheTasks.add(task);
-    }
-    protected boolean alreadyLoaded(Date date) {
-        return  allGames.containsKey(date);
-    }
-
-    protected void addGamesFromDate(Date gameDate) {
-        if (!alreadyLoaded(gameDate))
-            addCacheTask((GamesRetriever)
-                    new GamesRetriever(mContext, this, true).
-                            executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gameDate));
-    }
-
-    public List<GamesRetriever> getCacheTasks() {
-        return cacheTasks;
-    }
-
-    public void fillCache(List<GameInfo> games, Date gameDate){
-        allGames.put(gameDate, games);
-    }
-
-    public void addGames(List<GameInfo> games, Date gameDate) {
-        fillCache(games, gameDate);
-        gamesToList.addAll(games);
-    }
-
-    public void changeDate(Date gameDate) {
-        gamesToList.clear();
-
-        if (alreadyLoaded(gameDate)) {
-            gamesToList.addAll(allGames.get(gameDate));
-            notifyDataSetChanged();
-        }
-        else
-            new GamesRetriever(mContext, this, false).execute(gameDate);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(gameDate);
-        for (int i=0; i < 5; i++)
-        {
-            cal.add(Calendar.DATE, 1);
-            addGamesFromDate(cal.getTime());
-        }
-        cal.setTime(gameDate);
-        for (int i=-5; i < 0; i++)
-        {
-            cal.add(Calendar.DATE, -1);
-            addGamesFromDate(cal.getTime());
-        }
+    public void showGames(List<GameInfo> gamesToShow, boolean showDate) {
+        mShowDate = showDate;
+        gamesToList = gamesToShow;
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view , Context context, GameInfoHolder gameInfo);
+        void onItemClick(View view, Context context, GameInfoHolder gameInfo);
     }
     private OnItemClickListener mItemClickListener;
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -180,6 +131,12 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             holder.isFavorite();
         else
             holder.isNormal();
+
+        if (mShowDate) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d");
+            holder.gameDate.setText(dateFormat.format(ci.gameDate));
+            holder.gameDate.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
