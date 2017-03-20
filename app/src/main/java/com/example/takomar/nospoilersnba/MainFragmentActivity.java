@@ -1,5 +1,6 @@
 package com.example.takomar.nospoilersnba;
 
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -16,25 +17,42 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MainFragmentActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                    DatePickerDialog.OnDateSetListener {
 
     public interface XmlClickable {
         void goToNextDate(View v);
         void goToPrevDate(View v);
         void pickDate(View v, AppCompatActivity activity);
+        void treatDate(Date date);
     }
 
     private XmlClickable mCurrentFragment;
+
     private Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
     private List<SimpleGamesRetriever> mCacheTasks = new ArrayList<>();
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        mCurrentFragment.treatDate(cal.getTime());
+    }
 
     public boolean alreadyLoadedGames(Date date) {
         return mGamesByDate.containsKey(date);
@@ -140,10 +158,7 @@ public class MainFragmentActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             item.setChecked(true);
-        } else if (id == R.id.nav_send) {
-
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
@@ -157,7 +172,7 @@ public class MainFragmentActivity extends AppCompatActivity
     public void goToNextDate(View v) {
         mCurrentFragment.goToNextDate(v);
     }
-    public void goToPrevate(View v) {
+    public void goToPrevDate(View v) {
         mCurrentFragment.goToPrevDate(v);
     }
     public void showDatePickerDialog(View v) {

@@ -112,4 +112,11 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(activity.getSupportFragmentManager(), "datePicker");
     }
+
+    @Override
+    public void treatDate(Date date) {
+        Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
+        datePick.setText(formatDisplayDate(date));
+        loadStandings(date);
+    }
 }

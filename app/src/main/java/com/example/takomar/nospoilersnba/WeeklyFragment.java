@@ -3,6 +3,7 @@ package com.example.takomar.nospoilersnba;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.component.CacheExecutor;
 
@@ -157,4 +158,6 @@ public class WeeklyFragment extends GamesFragment {
 
     @Override
     public void pickDate(View v, AppCompatActivity activity) {}
+    @Override
+    public void treatDate(Date date) {}
 }

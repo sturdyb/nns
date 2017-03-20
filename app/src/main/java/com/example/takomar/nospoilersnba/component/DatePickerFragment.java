@@ -19,8 +19,7 @@ import java.util.Date;
  * Created by takomar on 18/03/17.
  */
 
-public class DatePickerFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener {
+public class DatePickerFragment extends DialogFragment {
     SimpleDateFormat dateFormatApp = new SimpleDateFormat("EEE, MMM d yyyy");
 
     @NonNull
@@ -43,18 +42,7 @@ public class DatePickerFragment extends DialogFragment
 
         return new DatePickerDialog(
                 getActivity(), R.style.DialogTheme,
-                this, selectedYear, selectedMonth, selectedDay);
-    }
-
-    public void onDateSet(DatePicker view, int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day);
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
-        datePick.setText(dateFormatApp.format(cal.getTime()));
+                (DatePickerDialog.OnDateSetListener) getActivity(),
+                selectedYear, selectedMonth, selectedDay);
     }
 }

@@ -118,51 +118,51 @@ public class GamesFragment extends Fragment implements MainFragmentActivity.XmlC
     protected void decrementCalendar(Calendar cal) {}
 
     public void goToNextDate(View v) {
-        Button pickDate = ((Button)getActivity().findViewById(R.id.pickDate));
-        String text = (String) pickDate.getText();
-        Date currentDate = null;
-        try {
-            currentDate = parseToDate(text);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (mRootView.findViewById(R.id.linlaHeaderProgress).getVisibility() == View.GONE) {
+            Button pickDate = ((Button) getActivity().findViewById(R.id.pickDate));
+            String text = (String) pickDate.getText();
+            Date currentDate = null;
+            try {
+                currentDate = parseToDate(text);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            incrementCalendar(calendar);
+            loadGames(calendar.getTime());
+            pickDate.setText(formatDisplayDate(calendar.getTime()));
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        incrementCalendar(calendar);
-        loadGames(calendar.getTime());
-        pickDate.setText(formatDisplayDate(calendar.getTime()));
     }
 
     @Override
     public void pickDate(View v, AppCompatActivity activity) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(activity.getSupportFragmentManager(), "datePicker");
-        Button pickDate = ((Button)getActivity().findViewById(R.id.pickDate));
-        String text = (String) pickDate.getText();
-        Date currentDate = null;
-        try {
-            currentDate = parseToDate(text);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        loadGames(calendar.getTime());
+    }
+
+    @Override
+    public void treatDate(Date date) {
+        Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
+        datePick.setText(formatDisplayDate(date));
+        loadGames(date);
     }
 
     public void goToPrevDate(View v) {
-        Button pickDate = ((Button)getActivity().findViewById(R.id.pickDate));
-        String text = (String) pickDate.getText();
-        Date currentDate = null;
-        try {
-            currentDate = parseToDate(text);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (mRootView.findViewById(R.id.linlaHeaderProgress).getVisibility() == View.GONE) {
+            Button pickDate = ((Button) getActivity().findViewById(R.id.pickDate));
+            String text = (String) pickDate.getText();
+            Date currentDate = null;
+            try {
+                currentDate = parseToDate(text);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            decrementCalendar(calendar);
+            loadGames(calendar.getTime());
+            pickDate.setText(formatDisplayDate(calendar.getTime()));
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        decrementCalendar(calendar);
-        loadGames(calendar.getTime());
-        pickDate.setText(formatDisplayDate(calendar.getTime()));
     }
 }

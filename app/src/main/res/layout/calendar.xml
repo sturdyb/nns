@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clickable="true"
-        android:onClick="goToPrevate"
+        android:onClick="goToPrevDate"
         android:padding="3dp"
         android:paddingRight="50dp"
         android:scaleX="-1"
