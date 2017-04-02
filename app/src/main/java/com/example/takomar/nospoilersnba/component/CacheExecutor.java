@@ -21,8 +21,9 @@ public class CacheExecutor implements IRetrieveExecutorStrategy {
     }
 
     @Override
-    public void postExecute(List<GameInfo> games, Date date) {
-        mActivity.addGamesByDate(games, date);
+    public void postExecute(List<GameInfo> games, Date date, boolean isCancelled) {
+        if (games != null && !isCancelled)
+            mActivity.addGamesByDate(games, date);
     }
 
 

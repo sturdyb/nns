@@ -5,44 +5,78 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:clickable="true"
+    android:weightSum="5"
     android:orientation="horizontal">
 
     <ImageButton
-        android:id="@+id/prev"
+        android:id="@+id/standingsDate"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="left"
+        android:layout_weight="1"
         android:clickable="true"
-        android:onClick="goToPrevDate"
+        android:onClick="goToCurrentStandings"
         android:padding="3dp"
-        android:paddingRight="50dp"
-        android:scaleX="-1"
-        android:src="@drawable/ic_navigate_next_white_24dp"
-        android:tint="@color/colorPrimaryDark" />
-
-    <Button
-        android:id="@+id/pickDate"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
+        android:src="@drawable/ic_format_list_numbered_black_24dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:clickable="true"
-        android:onClick="showDatePickerDialog"
-        android:text="pick date"
-        android:textAllCaps="false"
-        android:textColor="@color/colorPrimaryDark" />
+        android:layout_weight="3">
+        <ImageButton
+            android:id="@+id/prev"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="goToPrevDate"
+            android:padding="3dp"
+            android:paddingRight="30dp"
+            android:scaleX="-1"
+            android:src="@drawable/ic_navigate_next_white_24dp"
+            android:tint="@color/colorPrimaryDark" />
+
+        <Button
+            android:id="@+id/pickDate"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:clickable="true"
+            android:onClick="showDatePickerDialog"
+            android:text="pick date"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <ImageButton
+            android:id="@+id/next"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="goToNextDate"
+            android:padding="3dp"
+            android:paddingLeft="30dp"
+            android:src="@drawable/ic_navigate_next_white_24dp"
+            android:tint="@color/colorPrimaryDark" />
+    </LinearLayout>
 
     <ImageButton
-        android:id="@+id/next"
+        android:id="@+id/initialDate"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="right"
+        android:layout_weight="1"
         android:clickable="true"
-        android:onClick="goToNextDate"
+        android:onClick="goToInitialDate"
         android:padding="3dp"
-        android:paddingLeft="50dp"
-        android:src="@drawable/ic_navigate_next_white_24dp"
-        android:tint="@color/colorPrimaryDark" />
+        android:src="@drawable/ic_today_black_24dp" />
 </LinearLayout>

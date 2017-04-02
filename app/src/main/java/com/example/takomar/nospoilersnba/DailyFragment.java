@@ -1,5 +1,8 @@
 package com.example.takomar.nospoilersnba;
 
+import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,6 +24,12 @@ public class DailyFragment extends GamesFragment {
     private SimpleDateFormat mDailyFormat = new SimpleDateFormat("EEE, MMM d yyyy");
 
     public DailyFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        getActivity().findViewById(R.id.standingsDate).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -83,5 +92,17 @@ public class DailyFragment extends GamesFragment {
                 loadCacheByDate(activity, cal.getTime());
             }
         }
+    }
+
+    @Override
+    public void goToCurrentStandings(View v) throws ParseException {
+        Button pickDate = ((Button) getActivity().findViewById(R.id.pickDate));
+        String text = (String) pickDate.getText();
+
+        Bundle date = new Bundle();
+        date.putLong("currentDate", parseToDate(text).getTime());
+        Fragment standings = new StandingsFragment();
+        standings.setArguments(date);
+        ((MainFragmentActivity)getActivity()).changeFragment(standings);
     }
 }

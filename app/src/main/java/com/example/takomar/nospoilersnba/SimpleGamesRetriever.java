@@ -25,7 +25,6 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
     protected Context mContext;
     private IRetrieveExecutorStrategy mStrategy;
     protected Date mDate;
-    protected boolean mForCache;
 
     public SimpleGamesRetriever(Context context, IRetrieveExecutorStrategy strategy) {
         mContext = context;
@@ -59,8 +58,8 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
             else
                 game.visitorPts = teamDetails.getInt(21);
 
-            Log.v("Spoilwtf", game.homeTeam + " " + game.homePts + " " +
-                              game.visitorTeam + " " + game.visitorPts);
+            //Log.v("Spoilwtf", game.homeTeam + " " + game.homePts + " " +
+              //                game.visitorTeam + " " + game.visitorPts);
         }
 
     }
@@ -74,6 +73,11 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
                     dateFormatUrl.format(date);
 
             Log.v("SpoilUrl", myUrl);
+            if(isCancelled()) {
+                Log.v("SpoilUrl", myUrl + "cancelled");
+                return null;
+            }
+
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
             if (buffer.length() == 0)
                 return null;
@@ -112,7 +116,7 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
     protected List<GameInfo> doInBackground(Date... params) {
 
         mDate = (Date) params[0].clone();
-        Log.v("Spoilwtf", "Daily " + this.toString() + " date " + dateFormatUrl.format(mDate) + (mForCache ? " y" : " n"));
+        //Log.v("Spoilwtf", "Daily " + this.toString() + " date " + dateFormatUrl.format(mDate) + (mForCache ? " y" : " n"));
         List<GameInfo> gamesToday = retrieveGames(mDate, true);
         if (gamesToday == null)
             return null;
@@ -142,9 +146,7 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
     }
 
     protected void onPostExecute(List<GameInfo> result) {
-     //   Log.v("SpoilDbg", "End");
-        if (result != null &&!isCancelled())
-            mStrategy.postExecute(result, mDate);
+            mStrategy.postExecute(result, mDate, isCancelled());
     }
 
 }

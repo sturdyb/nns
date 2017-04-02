@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,6 +35,8 @@ public class MainFragmentActivity extends AppCompatActivity
     public interface XmlClickable {
         void goToNextDate(View v);
         void goToPrevDate(View v);
+        void goToInitialDate(View v);
+        void goToCurrentStandings(View v) throws ParseException;
         void pickDate(View v, AppCompatActivity activity);
         void treatDate(Date date);
     }
@@ -118,9 +121,6 @@ public class MainFragmentActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.openload) {
@@ -130,31 +130,24 @@ public class MainFragmentActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void changeFragment(Fragment fragment) {
+        clearCache();
+        mCurrentFragment = (XmlClickable) fragment;
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment).commit();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.nav_daily) {
-            clearCache();
-            Fragment fragment = new DailyFragment();
-            mCurrentFragment = (XmlClickable) fragment;
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment).commit();
+            changeFragment(new DailyFragment());
         } else if (id == R.id.nav_weekly) {
-            clearCache();
-            Fragment fragment = new WeeklyFragment();
-            mCurrentFragment = (XmlClickable) fragment;
-            fragmentManager.beginTransaction()
-                           .replace(R.id.content_frame, fragment).commit();
+            changeFragment(new WeeklyFragment());
         } else if (id == R.id.nav_standings) {
-            clearCache();
-            Fragment fragment = new StandingsFragment();
-            mCurrentFragment = (XmlClickable) fragment;
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment).commit();
+            changeFragment(new StandingsFragment());
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             item.setChecked(true);
@@ -168,6 +161,13 @@ public class MainFragmentActivity extends AppCompatActivity
     public void pairWithOpenload() {
         Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://openload.co/pair"));
         startActivity(intent);
+    }
+    public void goToCurrentStandings(View v) throws ParseException {
+        mCurrentFragment.goToCurrentStandings(v);
+    }
+
+    public void goToInitialDate(View v) {
+        mCurrentFragment.goToInitialDate(v);
     }
     public void goToNextDate(View v) {
         mCurrentFragment.goToNextDate(v);

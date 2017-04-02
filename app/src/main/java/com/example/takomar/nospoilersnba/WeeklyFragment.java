@@ -1,9 +1,9 @@
 package com.example.takomar.nospoilersnba;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.component.CacheExecutor;
 
@@ -27,6 +27,12 @@ public class WeeklyFragment extends GamesFragment {
     private List<SimpleGamesRetriever> myTasks = new ArrayList<>();
 
     public WeeklyFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        getActivity().findViewById(R.id.standingsDate).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -158,6 +164,4 @@ public class WeeklyFragment extends GamesFragment {
 
     @Override
     public void pickDate(View v, AppCompatActivity activity) {}
-    @Override
-    public void treatDate(Date date) {}
 }

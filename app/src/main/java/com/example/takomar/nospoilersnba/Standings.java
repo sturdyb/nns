@@ -84,14 +84,14 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
                     Elements team = row.getElementsByAttributeValue("data-stat", "team_name");
                     if (team.size() == 1) {
                         teamStd.name = team.get(0).getElementsByTag("a").get(0).text();
-                        Log.v("Standings", team.get(0).getElementsByTag("a").get(0).text());
+                        //Log.v("Standings", team.get(0).getElementsByTag("a").get(0).text());
                     }
                     Elements wins = row.getElementsByAttributeValue("data-stat", "wins");
                     teamStd.wins = wins.get(0).text();
-                    Log.v("Standings", wins.get(0).text());
+                    //Log.v("Standings", wins.get(0).text());
                     Elements losses = row.getElementsByAttributeValue("data-stat", "losses");
                     teamStd.losses = losses.get(0).text();
-                    Log.v("Standings", losses.get(0).text());
+                    //Log.v("Standings", losses.get(0).text());
                     Elements pct = row.getElementsByAttributeValue("data-stat", "win_loss_pct");
                     teamStd.pct = pct.get(0).text();
 
@@ -107,14 +107,14 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
                     Elements team = row.getElementsByAttributeValue("data-stat", "team_name");
                     if (team.size() == 1) {
                         teamStd.name = team.get(0).getElementsByTag("a").get(0).text();
-                        Log.v("Standings", team.get(0).getElementsByTag("a").get(0).text());
+                        //Log.v("Standings", team.get(0).getElementsByTag("a").get(0).text());
                     }
                     Elements wins = row.getElementsByAttributeValue("data-stat", "wins");
                     teamStd.wins = wins.get(0).text();
-                    Log.v("Standings", wins.get(0).text());
+                    //Log.v("Standings", wins.get(0).text());
                     Elements losses = row.getElementsByAttributeValue("data-stat", "losses");
                     teamStd.losses = losses.get(0).text();
-                    Log.v("Standings", losses.get(0).text());
+                    //Log.v("Standings", losses.get(0).text());
                     Elements pct = row.getElementsByAttributeValue("data-stat", "win_loss_pct");
                     teamStd.pct = pct.get(0).text();
 

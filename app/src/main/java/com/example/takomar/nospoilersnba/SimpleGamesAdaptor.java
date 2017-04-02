@@ -30,7 +30,7 @@ public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.
 
     public SimpleGamesAdaptor(Context context) {
         mContext = context;
-        Log.v("SpoilChk", "adaptor created");
+        //Log.v("SpoilChk", "adaptor created");
     }
 
     public void showGames(List<GameInfo> gamesToShow, boolean showDate) {

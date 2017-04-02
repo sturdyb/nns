@@ -1,6 +1,7 @@
 package com.example.takomar.nospoilersnba;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,12 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
     public StandingsFragment() {
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        getActivity().findViewById(R.id.standingsDate).setVisibility(View.INVISIBLE);
+    }
+
     private Date getInitialDate() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -50,8 +57,18 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.standings_fragment, container, false);
 
+        Date initialDate;
+        Bundle dateToShow = this.getArguments();
+        if(dateToShow != null) {
+            Long currDate = dateToShow.getLong("currentDate");
+            final Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(currDate);
+            initialDate = (Date) c.getTime().clone();
+        }
+        else
+            initialDate = getInitialDate();
+
         Button datePicker = (Button) getActivity().findViewById(R.id.pickDate);
-        Date initialDate = getInitialDate();
         datePicker.setText(formatDisplayDate(initialDate));
         loadStandings(initialDate);
         return mRootView;
@@ -86,8 +103,7 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
         incrementCalendar(calendar);
-        loadStandings(calendar.getTime());
-        pickDate.setText(formatDisplayDate(calendar.getTime()));
+        treatDate(calendar.getTime());
     }
 
     @Override
@@ -103,8 +119,12 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
         decrementCalendar(calendar);
-        loadStandings(calendar.getTime());
-        pickDate.setText(formatDisplayDate(calendar.getTime()));
+        treatDate(calendar.getTime());
+    }
+
+    @Override
+    public void goToInitialDate(View v) {
+        treatDate(getInitialDate());
     }
 
     @Override
@@ -118,5 +138,9 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
         Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
         datePick.setText(formatDisplayDate(date));
         loadStandings(date);
+    }
+    @Override
+    public void goToCurrentStandings(View v) {
+
     }
 }

@@ -12,5 +12,5 @@ import java.util.List;
 public interface IRetrieveExecutorStrategy {
 
     void preExecute();
-    void postExecute(List<GameInfo> games, Date date);
+    void postExecute(List<GameInfo> games, Date date, boolean isCancelled);
 }

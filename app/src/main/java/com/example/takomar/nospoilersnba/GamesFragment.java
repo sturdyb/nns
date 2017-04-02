@@ -27,24 +27,19 @@ import java.util.Date;
  * Created by takomar on 18/03/17.
  */
 
-public class GamesFragment extends Fragment implements MainFragmentActivity.XmlClickable {
+public abstract class GamesFragment extends Fragment implements MainFragmentActivity.XmlClickable {
     protected SimpleGamesAdaptor mGamesAdaptor;
     protected View mRootView;
 
     public GamesFragment() {
     }
 
-    protected Date getInitialDate() {
-        return null;
-    }
-
-    protected String formatDisplayDate(Date date) {
-        return null;
-    }
-
-    protected Date parseToDate(String dateText) throws ParseException {
-        return null;
-    }
+    protected abstract Date getInitialDate();
+    protected abstract String formatDisplayDate(Date date);
+    protected abstract Date parseToDate(String dateText) throws ParseException;
+    protected abstract void incrementCalendar(Calendar cal);
+    protected abstract void decrementCalendar(Calendar cal);
+    protected abstract void loadGames(Date date);
 
     private void createGamesAdaptor(View rootView) {
         RecyclerView recViewList = (RecyclerView) rootView.findViewById(R.id.cardList);
@@ -81,9 +76,6 @@ public class GamesFragment extends Fragment implements MainFragmentActivity.XmlC
                             executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gameDate));
     }
 
-    protected void loadGames(Date date) {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,9 +94,9 @@ public class GamesFragment extends Fragment implements MainFragmentActivity.XmlC
 
             @Override
             public void onRefresh() {
+
                 swipeContainer.setRefreshing(false);
             }
-
         });
 
         Button datePicker = (Button) getActivity().findViewById(R.id.pickDate);
@@ -112,27 +104,6 @@ public class GamesFragment extends Fragment implements MainFragmentActivity.XmlC
         datePicker.setText(formatDisplayDate(initialDate));
         loadGames(initialDate);
         return mRootView;
-    }
-
-    protected void incrementCalendar(Calendar cal) {}
-    protected void decrementCalendar(Calendar cal) {}
-
-    public void goToNextDate(View v) {
-        if (mRootView.findViewById(R.id.linlaHeaderProgress).getVisibility() == View.GONE) {
-            Button pickDate = ((Button) getActivity().findViewById(R.id.pickDate));
-            String text = (String) pickDate.getText();
-            Date currentDate = null;
-            try {
-                currentDate = parseToDate(text);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(currentDate);
-            incrementCalendar(calendar);
-            loadGames(calendar.getTime());
-            pickDate.setText(formatDisplayDate(calendar.getTime()));
-        }
     }
 
     @Override
@@ -148,6 +119,25 @@ public class GamesFragment extends Fragment implements MainFragmentActivity.XmlC
         loadGames(date);
     }
 
+    @Override
+    public void goToNextDate(View v) {
+        if (mRootView.findViewById(R.id.linlaHeaderProgress).getVisibility() == View.GONE) {
+            Button pickDate = ((Button) getActivity().findViewById(R.id.pickDate));
+            String text = (String) pickDate.getText();
+            Date currentDate = null;
+            try {
+                currentDate = parseToDate(text);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            incrementCalendar(calendar);
+            treatDate(calendar.getTime());
+        }
+    }
+
+    @Override
     public void goToPrevDate(View v) {
         if (mRootView.findViewById(R.id.linlaHeaderProgress).getVisibility() == View.GONE) {
             Button pickDate = ((Button) getActivity().findViewById(R.id.pickDate));
@@ -161,8 +151,16 @@ public class GamesFragment extends Fragment implements MainFragmentActivity.XmlC
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(currentDate);
             decrementCalendar(calendar);
-            loadGames(calendar.getTime());
-            pickDate.setText(formatDisplayDate(calendar.getTime()));
+
+            treatDate(calendar.getTime());
         }
+    }
+    @Override
+    public void goToInitialDate(View v) {
+        treatDate(getInitialDate());
+    }
+    @Override
+    public void goToCurrentStandings(View v) throws ParseException {
+
     }
 }

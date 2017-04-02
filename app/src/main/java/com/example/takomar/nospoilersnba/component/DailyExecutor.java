@@ -30,10 +30,12 @@ public class DailyExecutor implements IRetrieveExecutorStrategy {
     }
 
     @Override
-    public void postExecute(List<GameInfo> games, Date date) {
-        gamesAdaptor.showGames(games, false);
+    public void postExecute(List<GameInfo> games, Date date, boolean isCancelled) {
+        if (games != null && !isCancelled) {
+            gamesAdaptor.showGames(games, false);
+            mActivity.addGamesByDate(games, date);
+        }
         mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
-        mActivity.addGamesByDate(games, date);
     }
 
 
