@@ -151,10 +151,13 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
         body.addView(header);
     }
 
-    private void fillStats(TeamStanding stats, TableLayout body)
+    private void fillStats(TeamStanding stats, TableLayout body, int line)
     {
-        TableRow row = (TableRow) LayoutInflater.from(mContext)
+       TableRow row = (TableRow) LayoutInflater.from(mContext)
                                                 .inflate(R.layout.standings_detail, null);
+        if(line == 9)
+            body.addView((TableRow) LayoutInflater.from(mContext)
+                    .inflate(R.layout.standings_detail, null)); //separation of qualified
 
         ((TextView)row.findViewById(R.id.team)).setText(stats.name);
         ((TextView)row.findViewById(R.id.wins)).setText(stats.wins);
@@ -165,10 +168,15 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
     protected void onPostExecute(Map<Integer, List<TeamStanding>> result) {
         createHeaders(0, mEast);
         createHeaders(1, mWest);
+
+        int i =0;
         for (TeamStanding tStanding : result.get(0))
-            fillStats(tStanding, mEast);
+            fillStats(tStanding, mEast, ++i);
+
+
+        i = 0;
         for (TeamStanding tStanding : result.get(1))
-            fillStats(tStanding, mWest);
+            fillStats(tStanding, mWest, ++i);
         linlaHeaderProgress.setVisibility(View.GONE);
         mEast.requestLayout();
         mWest.requestLayout();

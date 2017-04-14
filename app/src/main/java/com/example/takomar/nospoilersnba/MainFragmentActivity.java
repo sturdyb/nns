@@ -63,6 +63,7 @@ public class MainFragmentActivity extends AppCompatActivity
     public List<GameInfo> retrieveGamesByDate(Date date) {
         return mGamesByDate.get(date);
     }
+    public void removeGamesByDate(Date date) { mGamesByDate.remove(date); }
     public void addGamesByDate(List<GameInfo> games, Date date) {
         mGamesByDate.put(date, games);
     }

@@ -80,7 +80,7 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.games_fragment, container, false);
-        RecyclerView recViewList = (RecyclerView) mRootView.findViewById(R.id.cardList);
+        final RecyclerView recViewList = (RecyclerView) mRootView.findViewById(R.id.cardList);
         recViewList.setHasFixedSize(true);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -94,7 +94,6 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
 
             @Override
             public void onRefresh() {
-
                 swipeContainer.setRefreshing(false);
             }
         });
