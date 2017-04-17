@@ -6,6 +6,19 @@
     android:orientation="vertical"
     android:paddingTop="10dp">
 
+    <LinearLayout
+        android:id="@+id/linlaHeaderProgress"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/pbHeaderProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ProgressBar>
+    </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,18 +85,7 @@
                     android:text="Round 3" />
             </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/linlaHeaderProgress"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <ProgressBar
-                android:id="@+id/pbHeaderProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"></ProgressBar>
-        </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,17 +94,10 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             tools:context="com.example.takomar.nospoilersnba.PlayOffsActivity">
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/swipeContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/cardList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-            </android.support.v4.widget.SwipeRefreshLayout>
 
         </RelativeLayout>
 </LinearLayout>

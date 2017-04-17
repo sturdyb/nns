@@ -75,7 +75,7 @@
                                 android:gravity="center"
                                 android:text="Home"
                                 android:textColor="@color/colorPrimaryDark"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
 
                         </LinearLayout>
 
@@ -133,7 +133,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:text="Away"
                                 android:textColor="@color/colorPrimaryDark"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
                         </LinearLayout>
 
                         <LinearLayout
