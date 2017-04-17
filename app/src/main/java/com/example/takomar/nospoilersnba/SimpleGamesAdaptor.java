@@ -1,9 +1,7 @@
 package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +11,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by takomar on 11/12/16.
@@ -104,7 +98,7 @@ public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.
     public GameInfoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.
                 from(parent.getContext()).
-                inflate(R.layout.card_view_testing_sc, parent, false);
+                inflate(R.layout.card_view_schedule, parent, false);
 
         return new GameInfoHolder(itemView);
     }
