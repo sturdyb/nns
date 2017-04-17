@@ -13,7 +13,13 @@
         <activity
             android:name=".DetailsActivity"
             android:label="@string/title_activity_details"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainFragmentActivity" />
+        <activity
+            android:name=".PlayOffsActivity"
+            android:label="@string/title_activity_playoffs"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainFragmentActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="Settings"

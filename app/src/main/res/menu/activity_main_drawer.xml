@@ -21,6 +21,10 @@
             android:id="@+id/nav_standings"
             android:icon="@drawable/ic_menu_standings"
             android:title="Standings" />
+        <item
+            android:id="@+id/nav_playoffs"
+            android:icon="@drawable/ic_menu_standings"
+            android:title="Playoffs" />
     </group>
 
 

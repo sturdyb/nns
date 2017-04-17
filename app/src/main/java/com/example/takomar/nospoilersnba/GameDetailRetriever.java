@@ -28,6 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static android.os.Process.THREAD_PRIORITY_MORE_FAVORABLE;
+
 /**
  * Created by takomar on 11/12/16.
  */
@@ -88,6 +91,8 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
     protected Map<String, List<PlayerInfo>> doInBackground(String... params) {
         Map<String, List<PlayerInfo>> playersInfo = new HashMap<>();
 
+        android.os.Process.setThreadPriority(THREAD_PRIORITY_BACKGROUND +
+                                             THREAD_PRIORITY_MORE_FAVORABLE);
         try {
             mRange = params[1];
             String gameId = params[0];

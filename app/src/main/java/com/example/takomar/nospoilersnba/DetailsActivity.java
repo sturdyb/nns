@@ -128,7 +128,7 @@ public class DetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(home + " vs " + away + " statistics");
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         disableNewQuarter(getQuarterId(quarter));
 
         DetailOnClick dOnClick = new DetailOnClick(home, away, gameID);

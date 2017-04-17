@@ -58,8 +58,8 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
             else
                 game.visitorPts = teamDetails.getInt(21);
 
-            //Log.v("Spoilwtf", game.homeTeam + " " + game.homePts + " " +
-              //                game.visitorTeam + " " + game.visitorPts);
+            //Log.v("Spoilwtf", game.firstTeam + " " + game.homePts + " " +
+              //                game.secondTeam + " " + game.visitorPts);
         }
 
     }

@@ -152,6 +152,9 @@ public class MainFragmentActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             item.setChecked(true);
+        } else if (id == R.id.nav_playoffs) {
+            clearCache();
+            startActivity(new Intent(this, PlayOffsActivity.class));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
