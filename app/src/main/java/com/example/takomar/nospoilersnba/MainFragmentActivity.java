@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,19 +15,33 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Toast;
+
+import com.example.takomar.nospoilersnba.component.Retro.G;
+import com.example.takomar.nospoilersnba.component.Retro.GamesCallback;
+import com.example.takomar.nospoilersnba.component.Retro.Lscd;
+import com.example.takomar.nospoilersnba.component.Retro.NbaGames;
+import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
+import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainFragmentActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -43,7 +58,7 @@ public class MainFragmentActivity extends AppCompatActivity
 
     private XmlClickable mCurrentFragment;
 
-    private Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
+    public Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
     private List<SimpleGamesRetriever> mCacheTasks = new ArrayList<>();
 
     @Override
@@ -61,10 +76,11 @@ public class MainFragmentActivity extends AppCompatActivity
         return mGamesByDate.containsKey(date);
     }
     public List<GameInfo> retrieveGamesByDate(Date date) {
+        date.setHours(0);
         return mGamesByDate.get(date);
     }
-    public void removeGamesByDate(Date date) { mGamesByDate.remove(date); }
     public void addGamesByDate(List<GameInfo> games, Date date) {
+        date.setHours(0);
         mGamesByDate.put(date, games);
     }
     public void addCacheTasks(SimpleGamesRetriever task) {
@@ -88,8 +104,9 @@ public class MainFragmentActivity extends AppCompatActivity
 
         //navi drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                                                                 R.string.navigation_drawer_open,
+                                                                 R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 

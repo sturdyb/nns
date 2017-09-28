@@ -29,7 +29,7 @@ public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.
 
     public void showGames(List<GameInfo> gamesToShow, boolean showDate) {
         mShowDate = showDate;
-        gamesToList = gamesToShow;
+        gamesToList = gamesToShow == null ? new ArrayList<GameInfo>() : gamesToShow;
         notifyDataSetChanged();
     }
 

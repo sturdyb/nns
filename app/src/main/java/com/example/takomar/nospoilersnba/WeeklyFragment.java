@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.example.takomar.nospoilersnba.component.CacheExecutor;
+import com.example.takomar.nospoilersnba.component.Retro.GamesCallback;
+import com.example.takomar.nospoilersnba.component.Retro.NbaGames;
+import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
+import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +19,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
 
 import static com.example.takomar.nospoilersnba.R.id.linlaHeaderProgress;
 
@@ -74,7 +80,9 @@ public class WeeklyFragment extends GamesFragment {
         calendar.setTime(firstDate);
         for(int i=0; i<6; i++) {
             calendar.add(Calendar.DATE, 1);
-            weekGames.addAll(activity.retrieveGamesByDate(calendar.getTime()));
+            List<GameInfo> dayGames = activity.retrieveGamesByDate(calendar.getTime());
+            if (dayGames != null)
+                weekGames.addAll(activity.retrieveGamesByDate(calendar.getTime()));
         }
         weekGames = Helper.retrieveFavoriteTeams(activity, weekGames);
 
@@ -88,77 +96,85 @@ public class WeeklyFragment extends GamesFragment {
         mGamesAdaptor.showGames(weekGames, true);
     }
 
-    private void loadCurrentWeekGames(final MainFragmentActivity activity, final Date firstDate){
-        Date tempDate = (Date) firstDate.clone();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(tempDate);
-        incrementCalendar(calendar);
-
-        Date endDate = calendar.getTime();
-        calendar.setTime(tempDate);
-
-        mRootView.findViewById(linlaHeaderProgress).setVisibility(View.VISIBLE);
-
-        while (tempDate.before(endDate))
-        {
-            if (!activity.alreadyLoadedGames(tempDate))
-                myTasks.add((SimpleGamesRetriever) new SimpleGamesRetriever(
-                        activity, new CacheExecutor(activity))
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempDate));
-
-            calendar.add(Calendar.DATE, 1);
-            tempDate = calendar.getTime();
-        }
-
-        final Thread waitingThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    boolean allDone = false;
-                    while (!allDone){
-                        allDone = true;
-                        for (SimpleGamesRetriever task : myTasks)
-                            if (task.getStatus() != AsyncTask.Status.FINISHED) {
-                                Thread.sleep(200);
-                                allDone = false;
-                            }
-                    }
-                    myTasks.clear();
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showGames(activity, firstDate);
-                        }
-                    });
-
-                } catch (InterruptedException e) {}
-            }
-        });
-        waitingThread.start();
-    }
+//    private void loadCurrentWeekGames(final MainFragmentActivity activity, final Date firstDate){
+//        Date tempDate = (Date) firstDate.clone();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(tempDate);
+//        incrementCalendar(calendar);
+//
+//        Date endDate = calendar.getTime();
+//        calendar.setTime(tempDate);
+//
+//        mRootView.findViewById(linlaHeaderProgress).setVisibility(View.VISIBLE);
+//
+//        while (tempDate.before(endDate))
+//        {
+//            if (!activity.alreadyLoadedGames(tempDate))
+//                myTasks.add((SimpleGamesRetriever) new SimpleGamesRetriever(
+//                        activity, new CacheExecutor(activity))
+//                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempDate));
+//
+//            calendar.add(Calendar.DATE, 1);
+//            tempDate = calendar.getTime();
+//        }
+//
+//        final Thread waitingThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    boolean allDone = false;
+//                    while (!allDone){
+//                        allDone = true;
+//                        for (SimpleGamesRetriever task : myTasks)
+//                            if (task.getStatus() != AsyncTask.Status.FINISHED) {
+//                                Thread.sleep(200);
+//                                allDone = false;
+//                            }
+//                    }
+//                    myTasks.clear();
+//                    activity.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            showGames(activity, firstDate);
+//                        }
+//                    });
+//
+//                } catch (InterruptedException e) {}
+//            }
+//        });
+//        waitingThread.start();
+//    }
 
     @Override
     protected void loadGames(Date date) {
         if (getActivity() instanceof MainFragmentActivity) {
             MainFragmentActivity activity = (MainFragmentActivity)getActivity();
 
-            loadCurrentWeekGames(activity, date);
-
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            incrementCalendar(cal);
-
-            Calendar revCal = Calendar.getInstance();
-            revCal.setTime(date);
-
-            for (int i=0; i < 7; i++)
-            {
-                cal.add(Calendar.DATE, 1);
-                loadCacheByDate(activity, cal.getTime());
-                revCal.add(Calendar.DATE, -1);
-                loadCacheByDate(activity, revCal.getTime());
+            if (activity.mGamesByDate.isEmpty()) {
+                RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
+                Call<NbaGames> call = apiService.getAllGames();
+                call.enqueue(new GamesCallback(activity.mGamesByDate, mRootView, date, mGamesAdaptor));
             }
+            else
+                showGames(activity,date);
+
+//            loadCurrentWeekGames(activity, date);
+//
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(date);
+//            incrementCalendar(cal);
+//
+//            Calendar revCal = Calendar.getInstance();
+//            revCal.setTime(date);
+//
+//            for (int i=0; i < 7; i++)
+//            {
+//                cal.add(Calendar.DATE, 1);
+//                loadCacheByDate(activity, cal.getTime());
+//                revCal.add(Calendar.DATE, -1);
+//                loadCacheByDate(activity, revCal.getTime());
+//            }
         }
     }
 

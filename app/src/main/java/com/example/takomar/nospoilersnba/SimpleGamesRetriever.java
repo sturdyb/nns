@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
         gameInfo.visitorTeam = Helper.CodeNameTeam.get(match.substring(x + 1, x + 4));
         gameInfo.homeTeam = Helper.CodeNameTeam.get(match.substring(x + 4));
         gameInfo.gameDate = mDate;
-        return  gameInfo;
+        return gameInfo.visitorTeam == null || gameInfo.homeTeam == null ? null : gameInfo;
     }
 
     private void fillDetails(List<GameInfo> games, JSONArray teamDetails) throws JSONException {
@@ -89,8 +90,14 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
 
             if (gameHeader.equals("GameHeader")) {
                 JSONArray rows = games.getJSONArray("rowSet");
-                for (int i = 0; i < rows.length(); ++i)
-                    gamesToday.add(fillGameInfo(rows.getJSONArray(i)));
+                for (int i = 0; i < rows.length(); ++i) {
+
+                    GameInfo gameInfo = fillGameInfo(rows.getJSONArray(i));
+                    if (gameInfo != null)
+                        gamesToday.add(gameInfo);
+                }
+
+
             }
 
             if (retrieveDetails) {
@@ -107,6 +114,8 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
             Log.e("SpoilErr", e.getMessage(), e);
             e.printStackTrace();
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return gamesToday;

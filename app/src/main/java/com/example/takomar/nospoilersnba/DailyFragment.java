@@ -10,11 +10,17 @@ import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.component.DatePickerFragment;
 import com.example.takomar.nospoilersnba.component.DailyExecutor;
+import com.example.takomar.nospoilersnba.component.Retro.GamesCallback;
+import com.example.takomar.nospoilersnba.component.Retro.NbaGames;
+import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
+import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
 
 /**
  * Created by takomar on 18/03/17.
@@ -69,28 +75,35 @@ public class DailyFragment extends GamesFragment {
         if (getActivity() instanceof MainFragmentActivity) {
             MainFragmentActivity activity = (MainFragmentActivity) getActivity();
 
-            if (!activity.alreadyLoadedGames(date))
-                new SimpleGamesRetriever(getActivity(),
-                        new DailyExecutor(activity, mRootView, mGamesAdaptor)).execute(date);
+            if (activity.mGamesByDate.isEmpty()) {
+                RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
+                Call<NbaGames> call = apiService.getAllGames();
+                call.enqueue(new GamesCallback(activity.mGamesByDate, mRootView, date, mGamesAdaptor));
+            }
             else
                 mGamesAdaptor.showGames(activity.retrieveGamesByDate(date), false);
+//
+//            if (!activity.alreadyLoadedGames(date))
+//                new SimpleGamesRetriever(getActivity(),
+//                        new DailyExecutor(activity, mRootView, mGamesAdaptor)).execute(date);
+//            else
 
-            Calendar cal = Calendar.getInstance();
-            Calendar revCal = Calendar.getInstance();
-
-            cal.setTime(date);
-            revCal.setTime(date);
-            for (int i = 0; i < 7; i++) {
-                cal.add(Calendar.DATE, 1);
-                loadCacheByDate(activity, cal.getTime());
-                revCal.add(Calendar.DATE, -1);
-                loadCacheByDate(activity, revCal.getTime());
-            }
-            cal.setTime(date);
-            for (int i = 0; i < 7; i++) {
-                cal.add(Calendar.DATE, -1);
-                loadCacheByDate(activity, cal.getTime());
-            }
+//            Calendar cal = Calendar.getInstance();
+//            Calendar revCal = Calendar.getInstance();
+//
+//            cal.setTime(date);
+//            revCal.setTime(date);
+//            for (int i = 0; i < 7; i++) {
+//                cal.add(Calendar.DATE, 1);
+//                loadCacheByDate(activity, cal.getTime());
+//                revCal.add(Calendar.DATE, -1);
+//                loadCacheByDate(activity, revCal.getTime());
+//            }
+//            cal.setTime(date);
+//            for (int i = 0; i < 7; i++) {
+//                cal.add(Calendar.DATE, -1);
+//                loadCacheByDate(activity, cal.getTime());
+//            }
         }
     }
 

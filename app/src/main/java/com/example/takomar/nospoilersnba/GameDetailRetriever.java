@@ -91,8 +91,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
     protected Map<String, List<PlayerInfo>> doInBackground(String... params) {
         Map<String, List<PlayerInfo>> playersInfo = new HashMap<>();
 
-        android.os.Process.setThreadPriority(THREAD_PRIORITY_BACKGROUND +
-                                             THREAD_PRIORITY_MORE_FAVORABLE);
+        android.os.Process.setThreadPriority(THREAD_PRIORITY_MORE_FAVORABLE);
         try {
             mRange = params[1];
             String gameId = params[0];
@@ -129,6 +128,8 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             }
         } catch (JSONException e) {
             Log.e("SpoilErr", e.getMessage(), e);
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

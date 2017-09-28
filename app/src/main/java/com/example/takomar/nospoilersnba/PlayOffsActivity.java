@@ -25,6 +25,7 @@ public class PlayOffsActivity extends AppCompatActivity {
     private Button mRound1;
     private Button mRound2;
     private Button mRound3;
+    private Button mFinals;
     private Button mShowingRound;
     private PlayoffsAdaptor mPlayoffsAdaptor;
     private List<PlayoffsGame> mGames = new ArrayList<>();
@@ -37,11 +38,13 @@ public class PlayOffsActivity extends AppCompatActivity {
         mRound1.setEnabled(true);
         mRound2.setEnabled(true);
         mRound3.setEnabled(true);
+        mFinals.setEnabled(true);
         mEast.setTextColor(colorId);
         mWest.setTextColor(colorId);
         mRound1.setTextColor(colorId);
         mRound2.setTextColor(colorId);
         mRound3.setTextColor(colorId);
+        mFinals.setTextColor(colorId);
     }
 
     private void disableCouple(int eastWest, int round) {
@@ -63,14 +66,16 @@ public class PlayOffsActivity extends AppCompatActivity {
             return 1;
         if (viewId == R.id.round2)
             return 2;
-        return 3;
+        if (viewId == R.id.round3)
+            return 3;
+        return 4;
     }
 
     private List<PlayoffsGame> getGames(String conf, int round) {
         List<PlayoffsGame> gamesToShow = new ArrayList<>();
 
         for(PlayoffsGame game : mGames)
-            if (game.conference.equalsIgnoreCase(conf) && game.round == round)
+            if ((round == 4 || game.conference.equalsIgnoreCase(conf)) && game.round == round)
                 gamesToShow.add(game);
 
         return gamesToShow;
@@ -119,6 +124,7 @@ public class PlayOffsActivity extends AppCompatActivity {
         mRound1 = (Button)findViewById(R.id.round1);
         mRound2 = (Button)findViewById(R.id.round2);
         mRound3 = (Button)findViewById(R.id.round3);
+        mFinals = (Button)findViewById(R.id.finals);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,6 +138,7 @@ public class PlayOffsActivity extends AppCompatActivity {
         mRound1.setOnClickListener(dOnClick);
         mRound2.setOnClickListener(dOnClick);
         mRound3.setOnClickListener(dOnClick);
+        mFinals.setOnClickListener(dOnClick);
 
         new Playoffs(this, mPlayoffsAdaptor).execute();
     }

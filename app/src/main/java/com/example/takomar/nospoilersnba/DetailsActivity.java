@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -138,6 +139,12 @@ public class DetailsActivity extends AppCompatActivity {
         mQuarter3.setOnClickListener(dOnClick);
         mQuarter2.setOnClickListener(dOnClick);
         mQuarter1.setOnClickListener(dOnClick);
+        mQuarter2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             //   Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         retrieveDetails(gameID, home, away, quarter);
     }

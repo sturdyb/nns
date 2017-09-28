@@ -76,8 +76,11 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
                          "&year=" + year + "&lg_id=NBA";
             doc = Jsoup.connect(url).get();
 
-            playersInfo.put(0, new ArrayList<TeamStanding>());
             Element table = doc.getElementById("standings_e");
+            if (table == null) //no standings available
+                return playersInfo;
+
+            playersInfo.put(0, new ArrayList<TeamStanding>());
             for (org.jsoup.nodes.Element body : table.getElementsByTag("tbody")) {
                 for (org.jsoup.nodes.Element row : body.getElementsByTag("tr")) {
                     TeamStanding teamStd = new TeamStanding();
@@ -166,6 +169,11 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
         body.addView(row);
     }
     protected void onPostExecute(Map<Integer, List<TeamStanding>> result) {
+        linlaHeaderProgress.setVisibility(View.GONE);
+        if (result.isEmpty()) {
+            return;
+        }
+
         createHeaders(0, mEast);
         createHeaders(1, mWest);
 
