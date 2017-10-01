@@ -95,57 +95,6 @@ public class WeeklyFragment extends GamesFragment {
         mRootView.findViewById(linlaHeaderProgress).setVisibility(View.GONE);
         mGamesAdaptor.showGames(weekGames, true);
     }
-
-//    private void loadCurrentWeekGames(final MainFragmentActivity activity, final Date firstDate){
-//        Date tempDate = (Date) firstDate.clone();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(tempDate);
-//        incrementCalendar(calendar);
-//
-//        Date endDate = calendar.getTime();
-//        calendar.setTime(tempDate);
-//
-//        mRootView.findViewById(linlaHeaderProgress).setVisibility(View.VISIBLE);
-//
-//        while (tempDate.before(endDate))
-//        {
-//            if (!activity.alreadyLoadedGames(tempDate))
-//                myTasks.add((SimpleGamesRetriever) new SimpleGamesRetriever(
-//                        activity, new CacheExecutor(activity))
-//                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempDate));
-//
-//            calendar.add(Calendar.DATE, 1);
-//            tempDate = calendar.getTime();
-//        }
-//
-//        final Thread waitingThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    boolean allDone = false;
-//                    while (!allDone){
-//                        allDone = true;
-//                        for (SimpleGamesRetriever task : myTasks)
-//                            if (task.getStatus() != AsyncTask.Status.FINISHED) {
-//                                Thread.sleep(200);
-//                                allDone = false;
-//                            }
-//                    }
-//                    myTasks.clear();
-//                    activity.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            showGames(activity, firstDate);
-//                        }
-//                    });
-//
-//                } catch (InterruptedException e) {}
-//            }
-//        });
-//        waitingThread.start();
-//    }
-
     @Override
     protected void loadGames(Date date) {
         if (getActivity() instanceof MainFragmentActivity) {
@@ -158,23 +107,6 @@ public class WeeklyFragment extends GamesFragment {
             }
             else
                 showGames(activity,date);
-
-//            loadCurrentWeekGames(activity, date);
-//
-//            Calendar cal = Calendar.getInstance();
-//            cal.setTime(date);
-//            incrementCalendar(cal);
-//
-//            Calendar revCal = Calendar.getInstance();
-//            revCal.setTime(date);
-//
-//            for (int i=0; i < 7; i++)
-//            {
-//                cal.add(Calendar.DATE, 1);
-//                loadCacheByDate(activity, cal.getTime());
-//                revCal.add(Calendar.DATE, -1);
-//                loadCacheByDate(activity, revCal.getTime());
-//            }
         }
     }
 

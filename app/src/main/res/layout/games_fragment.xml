@@ -23,6 +23,22 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/noGamesPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/noGames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No games available on this day."/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linlayoutNoGames"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

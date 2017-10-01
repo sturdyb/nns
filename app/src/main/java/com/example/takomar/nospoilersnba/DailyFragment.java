@@ -82,28 +82,6 @@ public class DailyFragment extends GamesFragment {
             }
             else
                 mGamesAdaptor.showGames(activity.retrieveGamesByDate(date), false);
-//
-//            if (!activity.alreadyLoadedGames(date))
-//                new SimpleGamesRetriever(getActivity(),
-//                        new DailyExecutor(activity, mRootView, mGamesAdaptor)).execute(date);
-//            else
-
-//            Calendar cal = Calendar.getInstance();
-//            Calendar revCal = Calendar.getInstance();
-//
-//            cal.setTime(date);
-//            revCal.setTime(date);
-//            for (int i = 0; i < 7; i++) {
-//                cal.add(Calendar.DATE, 1);
-//                loadCacheByDate(activity, cal.getTime());
-//                revCal.add(Calendar.DATE, -1);
-//                loadCacheByDate(activity, revCal.getTime());
-//            }
-//            cal.setTime(date);
-//            for (int i = 0; i < 7; i++) {
-//                cal.add(Calendar.DATE, -1);
-//                loadCacheByDate(activity, cal.getTime());
-//            }
         }
     }
 
