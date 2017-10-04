@@ -37,7 +37,6 @@ public class DetailsActivity extends AppCompatActivity {
         mQuarter2.setTextColor(colorId);
         mQuarter3.setTextColor(colorId);
         mQuarter4.setTextColor(colorId);
-
     }
 
     private void disableNewQuarter(int viewId) {

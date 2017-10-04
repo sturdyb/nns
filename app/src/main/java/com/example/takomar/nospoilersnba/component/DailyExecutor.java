@@ -1,5 +1,6 @@
 package com.example.takomar.nospoilersnba.component;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.example.takomar.nospoilersnba.GameInfo;
@@ -19,23 +20,26 @@ public class DailyExecutor implements IRetrieveExecutorStrategy {
     private final View mRootView;
     private SimpleGamesAdaptor gamesAdaptor;
 
-    public DailyExecutor(MainFragmentActivity activity, View mRootView, SimpleGamesAdaptor gamesAdaptor) {
+    public DailyExecutor(MainFragmentActivity activity,
+                         View mRootView,
+                         SimpleGamesAdaptor gamesAdaptor) {
         mActivity = activity;
         this.mRootView = mRootView;
         this.gamesAdaptor = gamesAdaptor;
     }
     @Override
     public void preExecute() {
-        mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.VISIBLE);
+        //mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.VISIBLE);
     }
 
     @Override
     public void postExecute(List<GameInfo> games, Date date, boolean isCancelled) {
-        if (games != null && !isCancelled) {
+        if (games != null && !games.isEmpty() && !isCancelled) {
             gamesAdaptor.showGames(games, false);
             mActivity.addGamesByDate(games, date);
         }
-        mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
+        ((SwipeRefreshLayout) mRootView.findViewById(R.id.swipeContainer)).setRefreshing(false);
+        //mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
     }
 
 

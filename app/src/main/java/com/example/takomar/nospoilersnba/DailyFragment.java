@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -80,8 +81,16 @@ public class DailyFragment extends GamesFragment {
                 Call<NbaGames> call = apiService.getAllGames();
                 call.enqueue(new GamesCallback(activity.mGamesByDate, mRootView, date, mGamesAdaptor));
             }
-            else
-                mGamesAdaptor.showGames(activity.retrieveGamesByDate(date), false);
+            else {
+                List<GameInfo> games = activity.retrieveGamesByDate(date);
+                if(games == null || games.isEmpty())
+                    mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.VISIBLE);
+                else {
+                    mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.GONE);
+                    mGamesAdaptor.showGames(games, false);
+                }
+            }
+
         }
     }
 

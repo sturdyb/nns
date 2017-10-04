@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.component.CacheExecutor;
+import com.example.takomar.nospoilersnba.component.DailyExecutor;
 import com.example.takomar.nospoilersnba.component.DatePickerFragment;
 
 import java.text.ParseException;
@@ -30,6 +31,7 @@ import java.util.Date;
 public abstract class GamesFragment extends Fragment implements MainFragmentActivity.XmlClickable {
     protected SimpleGamesAdaptor mGamesAdaptor;
     protected View mRootView;
+    protected Date mCurrentDate;
 
     public GamesFragment() {
     }
@@ -69,13 +71,6 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
         });
     }
 
-    protected void loadCacheByDate(MainFragmentActivity activity, Date gameDate) {
-        if (!activity.alreadyLoadedGames(gameDate))
-            activity.addCacheTasks((SimpleGamesRetriever)
-                    new SimpleGamesRetriever(activity, new CacheExecutor(activity)).
-                            executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gameDate));
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,20 +83,21 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
         recViewList.setLayoutManager(llm);
         createGamesAdaptor(mRootView);
 
-        final SwipeRefreshLayout swipeContainer =
-                (SwipeRefreshLayout) mRootView.findViewById(R.id.swipeContainer);
+        final SwipeRefreshLayout swipeContainer =(SwipeRefreshLayout) mRootView.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
             @Override
             public void onRefresh() {
-                swipeContainer.setRefreshing(false);
+                new SimpleGamesRetriever(
+                        getActivity(),
+                        new DailyExecutor((MainFragmentActivity) getActivity(),
+                                           mRootView, mGamesAdaptor)).execute(mCurrentDate);
             }
         });
 
         Button datePicker = (Button) getActivity().findViewById(R.id.pickDate);
-        Date initialDate = getInitialDate();
-        datePicker.setText(formatDisplayDate(initialDate));
-        loadGames(initialDate);
+        mCurrentDate = getInitialDate();
+        datePicker.setText(formatDisplayDate(mCurrentDate));
+        loadGames(mCurrentDate);
         return mRootView;
     }
 
@@ -113,9 +109,10 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
 
     @Override
     public void treatDate(Date date) {
+        mCurrentDate = date;
         Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
-        datePick.setText(formatDisplayDate(date));
-        loadGames(date);
+        datePick.setText(formatDisplayDate(mCurrentDate));
+        loadGames(mCurrentDate);
     }
 
     @Override

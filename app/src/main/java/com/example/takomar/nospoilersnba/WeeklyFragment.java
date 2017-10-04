@@ -23,6 +23,7 @@ import java.util.List;
 import retrofit2.Call;
 
 import static com.example.takomar.nospoilersnba.R.id.linlaHeaderProgress;
+import static com.example.takomar.nospoilersnba.R.id.noGamesPanel;
 
 /**
  * Created by takomar on 18/03/17.
@@ -86,14 +87,20 @@ public class WeeklyFragment extends GamesFragment {
         }
         weekGames = Helper.retrieveFavoriteTeams(activity, weekGames);
 
-        Collections.sort(weekGames, new Comparator<GameInfo>() {
-            @Override
-            public int compare(GameInfo lhs, GameInfo rhs) {
-                return lhs.gameDate.compareTo(rhs.gameDate) ;
-            }
-        });
         mRootView.findViewById(linlaHeaderProgress).setVisibility(View.GONE);
-        mGamesAdaptor.showGames(weekGames, true);
+
+        if (weekGames.isEmpty()) {
+            mRootView.findViewById(noGamesPanel).setVisibility(View.VISIBLE);
+        } else {
+            mRootView.findViewById(noGamesPanel).setVisibility(View.GONE);
+            Collections.sort(weekGames, new Comparator<GameInfo>() {
+                @Override
+                public int compare(GameInfo lhs, GameInfo rhs) {
+                    return lhs.gameDate.compareTo(rhs.gameDate) ;
+                }
+            });
+            mGamesAdaptor.showGames(weekGames, true);
+        }
     }
     @Override
     protected void loadGames(Date date) {
@@ -103,7 +110,8 @@ public class WeeklyFragment extends GamesFragment {
             if (activity.mGamesByDate.isEmpty()) {
                 RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
                 Call<NbaGames> call = apiService.getAllGames();
-                call.enqueue(new GamesCallback(activity.mGamesByDate, mRootView, date, mGamesAdaptor));
+                call.enqueue(new GamesCallback(activity.mGamesByDate,
+                                                mRootView, date, mGamesAdaptor));
             }
             else
                 showGames(activity,date);

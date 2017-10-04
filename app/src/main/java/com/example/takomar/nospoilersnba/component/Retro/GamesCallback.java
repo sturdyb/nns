@@ -41,6 +41,7 @@ public class GamesCallback implements Callback<NbaGames> {
 
         //c'est parti
         mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.VISIBLE);
+        mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.GONE);
     }
 
     private GameInfo getGameInfo(G g) {
@@ -55,13 +56,14 @@ public class GamesCallback implements Callback<NbaGames> {
         }
         gameInfo.homeTeam = g.getH().getTn();
         gameInfo.visitorTeam = g.getV().getTn();
+        if (!g.getH().getS().isEmpty()) { //could have used regexp
+            gameInfo.homePts = Integer.parseInt(g.getH().getS());
+            gameInfo.visitorPts = Integer.parseInt(g.getV().getS());
+        }
+
         return gameInfo;
     }
-
-    @Override
-    public void onResponse(Call<NbaGames> call, Response<NbaGames> response) {
-        Log.d("Test", "Number of games received: " );
-        List<Lscd> lscds = response.body().getLscd();
+    private void fillSchedule(List<Lscd> lscds) {
         for (Lscd lscd : lscds) {
             for( G g : lscd.getMscd().getG()) {
                 GameInfo gameInfo = getGameInfo(g);
@@ -72,9 +74,18 @@ public class GamesCallback implements Callback<NbaGames> {
                 mGamesByDate.put(gameInfo.gameDate, games);
             }
         }
+    }
+    @Override
+    public void onResponse(Call<NbaGames> call, Response<NbaGames> response) {
+        fillSchedule(response.body().getLscd());
+
         mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
-        mGamesAdaptor.showGames(mGamesByDate.get(mDate), false);
-        //Toast.makeText(getApplicationContext(), "All future games loaded", Toast.LENGTH_SHORT).show();
+
+        List<GameInfo> games = mGamesByDate.get(mDate);
+        if(games == null || games.isEmpty())
+            mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.VISIBLE);
+        else
+            mGamesAdaptor.showGames(mGamesByDate.get(mDate), false);
     }
 
     @Override

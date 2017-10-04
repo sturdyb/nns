@@ -45,7 +45,7 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
     }
 
     private void fillDetails(List<GameInfo> games, JSONArray teamDetails) throws JSONException {
-        if(teamDetails.optInt(21) == 0) //game not started yet
+        if(teamDetails.optInt(22) == 0) //game not started yet
             return ;
 
         GameInfo key = new GameInfo();
@@ -55,9 +55,9 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
         if (game != null) {
             String teamAbbr = teamDetails.getString(4);
             if (Helper.CodeNameTeam.get(teamAbbr).equals(game.homeTeam))
-                game.homePts = teamDetails.getInt(21);
+                game.homePts = teamDetails.getInt(22);
             else
-                game.visitorPts = teamDetails.getInt(21);
+                game.visitorPts = teamDetails.getInt(22);
 
             //Log.v("Spoilwtf", game.firstTeam + " " + game.homePts + " " +
               //                game.secondTeam + " " + game.visitorPts);
