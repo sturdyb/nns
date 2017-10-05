@@ -1,4 +1,4 @@
-package com.example.takomar.nospoilersnba.component.Retro;
+package com.example.takomar.nospoilersnba.component.Retro.Schedule;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

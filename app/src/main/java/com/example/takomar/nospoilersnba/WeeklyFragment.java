@@ -1,13 +1,17 @@
 package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import com.example.takomar.nospoilersnba.component.CacheExecutor;
-import com.example.takomar.nospoilersnba.component.Retro.GamesCallback;
-import com.example.takomar.nospoilersnba.component.Retro.NbaGames;
+import com.example.takomar.nospoilersnba.component.DailyExecutor;
+import com.example.takomar.nospoilersnba.component.GameInfo;
+import com.example.takomar.nospoilersnba.component.Retro.Schedule.GamesCallback;
+import com.example.takomar.nospoilersnba.component.Retro.Schedule.NbaGames;
 import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
 import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
 
@@ -102,6 +106,10 @@ public class WeeklyFragment extends GamesFragment {
             mGamesAdaptor.showGames(weekGames, true);
         }
     }
+
+    @Override
+    public void refreshGames(View v) { }
+
     @Override
     protected void loadGames(Date date) {
         if (getActivity() instanceof MainFragmentActivity) {
@@ -116,6 +124,19 @@ public class WeeklyFragment extends GamesFragment {
             else
                 showGames(activity,date);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        final SwipeRefreshLayout swipeContainer =(SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+           swipeContainer.setRefreshing(false);
+            }
+        });
+        return v;
     }
 
     @Override

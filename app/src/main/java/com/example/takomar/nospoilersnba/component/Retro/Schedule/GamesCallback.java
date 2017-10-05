@@ -1,10 +1,10 @@
-package com.example.takomar.nospoilersnba.component.Retro;
+package com.example.takomar.nospoilersnba.component.Retro.Schedule;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.takomar.nospoilersnba.GameInfo;
+import com.example.takomar.nospoilersnba.Helper;
+import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.R;
 import com.example.takomar.nospoilersnba.SimpleGamesAdaptor;
 
@@ -75,10 +75,32 @@ public class GamesCallback implements Callback<NbaGames> {
             }
         }
     }
+    private void sortSchedule() {
+        for (List<GameInfo> gamesToday : mGamesByDate.values()) {
+            List<Integer> favPositions = new ArrayList<>();
+            for (GameInfo game : gamesToday)
+                if (Helper.isTeamFavorite(mRootView.getContext(), game.visitorTeam) ||
+                    Helper.isTeamFavorite(mRootView.getContext(), game.homeTeam))
+                    favPositions.add(gamesToday.indexOf(game));
+            if (!favPositions.isEmpty()) {
+                int index = 0;
+                for (Integer favPos : favPositions) {
+                    GameInfo temp = gamesToday.get(favPos);
+                    gamesToday.set(favPos, gamesToday.get(index));
+                    gamesToday.set(index, temp);
+                    index++;
+                }
+            }
+
+        }
+
+
+
+    }
     @Override
     public void onResponse(Call<NbaGames> call, Response<NbaGames> response) {
         fillSchedule(response.body().getLscd());
-
+        sortSchedule();
         mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
 
         List<GameInfo> games = mGamesByDate.get(mDate);

@@ -1,7 +1,5 @@
 package com.example.takomar.nospoilersnba.component;
 
-import com.example.takomar.nospoilersnba.GameInfo;
-
 import java.util.Date;
 import java.util.List;
 

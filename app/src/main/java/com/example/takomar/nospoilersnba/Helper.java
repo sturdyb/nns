@@ -6,7 +6,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.core.deps.guava.collect.ImmutableMap;
 import android.support.annotation.NonNull;
-import android.util.Log;
+
+import com.example.takomar.nospoilersnba.component.GameInfo;
 
 import java.util.ArrayList;
 import java.util.List;

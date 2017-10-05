@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.takomar.nospoilersnba.component.GameInfo;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;

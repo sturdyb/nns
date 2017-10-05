@@ -10,11 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TableLayout;
+
+import com.example.takomar.nospoilersnba.component.PlayoffsGame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 public class PlayOffsActivity extends AppCompatActivity {

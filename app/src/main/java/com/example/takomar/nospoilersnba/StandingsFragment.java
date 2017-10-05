@@ -91,6 +91,9 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
     }
 
     @Override
+    public void refreshGames(View v) {}
+
+    @Override
     public void goToNextDate(View v) {
         Button pickDate = ((Button)getActivity().findViewById(R.id.pickDate));
         String text = (String) pickDate.getText();

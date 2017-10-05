@@ -13,22 +13,18 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.takomar.nospoilersnba.component.PlayerInfo;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 import static android.os.Process.THREAD_PRIORITY_MORE_FAVORABLE;
 
 /**
@@ -98,11 +94,13 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
             String seasonType = "Regular+Season";
             if (gameId.startsWith("003"))
                 seasonType = "All+Star";
+            else if (gameId.startsWith("001"))
+                seasonType = "Pre+Season";
             String myUrl =
                     "http://stats.nba.com/stats/boxscoretraditionalv2?" +
                     "EndPeriod=0&EndRange=" + params[1]
                     + "&GameID=" + gameId
-                    + "&RangeType=2&Season=2016-17"
+                    + "&RangeType=2&Season=2017-18"
                     + "&SeasonType=" + seasonType
                     + "&StartPeriod=0&StartRange=0";
             Log.v("SpoilDtl", myUrl);

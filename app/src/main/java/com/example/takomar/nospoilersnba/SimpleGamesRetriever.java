@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.component.IRetrieveExecutorStrategy;
 
 import org.json.JSONArray;
@@ -50,7 +51,10 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
 
         GameInfo key = new GameInfo();
         key.gameID = teamDetails.getString(2);
-        GameInfo game = games.get(games.indexOf(key));
+        int index = games.indexOf(key);
+        if (index == -1)
+            return;
+        GameInfo game = games.get(index);
 
         if (game != null) {
             String teamAbbr = teamDetails.getString(4);

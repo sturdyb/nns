@@ -3,15 +3,12 @@ package com.example.takomar.nospoilersnba;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.takomar.nospoilersnba.component.DatePickerFragment;
-import com.example.takomar.nospoilersnba.component.DailyExecutor;
-import com.example.takomar.nospoilersnba.component.Retro.GamesCallback;
-import com.example.takomar.nospoilersnba.component.Retro.NbaGames;
+import com.example.takomar.nospoilersnba.component.GameInfo;
+import com.example.takomar.nospoilersnba.component.Retro.Schedule.GamesCallback;
+import com.example.takomar.nospoilersnba.component.Retro.Schedule.NbaGames;
 import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
 import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
 
@@ -90,7 +87,6 @@ public class DailyFragment extends GamesFragment {
                     mGamesAdaptor.showGames(games, false);
                 }
             }
-
         }
     }
 

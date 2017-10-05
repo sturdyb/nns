@@ -108,6 +108,14 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
     }
 
     @Override
+    public void refreshGames(View v) {
+        new SimpleGamesRetriever(
+                getActivity(),
+                new DailyExecutor((MainFragmentActivity) getActivity(),
+                        mRootView, mGamesAdaptor)).execute(mCurrentDate);
+    }
+
+    @Override
     public void treatDate(Date date) {
         mCurrentDate = date;
         Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
