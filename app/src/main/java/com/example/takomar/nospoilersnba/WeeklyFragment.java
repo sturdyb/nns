@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.takomar.nospoilersnba.component.DailyExecutor;
 import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.component.Retro.Schedule.GamesCallback;
 import com.example.takomar.nospoilersnba.component.Retro.Schedule.NbaGames;
@@ -35,7 +34,7 @@ import static com.example.takomar.nospoilersnba.R.id.noGamesPanel;
 
 public class WeeklyFragment extends GamesFragment {
     private SimpleDateFormat mWeeklyFormat = new SimpleDateFormat("MMM d, yyyy");
-    private List<SimpleGamesRetriever> myTasks = new ArrayList<>();
+    private List<GamesRetriever> myTasks = new ArrayList<>();
 
     public WeeklyFragment() {
     }

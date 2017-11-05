@@ -19,12 +19,12 @@ import java.util.List;
  * Created by takomar on 11/12/16.
  */
 
-public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.GameInfoHolder>{
+public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHolder>{
     private List<GameInfo> gamesToList = new ArrayList<>();
     private Context mContext;
     private boolean mShowDate;
 
-    public SimpleGamesAdaptor(Context context) {
+    public GamesAdaptor(Context context) {
         mContext = context;
     }
 
@@ -50,6 +50,7 @@ public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.
         protected TextView visitorScore;
         protected TextView gameDate;
         protected String gameId;
+        protected String gameCode;
 
         public GameInfoHolder(View v) {
             super(v);
@@ -63,8 +64,10 @@ public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.
             Button q2 = (Button) v.findViewById(R.id.button2);
             Button q3 = (Button) v.findViewById(R.id.button3);
             Button q4 = (Button) v.findViewById(R.id.button4);
-            ImageView iv = (ImageView) v.findViewById(R.id.buttonSearch);
-            iv.setOnClickListener(this);
+            ImageView highlights = (ImageView) v.findViewById(R.id.buttonSearch);
+            ImageView watch = (ImageView) v.findViewById(R.id.buttonWatch);
+            highlights.setOnClickListener(this);
+            watch.setOnClickListener(this);
             q1.setOnClickListener(this);
             q2.setOnClickListener(this);
             q3.setOnClickListener(this);
@@ -108,6 +111,7 @@ public class SimpleGamesAdaptor extends RecyclerView.Adapter<SimpleGamesAdaptor.
         holder.homeTeam.setText(ci.homeTeam);
         holder.visitorTeam.setText(ci.visitorTeam);
         holder.gameId = ci.gameID;
+        holder.gameCode = ci.gameCode;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

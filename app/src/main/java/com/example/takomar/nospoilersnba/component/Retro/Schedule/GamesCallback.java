@@ -6,7 +6,7 @@ import android.view.View;
 import com.example.takomar.nospoilersnba.Helper;
 import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.R;
-import com.example.takomar.nospoilersnba.SimpleGamesAdaptor;
+import com.example.takomar.nospoilersnba.GamesAdaptor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,12 +28,12 @@ public class GamesCallback implements Callback<NbaGames> {
 
     private Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
     private final View mRootView;
-    private SimpleGamesAdaptor mGamesAdaptor;
+    private GamesAdaptor mGamesAdaptor;
     private Date mDate;
 
     public GamesCallback(Map<Date, List<GameInfo>> gamesByDate,
                          View rootView, Date date,
-                         SimpleGamesAdaptor gamesAdaptor) {
+                         GamesAdaptor gamesAdaptor) {
         mGamesByDate = gamesByDate;
         mRootView = rootView;
         mDate = date;
@@ -47,6 +47,8 @@ public class GamesCallback implements Callback<NbaGames> {
     private GameInfo getGameInfo(G g) {
         GameInfo gameInfo = new GameInfo();
         gameInfo.gameID = g.getGid();
+        gameInfo.gameCode = g.getGcode();
+        gameInfo.status = Integer.parseInt(g.getSt());
 
         SimpleDateFormat jsonFormat = new SimpleDateFormat("yyyy-MM-d");
         try {

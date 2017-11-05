@@ -4,7 +4,7 @@ import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.takomar.nospoilersnba.component.CacheExecutor;
 import com.example.takomar.nospoilersnba.component.DailyExecutor;
 import com.example.takomar.nospoilersnba.component.DatePickerFragment;
 
@@ -29,7 +28,7 @@ import java.util.Date;
  */
 
 public abstract class GamesFragment extends Fragment implements MainFragmentActivity.XmlClickable {
-    protected SimpleGamesAdaptor mGamesAdaptor;
+    protected GamesAdaptor mGamesAdaptor;
     protected View mRootView;
     protected Date mCurrentDate;
 
@@ -45,25 +44,28 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
 
     private void createGamesAdaptor(View rootView) {
         RecyclerView recViewList = (RecyclerView) rootView.findViewById(R.id.cardList);
-        mGamesAdaptor = new SimpleGamesAdaptor(getActivity());
+        mGamesAdaptor = new GamesAdaptor(getActivity());
         recViewList.setAdapter(mGamesAdaptor);
 
-        mGamesAdaptor.SetOnItemClickListener(new SimpleGamesAdaptor.OnItemClickListener() {
+        mGamesAdaptor.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
             @Override
-            public void onItemClick(
-                    View view, Context context,
-                    SimpleGamesAdaptor.GameInfoHolder gameInfo) {
-                if(view.getId() == R.id.buttonSearch) {
-                    String query =
-                            gameInfo.homeTeam.getText() + " " +
-                            gameInfo.visitorTeam.getText() +
-                            " ximo pierto final";
+            public void onItemClick(View view, Context context, GamesAdaptor.GameInfoHolder gameInfo) {
+                if (view.getId() == R.id.buttonWatch) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://watch.nba.com/game/" +
+                                    gameInfo.gameCode));
+                    startActivity(intent);
+                    return;
+                }
+                else if (view.getId() == R.id.buttonSearch) {
+                    String query = gameInfo.homeTeam.getText() + " " +
+                                   gameInfo.visitorTeam.getText() + " ximo pierto final";
 
                     Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
                     intent.putExtra(SearchManager.QUERY, query);
-                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    if (intent.resolveActivity(getActivity().getPackageManager()) != null)
                         startActivity(intent);
-                    }
+
                     return;
                 }
                 Helper.showGameDetails(context, gameInfo, view.getId());
@@ -87,7 +89,7 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new SimpleGamesRetriever(
+                new GamesRetriever(
                         getActivity(),
                         new DailyExecutor((MainFragmentActivity) getActivity(),
                                            mRootView, mGamesAdaptor)).execute(mCurrentDate);
@@ -109,7 +111,7 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
 
     @Override
     public void refreshGames(View v) {
-        new SimpleGamesRetriever(
+        new GamesRetriever(
                 getActivity(),
                 new DailyExecutor((MainFragmentActivity) getActivity(),
                         mRootView, mGamesAdaptor)).execute(mCurrentDate);

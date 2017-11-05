@@ -22,13 +22,13 @@ import java.util.List;
  * Created by takomar on 11/12/16.
  */
 
-public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
+public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
     protected SimpleDateFormat dateFormatUrl = new SimpleDateFormat("MM/d/yyyy");
     protected Context mContext;
     private IRetrieveExecutorStrategy mStrategy;
     protected Date mDate;
 
-    public SimpleGamesRetriever(Context context, IRetrieveExecutorStrategy strategy) {
+    public GamesRetriever(Context context, IRetrieveExecutorStrategy strategy) {
         mContext = context;
         mStrategy = strategy;
     }
@@ -36,8 +36,10 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
     private GameInfo fillGameInfo(JSONArray currentGame) throws JSONException, ParseException {
         GameInfo gameInfo = new GameInfo();
         gameInfo.gameID = currentGame.getString(2);
+        gameInfo.gameCode = currentGame.getString(5);
+        gameInfo.status = currentGame.getInt(3);
 
-        String match = currentGame.getString(5);
+        String match = gameInfo.gameCode;
         int x = match.indexOf("/");
         gameInfo.visitorTeam = Helper.CodeNameTeam.get(match.substring(x + 1, x + 4));
         gameInfo.homeTeam = Helper.CodeNameTeam.get(match.substring(x + 4));
@@ -74,8 +76,7 @@ public class SimpleGamesRetriever extends AsyncTask<Date, Integer, List<GameInfo
 
         try {
             String myUrl = "http://stats.nba.com/stats/scoreboardV2?" +
-                    "DayOffset=0&LeagueID=00&gameDate=" +
-                    dateFormatUrl.format(date);
+                           "DayOffset=0&LeagueID=00&gameDate=" + dateFormatUrl.format(date);
 
             Log.v("SpoilUrl", myUrl);
             if(isCancelled()) {

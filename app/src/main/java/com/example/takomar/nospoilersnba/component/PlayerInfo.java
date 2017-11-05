@@ -20,5 +20,6 @@ public class PlayerInfo {
     public int blk;
     public int to;
     public int fouls;
+    public int plusMinus;
 
 }

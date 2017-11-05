@@ -171,7 +171,7 @@ public class Helper {
     }
 
     static public void showGameDetails(
-            Context context, SimpleGamesAdaptor.GameInfoHolder gameInfo, int viewId)
+            Context context, GamesAdaptor.GameInfoHolder gameInfo, int viewId)
     {
         Intent intent = new Intent(context, DetailsActivity.class);
         intent.putExtra("GameID", gameInfo.gameId);

@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.example.takomar.nospoilersnba.MainFragmentActivity;
 import com.example.takomar.nospoilersnba.R;
-import com.example.takomar.nospoilersnba.SimpleGamesAdaptor;
+import com.example.takomar.nospoilersnba.GamesAdaptor;
 
 import java.util.Date;
 import java.util.List;
@@ -17,11 +17,11 @@ import java.util.List;
 public class DailyExecutor implements IRetrieveExecutorStrategy {
     private final MainFragmentActivity mActivity;
     private final View mRootView;
-    private SimpleGamesAdaptor gamesAdaptor;
+    private GamesAdaptor gamesAdaptor;
 
     public DailyExecutor(MainFragmentActivity activity,
                          View mRootView,
-                         SimpleGamesAdaptor gamesAdaptor) {
+                         GamesAdaptor gamesAdaptor) {
         mActivity = activity;
         this.mRootView = mRootView;
         this.gamesAdaptor = gamesAdaptor;

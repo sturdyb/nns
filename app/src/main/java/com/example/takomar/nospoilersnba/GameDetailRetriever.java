@@ -79,6 +79,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         player.to = playerJSON.getInt(24);
         player.pts = playerJSON.getInt(26);
         player.fouls = playerJSON.getInt(25);
+        player.plusMinus = playerJSON.getInt(27);
 
         return  player;
     }
@@ -170,6 +171,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         ((TextView)row.findViewById(R.id.to)).setText("" + stats.to);
         ((TextView)row.findViewById(R.id.pts)).setText("" + stats.pts);
         ((TextView)row.findViewById(R.id.fouls)).setText("" + stats.fouls);
+        ((TextView)row.findViewById(R.id.pm)).setText("" + stats.plusMinus);
 
         if(isOdd) {
             nameRow.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
@@ -214,6 +216,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
         ((TextView)header.findViewById(R.id.blk)).setText("BLK");
         ((TextView)header.findViewById(R.id.to)).setText("TO");
         ((TextView)header.findViewById(R.id.fouls)).setText("FLS");
+        ((TextView)header.findViewById(R.id.pm)).setText("+/-");
         body.addView(header);
     }
 
@@ -251,6 +254,7 @@ public class GameDetailRetriever extends AsyncTask<String, Integer, Map<String, 
                 totalStats.reb += player.reb;
                 totalStats.stl += player.stl;
                 totalStats.fouls += player.fouls;
+                totalStats.plusMinus += player.plusMinus;
 
                 isOdd = !isOdd;
             }

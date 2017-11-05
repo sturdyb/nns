@@ -1,5 +1,6 @@
 package com.example.takomar.nospoilersnba.component.Retro;
 
+import com.example.takomar.nospoilersnba.component.Retro.Game.GameDetails;
 import com.example.takomar.nospoilersnba.component.Retro.Schedule.NbaGames;
 
 import retrofit2.Call;
@@ -14,5 +15,9 @@ public interface RetroInterface {
         @Headers("User-Agent: http://stats.nba.com/scores/")
         @GET("00_full_schedule_week.json")
         Call<NbaGames> getAllGames();
+
+        @Headers("User-Agent: http://stats.nba.com/scores/")
+        @GET("00_full_schedule_week.json")
+        Call<GameDetails> getGameDetails();
 
     }

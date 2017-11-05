@@ -10,9 +10,11 @@ public class GameInfo {
     public String homeTeam;
     public String visitorTeam;
     public String gameID;
+    public String gameCode;
     public Date gameDate;
     public int homePts;
     public int visitorPts;
+    public int status;
 
     @Override
     public boolean equals(Object o) {

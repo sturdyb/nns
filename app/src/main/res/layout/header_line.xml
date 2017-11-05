@@ -77,4 +77,11 @@
         android:gravity="center"
         android:textColor="@color/cardview_light_background"
         android:textStyle="normal"/>
+    <TextView
+        android:id="@+id/pm"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:gravity="center"
+        android:textColor="@color/cardview_light_background"
+        android:textStyle="normal"/>
 </TableRow>

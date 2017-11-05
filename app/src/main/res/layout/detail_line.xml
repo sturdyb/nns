@@ -75,4 +75,11 @@
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textStyle="normal"/>
+    <TextView
+        android:id="@+id/pm"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textStyle="normal"/>
 </TableRow>

@@ -45,7 +45,7 @@ public class MainFragmentActivity extends AppCompatActivity
     private XmlClickable mCurrentFragment;
 
     public Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
-    private List<SimpleGamesRetriever> mCacheTasks = new ArrayList<>();
+    private List<GamesRetriever> mCacheTasks = new ArrayList<>();
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -69,11 +69,11 @@ public class MainFragmentActivity extends AppCompatActivity
         date.setHours(0);
         mGamesByDate.put(date, games);
     }
-    public void addCacheTasks(SimpleGamesRetriever task) {
+    public void addCacheTasks(GamesRetriever task) {
         mCacheTasks.add(task);
     }
     public void clearCache() {
-        for (SimpleGamesRetriever task : mCacheTasks)
+        for (GamesRetriever task : mCacheTasks)
             if (task.getStatus() != AsyncTask.Status.FINISHED)
                 task.cancel(true);
         mCacheTasks.clear();
