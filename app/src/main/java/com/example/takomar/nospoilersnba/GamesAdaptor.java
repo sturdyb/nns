@@ -1,6 +1,9 @@
 package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
+import android.media.Image;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +51,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         protected TextView visitorTeam;
         protected TextView homeScore;
         protected TextView visitorScore;
+        protected ImageView homeLogo;
+        protected ImageView visitorLogo;
         protected TextView gameDate;
         protected String gameId;
         protected String gameCode;
@@ -59,6 +64,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             gameDate = (TextView)  v.findViewById(R.id.dateGame);
             homeScore = (TextView)  v.findViewById(R.id.firstScore);
             visitorScore = (TextView)  v.findViewById(R.id.secondScore);
+            homeLogo = (ImageView)  v.findViewById(R.id.homeLogo);
+            visitorLogo = (ImageView)  v.findViewById(R.id.awayLogo);
 
             Button q1 = (Button) v.findViewById(R.id.button);
             Button q2 = (Button) v.findViewById(R.id.button2);
@@ -107,11 +114,23 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         return new GameInfoHolder(itemView);
     }
 
-    public void setGameInformation(GameInfoHolder holder, final GameInfo ci ) {
-        holder.homeTeam.setText(ci.homeTeam);
-        holder.visitorTeam.setText(ci.visitorTeam);
-        holder.gameId = ci.gameID;
-        holder.gameCode = ci.gameCode;
+    public void setGameInformation(GameInfoHolder holder, final GameInfo gameInfo ) {
+        holder.homeTeam.setText(gameInfo.homeTeam);
+        holder.visitorTeam.setText(gameInfo.visitorTeam);
+        int imageResource = mContext.getResources()
+                                    .getIdentifier(Helper.imageTeam.get(gameInfo.homeTeam),
+                                                   null, mContext.getPackageName());
+        holder.homeLogo.setImageDrawable(mContext.getResources().getDrawable(imageResource));
+
+
+        imageResource = mContext.getResources()
+                                .getIdentifier(Helper.imageTeam.get(gameInfo.visitorTeam),
+                                               null, mContext.getPackageName());
+        holder.visitorLogo.setImageDrawable(mContext.getResources().getDrawable(imageResource));
+
+        holder.gameId = gameInfo.gameID;
+        holder.gameCode = gameInfo.gameCode;
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

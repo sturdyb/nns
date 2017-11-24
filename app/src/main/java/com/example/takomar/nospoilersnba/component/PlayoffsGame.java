@@ -1,7 +1,5 @@
 package com.example.takomar.nospoilersnba.component;
 
-import java.util.Date;
-
 /**
  * Created by takomar on 11/12/16.
  */

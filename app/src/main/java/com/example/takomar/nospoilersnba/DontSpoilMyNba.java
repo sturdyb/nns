@@ -2,7 +2,6 @@ package com.example.takomar.nospoilersnba;
 
 import android.app.Application;
 import android.content.res.Configuration;
-import android.util.Log;
 
 /**
  * Created by takomar on 8/26/17.
