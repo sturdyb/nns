@@ -2,6 +2,7 @@ package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.example.takomar.nospoilersnba.component.GameInfo;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by takomar on 11/12/16.
@@ -38,6 +40,16 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
         gameInfo.gameID = currentGame.getString(2);
         gameInfo.gameCode = currentGame.getString(5);
         gameInfo.status = currentGame.getInt(3);
+
+        if(gameInfo.status == 1) {
+            String gameTimeEST = currentGame.getString(4);
+            gameTimeEST = gameTimeEST.substring(0, gameTimeEST.indexOf("m") + 1);
+            gameTimeEST = gameTimeEST.toUpperCase();
+
+            gameInfo.gameTime = Helper.calculateLocalTime(
+                    dateFormatUrl.format(mDate) + " " + gameTimeEST,
+                    "MM/d/yyyy h:mm a");
+        }
 
         String match = gameInfo.gameCode;
         int x = match.indexOf("/");
@@ -76,7 +88,7 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
         try {
             String myUrl = "http://stats.nba.com/stats/scoreboardV2?" +
-                           "DayOffset=0&LeagueID=00&gameDate=" + dateFormatUrl.format(date);
+                           "gameDate=" + dateFormatUrl.format(date) + "&DayOffset=0&LeagueID=00";
 
             Log.v("SpoilUrl", myUrl);
             if(isCancelled()) {

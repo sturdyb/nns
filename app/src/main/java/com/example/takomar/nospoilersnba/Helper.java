@@ -9,9 +9,13 @@ import android.support.annotation.NonNull;
 
 import com.example.takomar.nospoilersnba.component.GameInfo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by takomar on 15/01/17.
@@ -201,7 +205,10 @@ public class Helper {
         if (buttonId == R.id.button3){
             return context.getString(R.string.q3time);
         }
-        return context.getString(R.string.q4time);
+        if (buttonId == R.id.button4) {
+            return context.getString(R.string.q4time);
+        }
+        return "live";
     }
 
     static public void showGameDetails(
@@ -214,6 +221,17 @@ public class Helper {
         intent.putExtra("Quarter", getEndPeriod(context, viewId));
 
         context.startActivity(intent);
+    }
+
+    static public String calculateLocalTime(String gameDateEst,
+                                            String formatPattern) throws ParseException {
+
+        SimpleDateFormat format = new SimpleDateFormat(formatPattern);
+        format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+        Date estDate = format.parse(gameDateEst);
+        format = new SimpleDateFormat("HH:mm");
+
+        return format.format(estDate);
     }
 
 }

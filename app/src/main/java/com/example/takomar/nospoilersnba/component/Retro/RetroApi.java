@@ -8,8 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetroApi {
+    // https://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2017/scores/gamedetail/0021700287_gamedetail.json
     //    http://stats.nba.com/stats/boxscoresummaryv2?GameID=0021600590
-    public static final String BASE_URL = "https://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2017/league/";
+    public static final String BASE_URL = "https://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2017/";
     private static Retrofit retrofit = null;
 
 

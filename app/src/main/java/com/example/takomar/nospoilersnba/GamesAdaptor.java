@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.takomar.nospoilersnba.component.GameInfo;
@@ -54,6 +55,9 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         protected ImageView homeLogo;
         protected ImageView visitorLogo;
         protected TextView gameDate;
+        protected TextView gameTime;
+        protected LinearLayout livePanel;
+        protected LinearLayout quarterPanel;
         protected String gameId;
         protected String gameCode;
 
@@ -62,15 +66,19 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             homeTeam =  (TextView) v.findViewById(R.id.firstTeam);
             visitorTeam = (TextView)  v.findViewById(R.id.SecondTeam);
             gameDate = (TextView)  v.findViewById(R.id.dateGame);
+            gameTime = (TextView) v.findViewById(R.id.gameTime);
             homeScore = (TextView)  v.findViewById(R.id.firstScore);
             visitorScore = (TextView)  v.findViewById(R.id.secondScore);
             homeLogo = (ImageView)  v.findViewById(R.id.homeLogo);
             visitorLogo = (ImageView)  v.findViewById(R.id.awayLogo);
+            livePanel = (LinearLayout) v.findViewById(R.id.livePanel);
+            quarterPanel = (LinearLayout) v.findViewById(R.id.quarterPanel);
 
             Button q1 = (Button) v.findViewById(R.id.button);
             Button q2 = (Button) v.findViewById(R.id.button2);
             Button q3 = (Button) v.findViewById(R.id.button3);
             Button q4 = (Button) v.findViewById(R.id.button4);
+            Button live = (Button) v.findViewById(R.id.liveStats);
             ImageView highlights = (ImageView) v.findViewById(R.id.buttonSearch);
             ImageView watch = (ImageView) v.findViewById(R.id.buttonWatch);
             highlights.setOnClickListener(this);
@@ -79,6 +87,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             q2.setOnClickListener(this);
             q3.setOnClickListener(this);
             q4.setOnClickListener(this);
+            live.setOnClickListener(this);
+
         }
         public void isFavorite() {
             itemView.findViewById(R.id.card_frame).setVisibility(View.VISIBLE);
@@ -117,6 +127,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public void setGameInformation(GameInfoHolder holder, final GameInfo gameInfo ) {
         holder.homeTeam.setText(gameInfo.homeTeam);
         holder.visitorTeam.setText(gameInfo.visitorTeam);
+
         int imageResource = mContext.getResources()
                                     .getIdentifier(Helper.imageTeam.get(gameInfo.homeTeam),
                                                    null, mContext.getPackageName());
@@ -142,8 +153,19 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     public void onBindViewHolder(GameInfoHolder holder, int position) {
         final GameInfo ci = gamesToList.get(position);
         setGameInformation(holder, ci);
+
         holder.homeScore.setText(ci.homePts + "");
         holder.visitorScore.setText(ci.visitorPts + "");
+        holder.gameTime.setText(ci.gameTime);
+
+        if (ci.status == 3) {
+            holder.quarterPanel.setVisibility(View.VISIBLE);
+            holder.livePanel.setVisibility(View.GONE);
+        } else {
+            holder.livePanel.setVisibility(View.VISIBLE);
+            holder.quarterPanel.setVisibility(View.GONE);
+        }
+
         if(Helper.isTeamFavorite(mContext, ci.homeTeam) ||
            Helper.isTeamFavorite(mContext, ci.visitorTeam))
             holder.isFavorite();

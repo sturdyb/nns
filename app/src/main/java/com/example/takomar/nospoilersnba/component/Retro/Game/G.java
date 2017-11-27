@@ -8,7 +8,7 @@ public class G {
 
     @SerializedName("mid")
     @Expose
-    private Integer mid;
+    private Long mid;
     @SerializedName("gid")
     @Expose
     private String gid;
@@ -82,11 +82,11 @@ public class G {
     @Expose
     private String dur;
 
-    public Integer getMid() {
+    public Long getMid() {
         return mid;
     }
 
-    public void setMid(Integer mid) {
+    public void setMid(Long mid) {
         this.mid = mid;
     }
 

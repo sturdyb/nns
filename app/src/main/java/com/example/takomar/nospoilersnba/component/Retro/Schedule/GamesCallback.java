@@ -44,11 +44,10 @@ public class GamesCallback implements Callback<NbaGames> {
         mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.GONE);
     }
 
-    private GameInfo getGameInfo(G g) {
+    private GameInfo getGameInfo(G g) throws ParseException {
         GameInfo gameInfo = new GameInfo();
         gameInfo.gameID = g.getGid();
         gameInfo.gameCode = g.getGcode();
-        gameInfo.status = Integer.parseInt(g.getSt());
 
         SimpleDateFormat jsonFormat = new SimpleDateFormat("yyyy-MM-d");
         try {
@@ -56,6 +55,13 @@ public class GamesCallback implements Callback<NbaGames> {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        gameInfo.status = Integer.parseInt(g.getSt());
+        if (gameInfo.status == 1) {
+            gameInfo.gameTime = Helper.calculateLocalTime(g.getEtm(),
+                                                          "yyyy-MM-dd'T'HH:mm:ss");
+        }
+
         gameInfo.homeTeam = g.getH().getTn();
         gameInfo.visitorTeam = g.getV().getTn();
         if (!g.getH().getS().isEmpty()) { //could have used regexp
@@ -68,7 +74,14 @@ public class GamesCallback implements Callback<NbaGames> {
     private void fillSchedule(List<Lscd> lscds) {
         for (Lscd lscd : lscds) {
             for( G g : lscd.getMscd().getG()) {
-                GameInfo gameInfo = getGameInfo(g);
+                GameInfo gameInfo = null;
+
+                try {
+                    gameInfo = getGameInfo(g);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 List<GameInfo> games = mGamesByDate.get(gameInfo.gameDate);
                 if (games == null)
                     games = new ArrayList<>();

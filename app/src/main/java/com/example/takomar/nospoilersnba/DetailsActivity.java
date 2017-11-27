@@ -6,9 +6,19 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
+
+import com.example.takomar.nospoilersnba.component.Retro.Game.GameDetails;
+import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
+import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
+import com.example.takomar.nospoilersnba.component.Retro.Schedule.NbaGames;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -60,6 +70,23 @@ public class DetailsActivity extends AppCompatActivity {
     private void retrieveDetails(String gameId, String home,
                                  String away, String quarterTime)
     {
+        if (quarterTime.equals("live"))
+        {
+            RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
+            Call<GameDetails> call = apiService.getGameDetails(gameId);
+            call.enqueue(new Callback<GameDetails>() {
+                @Override
+                public void onResponse(Call<GameDetails> call, Response<GameDetails> response) {
+                    Log.v("GameDetails", "GOOOD");
+                }
+
+                @Override
+                public void onFailure(Call<GameDetails> call, Throwable t) {
+                    Log.v("GameDetails", "BAD");
+                }
+            });
+            return;
+        }
         new GameDetailRetriever(DetailsActivity.this,
                                 home, mHomeBox, mHomeNames,
                                 away, mVisitorBox, mVisitorNames)

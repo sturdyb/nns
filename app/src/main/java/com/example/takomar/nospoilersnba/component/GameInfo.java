@@ -11,6 +11,7 @@ public class GameInfo {
     public String visitorTeam;
     public String gameID;
     public String gameCode;
+    public String gameTime;
     public Date gameDate;
     public int homePts;
     public int visitorPts;
