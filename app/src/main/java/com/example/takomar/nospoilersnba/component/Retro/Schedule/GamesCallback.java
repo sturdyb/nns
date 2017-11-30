@@ -46,24 +46,20 @@ public class GamesCallback implements Callback<NbaGames> {
 
     private GameInfo getGameInfo(G g) throws ParseException {
         GameInfo gameInfo = new GameInfo();
+
         gameInfo.gameID = g.getGid();
         gameInfo.gameCode = g.getGcode();
-
-        SimpleDateFormat jsonFormat = new SimpleDateFormat("yyyy-MM-d");
-        try {
-            gameInfo.gameDate = jsonFormat.parse(g.getGdte());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         gameInfo.status = Integer.parseInt(g.getSt());
-        if (gameInfo.status == 1) {
-            gameInfo.gameTime = Helper.calculateLocalTime(g.getEtm(),
-                                                          "yyyy-MM-dd'T'HH:mm:ss");
-        }
-
         gameInfo.homeTeam = g.getH().getTn();
         gameInfo.visitorTeam = g.getV().getTn();
+
+        SimpleDateFormat jsonFormat = new SimpleDateFormat("yyyy-MM-d");
+        gameInfo.gameDate = jsonFormat.parse(g.getGdte());
+
+        if (gameInfo.status == 1)
+            gameInfo.gameTime = Helper.calculateLocalTime(g.getEtm(),
+                                                          "yyyy-MM-dd'T'HH:mm:ss");
+
         if (!g.getH().getS().isEmpty()) { //could have used regexp
             gameInfo.homePts = Integer.parseInt(g.getH().getS());
             gameInfo.visitorPts = Integer.parseInt(g.getV().getS());
@@ -71,16 +67,10 @@ public class GamesCallback implements Callback<NbaGames> {
 
         return gameInfo;
     }
-    private void fillSchedule(List<Lscd> lscds) {
+    private void fillSchedule(List<Lscd> lscds) throws ParseException {
         for (Lscd lscd : lscds) {
             for( G g : lscd.getMscd().getG()) {
-                GameInfo gameInfo = null;
-
-                try {
-                    gameInfo = getGameInfo(g);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                GameInfo gameInfo = getGameInfo(g);
 
                 List<GameInfo> games = mGamesByDate.get(gameInfo.gameDate);
                 if (games == null)
@@ -106,16 +96,16 @@ public class GamesCallback implements Callback<NbaGames> {
                     index++;
                 }
             }
-
         }
-
-
-
     }
     @Override
     public void onResponse(Call<NbaGames> call, Response<NbaGames> response) {
-        fillSchedule(response.body().getLscd());
-        sortSchedule();
+        try {
+            fillSchedule(response.body().getLscd());
+            sortSchedule();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
 
         List<GameInfo> games = mGamesByDate.get(mDate);

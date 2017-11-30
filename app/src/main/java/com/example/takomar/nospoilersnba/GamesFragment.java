@@ -89,6 +89,7 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
                 new GamesRetriever(
                         getActivity(),
                         new DailyExecutor((MainFragmentActivity) getActivity(),

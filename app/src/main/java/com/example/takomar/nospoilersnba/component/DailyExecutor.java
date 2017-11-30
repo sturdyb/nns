@@ -2,6 +2,7 @@ package com.example.takomar.nospoilersnba.component;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.takomar.nospoilersnba.MainFragmentActivity;
 import com.example.takomar.nospoilersnba.R;
@@ -35,9 +36,11 @@ public class DailyExecutor implements IRetrieveExecutorStrategy {
     @Override
     public void postExecute(List<GameInfo> games, Date date, boolean isCancelled) {
         if (games != null && !games.isEmpty() && !isCancelled) {
-
-            gamesAdaptor.showGames(games, false);
+            Toast.makeText(mActivity, "updating...", Toast.LENGTH_SHORT).show();
             mActivity.addGamesByDate(games, date);
+
+            gamesAdaptor.showGames(mActivity.retrieveGamesByDate(date), false);
+
 
             mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.GONE);
         }
