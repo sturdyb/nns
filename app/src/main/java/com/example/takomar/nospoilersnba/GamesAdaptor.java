@@ -1,9 +1,6 @@
 package com.example.takomar.nospoilersnba;
 
 import android.content.Context;
-import android.media.Image;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,10 +71,11 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             livePanel = (LinearLayout) v.findViewById(R.id.livePanel);
             quarterPanel = (LinearLayout) v.findViewById(R.id.quarterPanel);
 
-            Button q1 = (Button) v.findViewById(R.id.button);
-            Button q2 = (Button) v.findViewById(R.id.button2);
-            Button q3 = (Button) v.findViewById(R.id.button3);
-            Button q4 = (Button) v.findViewById(R.id.button4);
+            Button q1 = (Button) v.findViewById(R.id.q1);
+            Button q2 = (Button) v.findViewById(R.id.q2);
+            Button q3 = (Button) v.findViewById(R.id.q3);
+            Button q4 = (Button) v.findViewById(R.id.q4);
+            Button custom = (Button) v.findViewById(R.id.custom);
             Button live = (Button) v.findViewById(R.id.liveStats);
             ImageView highlights = (ImageView) v.findViewById(R.id.buttonSearch);
             ImageView watch = (ImageView) v.findViewById(R.id.buttonWatch);
@@ -87,6 +85,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             q2.setOnClickListener(this);
             q3.setOnClickListener(this);
             q4.setOnClickListener(this);
+            custom.setOnClickListener(this);
             live.setOnClickListener(this);
 
         }
@@ -158,7 +157,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         holder.visitorScore.setText(ci.visitorPts + "");
         holder.gameTime.setText(ci.gameTime);
 
-        if (ci.status == 3) {
+        if (ci.status == 3) {//not ended
             holder.quarterPanel.setVisibility(View.VISIBLE);
             holder.livePanel.setVisibility(View.GONE);
         } else {

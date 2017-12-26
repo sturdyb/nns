@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.component.DatePickerFragment;
+import com.example.takomar.nospoilersnba.component.StandingsTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,7 +47,7 @@ public class StandingsFragment extends Fragment implements MainFragmentActivity.
     }
 
     void loadStandings(Date date) {
-        new Standings(mRootView, getActivity()).execute(date);
+        new StandingsTask(mRootView, getActivity()).execute(date);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -1,4 +1,4 @@
-package com.example.takomar.nospoilersnba;
+package com.example.takomar.nospoilersnba.component;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -11,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.takomar.nospoilersnba.R;
 import com.example.takomar.nospoilersnba.component.TeamStanding;
 
 import org.jsoup.Jsoup;
@@ -29,7 +30,7 @@ import java.util.Map;
  * Created by takomar on 11/12/16.
  */
 
-public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamStanding>> > {
+public class StandingsTask extends AsyncTask<Date, Integer, Map<Integer, List<TeamStanding>> > {
 
 
     private final View mRootView;
@@ -39,7 +40,7 @@ public class Standings extends AsyncTask<Date, Integer, Map<Integer, List<TeamSt
     private LinearLayout linlaHeaderProgress;
     private Date mDate;
 
-    public Standings(View rootFragmentView, Context context){
+    public StandingsTask(View rootFragmentView, Context context){
         mContext = context;
         mRootView =rootFragmentView;
         mEast = (TableLayout) mRootView.findViewById(R.id.standingsEast);

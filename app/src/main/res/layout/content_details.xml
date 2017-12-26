@@ -22,56 +22,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:weightSum="5"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/q1"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:layout_gravity="center"
                     android:gravity="center"
+
                     android:text="Q1"
                     android:textColor="@color/colorPrimaryDark"/>
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/q2"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="Q2"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/q3"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="Q3"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/q4"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="Q4"
                     android:textColor="@color/colorPrimaryDark" />
+
                 <Button
                     android:id="@+id/overtime"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="OT"
-                    android:textColor="@color/colorPrimaryDark"  />
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
 

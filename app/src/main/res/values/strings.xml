@@ -3,10 +3,10 @@
     <string name="title_activity_details">DetailsActivity</string>
     <string name="title_activity_tt">tt</string>
     <string name="favTeam">favTeam</string>
-    <string name="q4time">28800</string>
     <string name="q1time">7200</string>
     <string name="q2time">14400</string>
     <string name="q3time">21600</string>
+    <string name="q4time">28800</string>
     <string name="defaultFav">GSW,Cavaliers</string>
     <string name="spoilType">spoilType</string>
     <string name="title_activity_my_test">MyTest</string>

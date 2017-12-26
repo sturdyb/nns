@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.takomar.nospoilersnba.component.GameInfo;
+import com.example.takomar.nospoilersnba.component.GamesByDayTask;
 import com.example.takomar.nospoilersnba.component.Retro.Schedule.GamesCallback;
 import com.example.takomar.nospoilersnba.component.Retro.Schedule.NbaGames;
 import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
@@ -34,7 +35,7 @@ import static com.example.takomar.nospoilersnba.R.id.noGamesPanel;
 
 public class WeeklyFragment extends GamesFragment {
     private SimpleDateFormat mWeeklyFormat = new SimpleDateFormat("MMM d, yyyy");
-    private List<GamesRetriever> myTasks = new ArrayList<>();
+    private List<GamesByDayTask> myTasks = new ArrayList<>();
 
     public WeeklyFragment() {
     }
@@ -117,8 +118,7 @@ public class WeeklyFragment extends GamesFragment {
             if (activity.mGamesByDate.isEmpty()) {
                 RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
                 Call<NbaGames> call = apiService.getAllGames();
-                call.enqueue(new GamesCallback(activity.mGamesByDate,
-                                                mRootView, date, mGamesAdaptor));
+                call.enqueue(new GamesCallback(date, this));
             }
             else
                 showGames(activity,date);

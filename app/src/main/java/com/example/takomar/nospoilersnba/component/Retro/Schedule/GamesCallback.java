@@ -6,7 +6,8 @@ import android.view.View;
 import com.example.takomar.nospoilersnba.Helper;
 import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.R;
-import com.example.takomar.nospoilersnba.GamesAdaptor;
+import com.example.takomar.nospoilersnba.component.IGamesViewUpdater;
+import com.example.takomar.nospoilersnba.component.ScheduleHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,21 +28,17 @@ import retrofit2.Response;
 public class GamesCallback implements Callback<NbaGames> {
 
     private Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
-    private final View mRootView;
-    private GamesAdaptor mGamesAdaptor;
+    private IGamesViewUpdater m_gamesViewUpdater;
     private Date mDate;
 
-    public GamesCallback(Map<Date, List<GameInfo>> gamesByDate,
-                         View rootView, Date date,
-                         GamesAdaptor gamesAdaptor) {
-        mGamesByDate = gamesByDate;
-        mRootView = rootView;
+    public GamesCallback(Date date, IGamesViewUpdater iGamesViewUpdater) {
+
+        m_gamesViewUpdater = iGamesViewUpdater;
         mDate = date;
-        mGamesAdaptor = gamesAdaptor;
 
         //c'est parti
-        mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.VISIBLE);
-        mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.GONE);
+        m_gamesViewUpdater.getProgressBar().setVisibility(View.VISIBLE);
+        m_gamesViewUpdater.getNoGamesPanel().setVisibility(View.GONE);
     }
 
     private GameInfo getGameInfo(G g) throws ParseException {
@@ -67,7 +64,7 @@ public class GamesCallback implements Callback<NbaGames> {
 
         return gameInfo;
     }
-    private void fillSchedule(List<Lscd> lscds) throws ParseException {
+    private void retrieveSchedule(List<Lscd> lscds) throws ParseException {
         for (Lscd lscd : lscds) {
             for( G g : lscd.getMscd().getG()) {
                 GameInfo gameInfo = getGameInfo(g);
@@ -80,45 +77,35 @@ public class GamesCallback implements Callback<NbaGames> {
             }
         }
     }
-    private void sortSchedule() {
-        for (List<GameInfo> gamesToday : mGamesByDate.values()) {
-            List<Integer> favPositions = new ArrayList<>();
-            for (GameInfo game : gamesToday)
-                if (Helper.isTeamFavorite(mRootView.getContext(), game.visitorTeam) ||
-                    Helper.isTeamFavorite(mRootView.getContext(), game.homeTeam))
-                    favPositions.add(gamesToday.indexOf(game));
-            if (!favPositions.isEmpty()) {
-                int index = 0;
-                for (Integer favPos : favPositions) {
-                    GameInfo temp = gamesToday.get(favPos);
-                    gamesToday.set(favPos, gamesToday.get(index));
-                    gamesToday.set(index, temp);
-                    index++;
-                }
-            }
+    private void fillSchedule() {
+        for (Map.Entry<Date, List<GameInfo>> gamesToday : mGamesByDate.entrySet()) {
+            ScheduleHelper.sortGamesByFav(gamesToday.getValue(),
+                                          m_gamesViewUpdater.getGamesContext());
+            m_gamesViewUpdater.fillGames(gamesToday.getValue(), gamesToday.getKey());
         }
+
     }
     @Override
     public void onResponse(Call<NbaGames> call, Response<NbaGames> response) {
         try {
-            fillSchedule(response.body().getLscd());
-            sortSchedule();
+            retrieveSchedule(response.body().getLscd());
+            fillSchedule();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
+        m_gamesViewUpdater.getProgressBar().setVisibility(View.GONE);
 
         List<GameInfo> games = mGamesByDate.get(mDate);
         if(games == null || games.isEmpty())
-            mRootView.findViewById(R.id.noGamesPanel).setVisibility(View.VISIBLE);
+            m_gamesViewUpdater.getNoGamesPanel().setVisibility(View.VISIBLE);
         else
-            mGamesAdaptor.showGames(mGamesByDate.get(mDate), false);
+            m_gamesViewUpdater.displayTodayGames(false);
     }
 
     @Override
     public void onFailure(Call<NbaGames>call, Throwable t) {
         // Log error here since request failed
         Log.e("Test", t.toString());
-        mRootView.findViewById(R.id.linlaHeaderProgress).setVisibility(View.GONE);
+        m_gamesViewUpdater.getProgressBar().setVisibility(View.GONE);
     }
 }

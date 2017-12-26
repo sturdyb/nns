@@ -27,7 +27,7 @@ public class Hls {
     private Tstsg_ tstsg;
     @SerializedName("pstsg")
     @Expose
-    private List<Pstsg_> pstsg = null;
+    private List<Pstsg> pstsg = null;
     @SerializedName("tn")
     @Expose
     private String tn;
@@ -125,11 +125,11 @@ public class Hls {
         this.tstsg = tstsg;
     }
 
-    public List<Pstsg_> getPstsg() {
+    public List<Pstsg> getPstsg() {
         return pstsg;
     }
 
-    public void setPstsg(List<Pstsg_> pstsg) {
+    public void setPstsg(List<Pstsg> pstsg) {
         this.pstsg = pstsg;
     }
 

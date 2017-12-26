@@ -1,4 +1,4 @@
-package com.example.takomar.nospoilersnba;
+package com.example.takomar.nospoilersnba.component;
 
 import android.util.Log;
 

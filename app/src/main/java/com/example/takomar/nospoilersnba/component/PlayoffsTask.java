@@ -1,4 +1,4 @@
-package com.example.takomar.nospoilersnba;
+package com.example.takomar.nospoilersnba.component;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.takomar.nospoilersnba.component.PlayoffsGame;
+import com.example.takomar.nospoilersnba.Helper;
+import com.example.takomar.nospoilersnba.PlayOffsActivity;
+import com.example.takomar.nospoilersnba.PlayoffsAdaptor;
+import com.example.takomar.nospoilersnba.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,13 +27,13 @@ import static android.os.Process.THREAD_PRIORITY_MORE_FAVORABLE;
  * Created by takomar on 11/12/16.
  */
 
-public class Playoffs extends AsyncTask<String, Integer, List<PlayoffsGame> > {
+public class PlayoffsTask extends AsyncTask<String, Integer, List<PlayoffsGame> > {
 
     private Context mContext;
     private LinearLayout linlaHeaderProgress;
     private PlayoffsAdaptor mPlayoffsAdaptor;
 
-    public Playoffs(Context context, PlayoffsAdaptor playoffsAdaptor){
+    public PlayoffsTask(Context context, PlayoffsAdaptor playoffsAdaptor){
         mContext = context;
         mPlayoffsAdaptor = playoffsAdaptor;
         linlaHeaderProgress = (LinearLayout)((Activity) mContext)
@@ -59,11 +62,11 @@ public class Playoffs extends AsyncTask<String, Integer, List<PlayoffsGame> > {
                     game.summary =gameInfo.getString("summaryStatusText");
 
                     JSONObject topRow = gameInfo.getJSONObject("topRow");
-                    game.team1 = Helper.IdNameTeam.get(topRow.getString("teamId"));
+                    game.team1 = Helper.getTeamById(topRow.getString("teamId"));
                     game.team1Seed = topRow.getString("seedNum");
                     game.team1Wins = topRow.getString("wins");
                     JSONObject bottomRow = gameInfo.getJSONObject("bottomRow");
-                    game.team2 = Helper.IdNameTeam.get(bottomRow.getString("teamId"));
+                    game.team2 = Helper.getTeamById(bottomRow.getString("teamId"));
                     game.team2Seed = bottomRow.getString("seedNum");
                     game.team2Wins = bottomRow.getString("wins");
 

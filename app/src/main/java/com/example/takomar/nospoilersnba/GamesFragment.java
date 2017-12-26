@@ -1,10 +1,7 @@
 package com.example.takomar.nospoilersnba;
 
 import android.app.Fragment;
-import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,19 +13,61 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.takomar.nospoilersnba.component.DailyExecutor;
 import com.example.takomar.nospoilersnba.component.DatePickerFragment;
+import com.example.takomar.nospoilersnba.component.GameInfo;
+import com.example.takomar.nospoilersnba.component.GamesByDayTask;
+import com.example.takomar.nospoilersnba.component.IGamesViewUpdater;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import static com.example.takomar.nospoilersnba.Helper.getEndPeriod;
+import static com.example.takomar.nospoilersnba.Helper.openHighlights;
+import static com.example.takomar.nospoilersnba.Helper.openWatchNbaSite;
 
 /**
  * Created by takomar on 18/03/17.
  */
 
-public abstract class GamesFragment extends Fragment implements MainFragmentActivity.XmlClickable {
+public abstract class GamesFragment extends Fragment
+                                    implements MainFragmentActivity.XmlClickable,
+                                               IGamesViewUpdater {
     protected GamesAdaptor mGamesAdaptor;
+
+    @Override
+    public void fillGames(List<GameInfo> games, Date date) {
+        MainFragmentActivity activity = (MainFragmentActivity) getActivity();
+        activity.addGamesByDate(games, date);
+    }
+
+    @Override
+    public void displayTodayGames(boolean showDate) {
+        MainFragmentActivity activity = (MainFragmentActivity) getActivity();
+        mGamesAdaptor.showGames(activity.retrieveGamesByDate(mCurrentDate), showDate);
+    }
+
+    @Override
+    public Context getGamesContext() {
+        return getActivity();
+    }
+
+    @Override
+    public View getNoGamesPanel() {
+        return mRootView.findViewById(R.id.noGamesPanel);
+    }
+
+    @Override
+    public View getProgressBar() {
+        return mRootView.findViewById(R.id.linlaHeaderProgress);
+    }
+
+    @Override
+    public void stopRefreshing() {
+        ((SwipeRefreshLayout)mRootView.findViewById(R.id.swipeContainer)).setRefreshing(false);
+    }
+
     protected View mRootView;
     protected Date mCurrentDate;
 
@@ -51,24 +90,23 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
             @Override
             public void onItemClick(View view, Context context, GamesAdaptor.GameInfoHolder gameInfo) {
                 if (view.getId() == R.id.buttonWatch) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://watch.nba.com/game/" +
-                                    gameInfo.gameCode));
-                    startActivity(intent);
+                    openWatchNbaSite(getActivity(), gameInfo.gameCode);
                     return;
                 }
-                else if (view.getId() == R.id.buttonSearch) {
-                    String query = gameInfo.homeTeam.getText() + " " +
-                                   gameInfo.visitorTeam.getText() + " ximo pierto final";
-
-                    Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                    intent.putExtra(SearchManager.QUERY, query);
-                    if (intent.resolveActivity(getActivity().getPackageManager()) != null)
-                        startActivity(intent);
+                if (view.getId() == R.id.buttonSearch) {
+                    openHighlights(getActivity(),
+                                   gameInfo.homeTeam.getText().toString(),
+                                   gameInfo.visitorTeam.getText().toString());
 
                     return;
                 }
-                Helper.showGameDetails(context, gameInfo, view.getId());
+                if(view.getId() == R.id.custom) {
+                    Helper.chooseTimeDialog(getActivity(), gameInfo);
+                    return;
+                }
+
+                Helper.showGameDetails(context, gameInfo,
+                                       getEndPeriod(context, view.getId()));
             }
         });
     }
@@ -90,10 +128,7 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
             @Override
             public void onRefresh() {
 
-                new GamesRetriever(
-                        getActivity(),
-                        new DailyExecutor((MainFragmentActivity) getActivity(),
-                                           mRootView, mGamesAdaptor)).execute(mCurrentDate);
+                new GamesByDayTask(GamesFragment.this).execute(mCurrentDate);
             }
         });
 
@@ -112,10 +147,7 @@ public abstract class GamesFragment extends Fragment implements MainFragmentActi
 
     @Override
     public void refreshGames(View v) {
-        new GamesRetriever(
-                getActivity(),
-                new DailyExecutor((MainFragmentActivity) getActivity(),
-                        mRootView, mGamesAdaptor)).execute(mCurrentDate);
+        new GamesByDayTask(this).execute(mCurrentDate);
     }
 
     @Override

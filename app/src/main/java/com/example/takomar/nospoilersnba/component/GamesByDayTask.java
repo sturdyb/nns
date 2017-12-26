@@ -1,12 +1,12 @@
-package com.example.takomar.nospoilersnba;
+package com.example.takomar.nospoilersnba.component;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
-import com.example.takomar.nospoilersnba.component.GameInfo;
-import com.example.takomar.nospoilersnba.component.IRetrieveExecutorStrategy;
+import com.example.takomar.nospoilersnba.Helper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,21 +18,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by takomar on 11/12/16.
  */
 
-public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
-    protected SimpleDateFormat dateFormatUrl = new SimpleDateFormat("MM/d/yyyy");
-    protected Context mContext;
-    private IRetrieveExecutorStrategy mStrategy;
-    protected Date mDate;
+public class GamesByDayTask extends AsyncTask<Date, Integer, List<GameInfo>> {
+    private SimpleDateFormat dateFormatUrl = new SimpleDateFormat("MM/d/yyyy");
+    private IGamesViewUpdater m_gamesViewUpdater;
+    private Date mDate;
 
-    public GamesRetriever(Context context, IRetrieveExecutorStrategy strategy) {
-        mContext = context;
-        mStrategy = strategy;
+    public GamesByDayTask(IGamesViewUpdater iGamesViewUpdater) {
+        m_gamesViewUpdater = iGamesViewUpdater;
     }
 
     private GameInfo fillGameInfo(JSONArray currentGame) throws JSONException, ParseException {
@@ -53,8 +50,8 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
         String match = gameInfo.gameCode;
         int x = match.indexOf("/");
-        gameInfo.visitorTeam = Helper.CodeNameTeam.get(match.substring(x + 1, x + 4));
-        gameInfo.homeTeam = Helper.CodeNameTeam.get(match.substring(x + 4));
+        gameInfo.visitorTeam = Helper.getTeamByCode(match.substring(x + 1, x + 4));
+        gameInfo.homeTeam = Helper.getTeamByCode(match.substring(x + 4));
         gameInfo.gameDate = mDate;
         return gameInfo.visitorTeam == null || gameInfo.homeTeam == null ? null : gameInfo;
     }
@@ -72,7 +69,7 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
 
         if (game != null) {
             String teamAbbr = teamDetails.getString(4);
-            if (Helper.CodeNameTeam.get(teamAbbr).equals(game.homeTeam))
+            if (Helper.getTeamByCode(teamAbbr).equals(game.homeTeam))
                 game.homePts = teamDetails.getInt(22);
             else
                 game.visitorPts = teamDetails.getInt(22);
@@ -113,8 +110,6 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
                     if (gameInfo != null)
                         gamesToday.add(gameInfo);
                 }
-
-
             }
 
             if (retrieveDetails) {
@@ -142,37 +137,28 @@ public class GamesRetriever extends AsyncTask<Date, Integer, List<GameInfo>> {
     protected List<GameInfo> doInBackground(Date... params) {
 
         mDate = (Date) params[0].clone();
-        //Log.v("Spoilwtf", "Daily " + this.toString() + " date " + dateFormatUrl.format(mDate) + (mForCache ? " y" : " n"));
         List<GameInfo> gamesToday = retrieveGames(mDate, true);
+
         if (gamesToday == null)
             return null;
 
-        List<Integer> favPositions = new ArrayList<>();
-        for (GameInfo game : gamesToday)
-            if (Helper.isTeamFavorite(mContext, game.visitorTeam) ||
-                Helper.isTeamFavorite(mContext, game.homeTeam))
-                favPositions.add(gamesToday.indexOf(game));
-
-        if (!favPositions.isEmpty()) {
-            int index = 0;
-            for (Integer favPos : favPositions) {
-                GameInfo temp = gamesToday.get(favPos);
-                gamesToday.set(favPos, gamesToday.get(index));
-                gamesToday.set(index, temp);
-                index++;
-            }
-        }
-        
+        ScheduleHelper.sortGamesByFav(gamesToday, m_gamesViewUpdater.getGamesContext());
         return gamesToday;
     }
 
     @Override
-    protected void onPreExecute() {
-        mStrategy.preExecute();
-    }
+    protected void onPreExecute() { }
 
     protected void onPostExecute(List<GameInfo> result) {
-            mStrategy.postExecute(result, mDate, isCancelled());
+        if (result != null && !result.isEmpty() && !isCancelled())
+        {
+            Toast.makeText(m_gamesViewUpdater.getGamesContext(),
+                    "updating...", Toast.LENGTH_SHORT).show();
+            m_gamesViewUpdater.fillGames(result, mDate);
+            m_gamesViewUpdater.displayTodayGames(false);
+            m_gamesViewUpdater.getNoGamesPanel().setVisibility(View.GONE);
+        }
+        m_gamesViewUpdater.stopRefreshing();
     }
 
 }

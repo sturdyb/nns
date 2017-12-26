@@ -62,6 +62,30 @@ public class DailyFragment extends GamesFragment {
         getActivity().findViewById(R.id.standingsDate).setVisibility(View.VISIBLE);
     }
 
+    private boolean shouldRefreshAutomatically(Date date) {
+        long diff = date.getTime() - getInitialDate().getTime();
+        TimeUnit timeUnit = TimeUnit.DAYS;
+        diff = timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+
+        return (diff == 1 || diff == 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopRefresh();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainFragmentActivity) {
+            MainFragmentActivity activity = (MainFragmentActivity) getActivity();
+            if (shouldRefreshAutomatically(mCurrentDate) && !activity.mGamesByDate.isEmpty())
+                setRepeatingAsyncTask();
+        }
+    }
+
     @Override
     protected Date getInitialDate() {
         Calendar cal = Calendar.getInstance();
@@ -100,7 +124,7 @@ public class DailyFragment extends GamesFragment {
             if (activity.mGamesByDate.isEmpty()) {
                 RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
                 Call<NbaGames> call = apiService.getAllGames();
-                call.enqueue(new GamesCallback(activity.mGamesByDate, mRootView, date, mGamesAdaptor));
+                call.enqueue(new GamesCallback(date, this));
                 //Log.v("Refresh", "Main");
             }
             else {
@@ -114,10 +138,7 @@ public class DailyFragment extends GamesFragment {
             }
         }
 
-        long diff = date.getTime() - getInitialDate().getTime();
-        TimeUnit timeUnit = TimeUnit.DAYS;
-        diff = timeUnit.convert(diff, TimeUnit.MILLISECONDS);
-        if(diff == 1 || diff == 0)
+        if(shouldRefreshAutomatically(date))
             setRepeatingAsyncTask();
         else
             stopRefresh();
@@ -126,7 +147,6 @@ public class DailyFragment extends GamesFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stopRefresh();
     }
 
     @Override

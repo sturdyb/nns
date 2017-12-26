@@ -45,7 +45,6 @@ public class MainFragmentActivity extends AppCompatActivity
     private XmlClickable mCurrentFragment;
 
     public Map<Date, List<GameInfo>> mGamesByDate = new HashMap<>();
-    private List<GamesRetriever> mCacheTasks = new ArrayList<>();
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -58,9 +57,6 @@ public class MainFragmentActivity extends AppCompatActivity
         mCurrentFragment.treatDate(cal.getTime());
     }
 
-    public boolean alreadyLoadedGames(Date date) {
-        return mGamesByDate.containsKey(date);
-    }
     public List<GameInfo> retrieveGamesByDate(Date date) {
         date.setHours(0);
         return mGamesByDate.get(date);
@@ -68,15 +64,6 @@ public class MainFragmentActivity extends AppCompatActivity
     public void addGamesByDate(List<GameInfo> games, Date date) {
         date.setHours(0);
         mGamesByDate.put(date, games);
-    }
-    public void addCacheTasks(GamesRetriever task) {
-        mCacheTasks.add(task);
-    }
-    public void clearCache() {
-        for (GamesRetriever task : mCacheTasks)
-            if (task.getStatus() != AsyncTask.Status.FINISHED)
-                task.cancel(true);
-        mCacheTasks.clear();
     }
 
     @Override
@@ -135,7 +122,6 @@ public class MainFragmentActivity extends AppCompatActivity
     }
 
     public void changeFragment(Fragment fragment) {
-        clearCache();
         mCurrentFragment = (XmlClickable) fragment;
         getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment).commit();
@@ -156,7 +142,6 @@ public class MainFragmentActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
             item.setChecked(true);
         } else if (id == R.id.nav_playoffs) {
-            clearCache();
             startActivity(new Intent(this, PlayOffsActivity.class));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

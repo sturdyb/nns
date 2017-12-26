@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.component.PlayoffsGame;
+import com.example.takomar.nospoilersnba.component.PlayoffsTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +141,7 @@ public class PlayOffsActivity extends AppCompatActivity {
         mRound3.setOnClickListener(dOnClick);
         mFinals.setOnClickListener(dOnClick);
 
-        new Playoffs(this, mPlayoffsAdaptor).execute();
+        new PlayoffsTask(this, mPlayoffsAdaptor).execute();
     }
 
 }
