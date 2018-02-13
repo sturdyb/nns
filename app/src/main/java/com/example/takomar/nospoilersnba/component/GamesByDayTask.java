@@ -152,8 +152,6 @@ public class GamesByDayTask extends AsyncTask<Date, Integer, List<GameInfo>> {
     protected void onPostExecute(List<GameInfo> result) {
         if (result != null && !result.isEmpty() && !isCancelled())
         {
-            Toast.makeText(m_gamesViewUpdater.getGamesContext(),
-                    "updating...", Toast.LENGTH_SHORT).show();
             m_gamesViewUpdater.fillGames(result, mDate);
             m_gamesViewUpdater.displayTodayGames(false);
             m_gamesViewUpdater.getNoGamesPanel().setVisibility(View.GONE);

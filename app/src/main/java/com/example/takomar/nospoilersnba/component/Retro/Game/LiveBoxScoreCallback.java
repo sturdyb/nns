@@ -2,8 +2,10 @@ package com.example.takomar.nospoilersnba.component.Retro.Game;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.takomar.nospoilersnba.Helper;
+import com.example.takomar.nospoilersnba.R;
 import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.component.IBoxScoreViewUpdater;
 import com.example.takomar.nospoilersnba.component.IGamesViewUpdater;
@@ -29,10 +31,10 @@ import retrofit2.Response;
  * Created by takomar on 9/28/17.
  */
 
-public class BoxScoreCallback implements Callback<GameDetails> {
+public class LiveBoxScoreCallback implements Callback<GameDetails> {
 
     private IBoxScoreViewUpdater m_BoxScoreUpdater;
-    public BoxScoreCallback(IBoxScoreViewUpdater iBoxScoreViewUpdater){
+    public LiveBoxScoreCallback(IBoxScoreViewUpdater iBoxScoreViewUpdater){
         m_BoxScoreUpdater = iBoxScoreViewUpdater;
 
         m_BoxScoreUpdater.clearViews();
@@ -68,6 +70,11 @@ public class BoxScoreCallback implements Callback<GameDetails> {
     public void onResponse(Call<GameDetails> call, Response<GameDetails> response) {
         List<PlayerInfo> playersAway = fillInfo(response.body().getG().getVls().getPstsg());
         List<PlayerInfo> playersHome = fillInfo(response.body().getG().getHls().getPstsg());
+        Button live = (Button) m_BoxScoreUpdater.getLivePanel().findViewById(R.id.live);
+        live.setText(response.body().getG().getCl() + " remaining of the " +
+                     response.body().getG().getStt());
+        live.setAllCaps(false);
+
         m_BoxScoreUpdater.createHomeHeaders();
         m_BoxScoreUpdater.createAwayHeaders();
         m_BoxScoreUpdater.fillHomeStats(playersHome);

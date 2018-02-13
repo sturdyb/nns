@@ -22,16 +22,24 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
             <NumberPicker
-                android:id="@+id/quarter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"/>
-            <NumberPicker
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/of"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/time"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/quarter"/>
+                android:textColor="@color/colorPrimaryDark"
+                android:text=" of "/>
+            <NumberPicker
+                android:id="@+id/quarter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/of"/>
         </RelativeLayout>
         <Button
             android:id="@+id/go"

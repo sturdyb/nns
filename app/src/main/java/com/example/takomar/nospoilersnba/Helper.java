@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.DhcpInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.core.deps.guava.collect.ImmutableMap;
@@ -187,34 +188,50 @@ public class Helper {
         return "live";
     }
 
-    static public void chooseTimeDialog(final Context context,
-                                        final GamesAdaptor.GameInfoHolder gameInfo) {
+    static public Dialog createTimeDialog(final Context context)
+    {
         final Dialog dialog = new Dialog(context);
 
         dialog.setContentView(R.layout.time_chooser);
         dialog.setTitle("Choose a time:");
         final NumberPicker np = (NumberPicker) dialog.findViewById(R.id.time);
-        np.setWrapSelectorWheel(true);
-        np.setMaxValue(12);
+        np.setWrapSelectorWheel(false);
         np.setMinValue(1);
+        np.setMaxValue(12);
+        np.setDisplayedValues(new String[]{
+                "11:00","10:00","09:00",
+                "08:00","07:00","06:00",
+                "05:00","04:00","03:00",
+                "02:00","01:00","end"});
+        np.setValue(12);
         final NumberPicker qp = (NumberPicker) dialog.findViewById(R.id.quarter);
-        qp.setDisplayedValues(new String[]{"Q1", "Q2", "Q3", "Q4"});
+        qp.setDisplayedValues(
+                new String[]{"1st quarter", "2nd quarter", "3rd quarter", "4th quarter"});
         qp.setMaxValue(3);
         qp.setMinValue(0);
         qp.setWrapSelectorWheel(false);
 
+        final Button back = (Button) dialog.findViewById(R.id.goBack);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { dialog.dismiss(); }
+        });
+
+        return dialog;
+    }
+    static public void chooseTimeDialog(final Context context,
+                                        final GamesAdaptor.GameInfoHolder gameInfo) {
+
+        final Dialog dialog = createTimeDialog(context);
         final Button go = (Button) dialog.findViewById(R.id.go);
+        final NumberPicker np = (NumberPicker) dialog.findViewById(R.id.time);
+        final NumberPicker qp = (NumberPicker) dialog.findViewById(R.id.quarter);
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
                 showGameDetails(context, gameInfo, getTime(qp.getValue(), np.getValue()));
             }
-        });
-        final Button back = (Button) dialog.findViewById(R.id.goBack);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { dialog.dismiss(); }
         });
 
         dialog.show();

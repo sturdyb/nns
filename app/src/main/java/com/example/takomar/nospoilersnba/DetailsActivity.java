@@ -1,5 +1,6 @@
 package com.example.takomar.nospoilersnba;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,10 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ import android.widget.TextView;
 import com.example.takomar.nospoilersnba.component.BoxScoreTask;
 import com.example.takomar.nospoilersnba.component.IBoxScoreViewUpdater;
 import com.example.takomar.nospoilersnba.component.PlayerInfo;
-import com.example.takomar.nospoilersnba.component.Retro.Game.BoxScoreCallback;
+import com.example.takomar.nospoilersnba.component.Retro.Game.LiveBoxScoreCallback;
 import com.example.takomar.nospoilersnba.component.Retro.Game.GameDetails;
 import com.example.takomar.nospoilersnba.component.Retro.RetroApi;
 import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
@@ -27,8 +28,9 @@ import com.example.takomar.nospoilersnba.component.Retro.RetroInterface;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
+import static com.example.takomar.nospoilersnba.Helper.createTimeDialog;
+import static com.example.takomar.nospoilersnba.Helper.getTime;
 
 
 public class DetailsActivity extends AppCompatActivity implements IBoxScoreViewUpdater {
@@ -39,11 +41,8 @@ public class DetailsActivity extends AppCompatActivity implements IBoxScoreViewU
     private TableLayout mAwayNames;
     private TableLayout mHomeBox ;
     private TableLayout mAwayBox;
+    private Button mTimeChooser;
     private Button mOvertime;
-    private Button mQuarter1;
-    private Button mQuarter2;
-    private Button mQuarter3;
-    private Button mQuarter4;
     private String mQuarterTime;
 
     @Override
@@ -186,6 +185,11 @@ public class DetailsActivity extends AppCompatActivity implements IBoxScoreViewU
     }
 
     @Override
+    public View getLivePanel() {
+        return findViewById(R.id.livePanel);
+    }
+
+    @Override
     public void clearViews() {
         mHomeBox.removeAllViews();
         mAwayBox.removeAllViews();
@@ -193,48 +197,33 @@ public class DetailsActivity extends AppCompatActivity implements IBoxScoreViewU
         mAwayNames.removeAllViews();
     }
 
-    private void enableAllButtons() {
-        int colorId = getResources().getColor(R.color.colorPrimaryDark);
-        mQuarter1.setEnabled(true);
-        mQuarter2.setEnabled(true);
-        mQuarter3.setEnabled(true);
-        mQuarter4.setEnabled(true);
-        mQuarter1.setTextColor(colorId);
-        mQuarter2.setTextColor(colorId);
-        mQuarter3.setTextColor(colorId);
-        mQuarter4.setTextColor(colorId);
-    }
-
-    private void disableNewQuarter(int viewId) {
-        Button buttonToDisable;
-        if (viewId == mQuarter1.getId())
-            buttonToDisable = mQuarter1;
-        else if (viewId == mQuarter2.getId())
-            buttonToDisable = mQuarter2;
-        else if (viewId == mQuarter3.getId())
-            buttonToDisable = mQuarter3;
-        else
-            buttonToDisable = mQuarter4;
-
-        buttonToDisable.setTextColor(Color.GRAY);
-        buttonToDisable.setEnabled(false);
-    }
-
-    private void retrieveDetailsButton(int viewId, String gameId, String quarterTime) {
-        enableAllButtons();
-        disableNewQuarter(viewId);
-        retrieveDetails(gameId, quarterTime);
-    }
     private void retrieveDetails(String gameId, String quarterTime)
     {
         if (quarterTime.equals("live"))
         {
             RetroInterface apiService = RetroApi.getClient().create(RetroInterface.class);
             Call<GameDetails> call = apiService.getGameDetails(gameId);
-            call.enqueue(new BoxScoreCallback(this));
+            call.enqueue(new LiveBoxScoreCallback(this));
             return;
         }
         new BoxScoreTask(DetailsActivity.this, mHome).execute(gameId, quarterTime);
+    }
+    private void chooseTimeBoxScore(final String gameId) {
+
+        final Dialog dialog = createTimeDialog(this);
+        final Button go = (Button) dialog.findViewById(R.id.go);
+        final NumberPicker np = (NumberPicker) dialog.findViewById(R.id.time);
+        final NumberPicker qp = (NumberPicker) dialog.findViewById(R.id.quarter);
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                mQuarterTime = getTime(qp.getValue(), np.getValue());
+                retrieveDetails(gameId, mQuarterTime);
+            }
+        });
+
+        dialog.show();
     }
 
     public class DetailOnClick implements View.OnClickListener {
@@ -245,28 +234,17 @@ public class DetailsActivity extends AppCompatActivity implements IBoxScoreViewU
         }
 
         public void onClick(View v) {
-            String currentQTime;
             if (v.getId() == R.id.overtime) {
                 int otQ = Integer.parseInt(mQuarterTime) + 3000;
-                currentQTime = Integer.toString(otQ);
+                mQuarterTime = Integer.toString(otQ);
+                retrieveDetails(mGameId, mQuarterTime);
+                return;
             }
-            else
-                currentQTime = Helper.getEndPeriod(DetailsActivity.this, v.getId());
-            mQuarterTime = currentQTime;
-            retrieveDetailsButton(v.getId(), mGameId, currentQTime);
+
+            chooseTimeBoxScore(mGameId);
         }
     }
 
-    private int getQuarterId(String quarter) {
-        if (quarter.equals(getString(R.string.q1time)))
-            return R.id.q1;
-        else if (quarter.equals(getString(R.string.q2time)))
-            return R.id.q2;
-        else if (quarter.equals(getString(R.string.q3time)))
-            return R.id.q3;
-
-        return R.id.q4;
-    }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,32 +256,24 @@ public class DetailsActivity extends AppCompatActivity implements IBoxScoreViewU
         mHomeBox =(TableLayout)findViewById(R.id.boxScoreHome);
         mAwayBox =(TableLayout)findViewById(R.id.boxScoreVisitor);
         mOvertime = (Button)findViewById(R.id.overtime);
-        mQuarter1 = (Button)findViewById(R.id.q1);
-        mQuarter2 = (Button)findViewById(R.id.q2);
-        mQuarter3 = (Button)findViewById(R.id.q3);
-        mQuarter4 = (Button)findViewById(R.id.q4);
+        mTimeChooser = (Button)findViewById(R.id.live);
 
         mHome = getIntent().getStringExtra("Home");
         mAway = getIntent().getStringExtra("Away");
         final String gameID= getIntent().getStringExtra("GameID");
-        final String quarter= getIntent().getStringExtra("Quarter");
-        mQuarterTime = quarter;
+        mQuarterTime = getIntent().getStringExtra("Quarter");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(mAway + " @ " + mHome + " : box score");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        disableNewQuarter(getQuarterId(quarter));
 
         DetailOnClick dOnClick = new DetailOnClick(gameID);
         mOvertime.setVisibility(View.GONE);
         mOvertime.setOnClickListener(dOnClick);
-        mQuarter4.setOnClickListener(dOnClick);
-        mQuarter3.setOnClickListener(dOnClick);
-        mQuarter2.setOnClickListener(dOnClick);
-        mQuarter1.setOnClickListener(dOnClick);
+        mTimeChooser.setOnClickListener(dOnClick);
 
-        retrieveDetails(gameID, quarter);
+        retrieveDetails(gameID, mQuarterTime);
     }
 
 }

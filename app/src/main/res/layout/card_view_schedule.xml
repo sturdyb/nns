@@ -270,6 +270,18 @@
                     android:visibility="visible"
                     android:orientation="horizontal">
 
+                    <ImageButton
+                        android:id="@+id/custom"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_access_time_black_24dp"
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:tint="@color/colorPrimaryDark"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryDark" />
                     <Button
                         android:id="@+id/q1"
                         style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -309,16 +321,6 @@
                         android:gravity="center"
                         android:text="Q4"
                         android:textColor="@color/colorPrimaryDark" />
-                    <Button
-                        android:id="@+id/custom"
-                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="right"
-                        android:gravity="center"
-                        android:text="@"
-                        android:textColor="@color/colorPrimaryDark" />
-
                 </LinearLayout>
 
             </LinearLayout>

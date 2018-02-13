@@ -3,14 +3,17 @@ package com.example.takomar.nospoilersnba;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.takomar.nospoilersnba.component.GameInfo;
+import com.example.takomar.nospoilersnba.component.OnSwipeTouchListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +40,8 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
 
     public interface OnItemClickListener {
         void onItemClick(View view, Context context, GameInfoHolder gameInfo);
+        void onItemSwipeRight(View v);
+        void onItemSwipeLeft(View v);
     }
     private OnItemClickListener mItemClickListener;
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -44,7 +49,9 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
     }
 
 
-    public class GameInfoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class GameInfoHolder
+            extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         protected TextView homeTeam;
         protected TextView visitorTeam;
         protected TextView homeScore;
@@ -75,7 +82,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             Button q2 = (Button) v.findViewById(R.id.q2);
             Button q3 = (Button) v.findViewById(R.id.q3);
             Button q4 = (Button) v.findViewById(R.id.q4);
-            Button custom = (Button) v.findViewById(R.id.custom);
+            ImageButton custom = (ImageButton) v.findViewById(R.id.custom);
             Button live = (Button) v.findViewById(R.id.liveStats);
             ImageView highlights = (ImageView) v.findViewById(R.id.buttonSearch);
             ImageView watch = (ImageView) v.findViewById(R.id.buttonWatch);
@@ -123,7 +130,7 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         return new GameInfoHolder(itemView);
     }
 
-    public void setGameInformation(GameInfoHolder holder, final GameInfo gameInfo ) {
+    public void setGameInformation(final GameInfoHolder holder, final GameInfo gameInfo ) {
         holder.homeTeam.setText(gameInfo.homeTeam);
         holder.visitorTeam.setText(gameInfo.visitorTeam);
 
@@ -146,6 +153,18 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             public void onClick(View v) {
             }
         });
+        holder.itemView.setOnTouchListener(new OnSwipeTouchListener(mContext)
+                {
+                    @Override
+                    public void onSwipeRight() {
+                        mItemClickListener.onItemSwipeRight(holder.itemView);
+                    }
+
+                    @Override
+                    public void onSwipeLeft() {
+                        mItemClickListener.onItemSwipeLeft(holder.itemView);
+                    }
+                });
     }
 
     @Override

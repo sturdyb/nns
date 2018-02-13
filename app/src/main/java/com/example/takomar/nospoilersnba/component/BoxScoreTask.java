@@ -142,9 +142,14 @@ public class BoxScoreTask extends AsyncTask<String, Integer, Map<String, List<Pl
                 mTotalsPtsAway = m_BoxScoreUpdater.fillAwayStats(oneTeam);
         }
 
-        if(mTotalsPtsHome > 0 && mTotalsPtsHome == mTotalsPtsAway &&
-           mRange.compareTo(m_BoxScoreUpdater.getContext().getString(R.string.q4time)) >= 0)
+        if(mTotalsPtsHome > 0 && mTotalsPtsHome == mTotalsPtsAway && mRange.compareTo(m_BoxScoreUpdater.getContext().getString(R.string.q4time)) >= 0)
             m_BoxScoreUpdater.showOverTime();
+
+        int quarter = (Integer.parseInt(mRange) - 1) / 7200 + 1; // -1 on range to always add 1 (even at end)
+        int diff = Integer.parseInt(mRange) % 7200;
+        int time = diff == 0 ? 0 : 12 - diff / 600;
+        Button live = (Button) m_BoxScoreUpdater.getLivePanel().findViewById(R.id.live);
+        live.setText(time + ":00" + " remaining of the " + quarter + " quarter");
 
         m_BoxScoreUpdater.getProgressBar().setVisibility(View.GONE);
         m_BoxScoreUpdater.requestLayouts();

@@ -17,6 +17,7 @@ public interface IBoxScoreViewUpdater {
     int fillHomeStats(List<PlayerInfo> oneTeam);
     int fillAwayStats(List<PlayerInfo> oneTeam);
     View getProgressBar();
+    View getLivePanel();
     void showOverTime();
 
 }

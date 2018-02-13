@@ -9,14 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.takomar.nospoilersnba.component.DatePickerFragment;
 import com.example.takomar.nospoilersnba.component.GameInfo;
 import com.example.takomar.nospoilersnba.component.GamesByDayTask;
 import com.example.takomar.nospoilersnba.component.IGamesViewUpdater;
+import com.example.takomar.nospoilersnba.component.OnSwipeTouchListener;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -95,18 +98,29 @@ public abstract class GamesFragment extends Fragment
                 }
                 if (view.getId() == R.id.buttonSearch) {
                     openHighlights(getActivity(),
-                                   gameInfo.homeTeam.getText().toString(),
-                                   gameInfo.visitorTeam.getText().toString());
+                            gameInfo.homeTeam.getText().toString(),
+                            gameInfo.visitorTeam.getText().toString());
 
                     return;
                 }
-                if(view.getId() == R.id.custom) {
+                if (view.getId() == R.id.custom) {
                     Helper.chooseTimeDialog(getActivity(), gameInfo);
                     return;
                 }
 
                 Helper.showGameDetails(context, gameInfo,
-                                       getEndPeriod(context, view.getId()));
+                        getEndPeriod(context, view.getId()));
+            }
+
+            @Override
+            public void onItemSwipeRight(View v) {
+                goToPrevDate(v);
+            }
+
+            @Override
+            public void onItemSwipeLeft(View v) {
+                goToNextDate(v);
+
             }
         });
     }
@@ -117,6 +131,19 @@ public abstract class GamesFragment extends Fragment
         mRootView = inflater.inflate(R.layout.games_fragment, container, false);
         final RecyclerView recViewList = (RecyclerView) mRootView.findViewById(R.id.cardList);
         recViewList.setHasFixedSize(true);
+
+//        final LinearLayout gestLayout = (LinearLayout) mRootView.findViewById(R.id.gestureLayout);
+//        gestLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+//            @Override
+//            public void onSwipeRight() {
+//                goToPrevDate(gestLayout);
+//            }
+//
+//            @Override
+//            public void onSwipeLeft() {
+//                goToNextDate(gestLayout);
+//            }
+//        });
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
