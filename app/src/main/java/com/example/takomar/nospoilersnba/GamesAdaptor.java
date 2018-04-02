@@ -135,13 +135,13 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
         holder.visitorTeam.setText(gameInfo.visitorTeam);
 
         int imageResource = mContext.getResources()
-                                    .getIdentifier(Helper.imageTeam.get(gameInfo.homeTeam),
+                                    .getIdentifier(Helper.getImageByTeam(gameInfo.homeTeam),
                                                    null, mContext.getPackageName());
         holder.homeLogo.setImageDrawable(mContext.getResources().getDrawable(imageResource));
 
 
         imageResource = mContext.getResources()
-                                .getIdentifier(Helper.imageTeam.get(gameInfo.visitorTeam),
+                                .getIdentifier(Helper.getImageByTeam(gameInfo.visitorTeam),
                                                null, mContext.getPackageName());
         holder.visitorLogo.setImageDrawable(mContext.getResources().getDrawable(imageResource));
 
@@ -153,18 +153,6 @@ public class GamesAdaptor extends RecyclerView.Adapter<GamesAdaptor.GameInfoHold
             public void onClick(View v) {
             }
         });
-        holder.itemView.setOnTouchListener(new OnSwipeTouchListener(mContext)
-                {
-                    @Override
-                    public void onSwipeRight() {
-                        mItemClickListener.onItemSwipeRight(holder.itemView);
-                    }
-
-                    @Override
-                    public void onSwipeLeft() {
-                        mItemClickListener.onItemSwipeLeft(holder.itemView);
-                    }
-                });
     }
 
     @Override

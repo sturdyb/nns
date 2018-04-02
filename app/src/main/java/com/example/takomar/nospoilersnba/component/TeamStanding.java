@@ -5,6 +5,7 @@ package com.example.takomar.nospoilersnba.component;
  */
 
 public class TeamStanding {
+    public String teamId;
     public String name;
     public String wins;
     public String losses;

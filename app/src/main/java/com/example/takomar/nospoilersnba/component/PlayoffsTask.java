@@ -47,7 +47,7 @@ public class PlayoffsTask extends AsyncTask<String, Integer, List<PlayoffsGame> 
         android.os.Process.setThreadPriority(THREAD_PRIORITY_BACKGROUND +
                                              THREAD_PRIORITY_MORE_FAVORABLE);
         try {
-            String myUrl = "http://data.nba.net/data/10s/prod/v1/2016/playoffsBracket.json";
+            String myUrl = "http://data.nba.net/data/10s/prod/v1/2017/playoffsBracket.json";
             Log.v("SpoilDtl", myUrl);
             StringBuffer buffer = UrlHelper.retrieveJSONBuffer(myUrl);
 

@@ -57,11 +57,11 @@ public class Helper {
             .put("TOR", 	"Raptors")
             .put("UTA", 	"Jazz")
             .put("WAS", 	"Wizards")
-            .put("EST",     "East")
+            .put("EST",     "Standing")
             .put("WST",     "West")
             .build();
     static public String getTeamByCode(String teamCode){
-        return CodeNameTeam.get(teamCode);
+        return CodeNameTeam.get(teamCode) != null? CodeNameTeam.get(teamCode) : teamCode;
     }
     static final Map<String, String> imageTeam = ImmutableMap.<String, String>builder()
             .put("Hawks", "@drawable/atl_2018")
@@ -94,9 +94,14 @@ public class Helper {
             .put("Raptors", "@drawable/tor_2018")
             .put("Jazz", "@drawable/uta_2018")
             .put("Wizards", "@drawable/was_2018")
-            .put("East", "@drawable/nba_2018")
+            .put("Standing", "@drawable/nba_2018")
             .put("West", "@drawable/nba_2018")
             .build();
+
+    static public String getImageByTeam(String team)
+    {
+        return imageTeam.get(team) == null ? "@drawable/nba_2018" : imageTeam.get(team);
+    }
     static final Map<String, String> IdNameTeam = ImmutableMap.<String, String>builder()
             .put("1610612737", 	"Hawks")
             .put("1610612751", 	"Nets")
@@ -108,7 +113,7 @@ public class Helper {
             .put("1610612743", 	"Nuggets")
             .put("1610612765", 	"Pistons")
             .put("1610612744", 	"Warriors")
-            .put("1610612745", 	"Rocketse")
+            .put("1610612745", 	"Rockets")
             .put("1610612754", 	"Pacers")
             .put("1610612746", 	"Clippers")
             .put("1610612747", 	"Lakers")
@@ -274,4 +279,27 @@ public class Helper {
         return format.format(estDate);
     }
 
+    public static class TimeRem {
+        public String time;
+        public String quarter;
+    }
+    static public TimeRem getTimeRemaining(String range) {
+        TimeRem tr = new TimeRem();
+        int rng  = Integer.parseInt(range);
+        int diff = rng % 7200;
+        int time = diff == 0 ? 0 : 12 - diff / 600;
+        int quarter = (rng - 1) / 7200 + 1; // -1 on range to always add 1 (even at end)
+
+        tr.time = time == 0 ? "end" : "" + time + ":00 remaining";
+        if (quarter == 1)
+            tr.quarter = "1st";
+        else if (quarter == 2)
+            tr.quarter = "2nd";
+        else if (quarter == 3)
+            tr.quarter = "3rd";
+        else
+            tr.quarter = "4th";
+
+        return tr;
+    }
 }

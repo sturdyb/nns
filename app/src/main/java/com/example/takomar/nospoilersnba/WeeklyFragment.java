@@ -128,13 +128,7 @@ public class WeeklyFragment extends GamesFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        final SwipeRefreshLayout swipeContainer =(SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-           swipeContainer.setRefreshing(false);
-            }
-        });
+
         return v;
     }
 

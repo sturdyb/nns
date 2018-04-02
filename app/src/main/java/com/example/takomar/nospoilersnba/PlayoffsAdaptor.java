@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.takomar.nospoilersnba.component.PlayoffsGame;
@@ -37,6 +39,8 @@ public class PlayoffsAdaptor extends RecyclerView.Adapter<PlayoffsAdaptor.GameIn
         protected TextView secondSeed;
         protected TextView firstScore;
         protected TextView secondScore;
+        protected ImageView firstLogo;
+        protected ImageView secondLogo;
         protected TextView summary;
 
         public GameInfoHolder(View v) {
@@ -47,6 +51,8 @@ public class PlayoffsAdaptor extends RecyclerView.Adapter<PlayoffsAdaptor.GameIn
             secondScore = (TextView)  v.findViewById(R.id.secondScore);
             firstSeed = (TextView)  v.findViewById(R.id.FirstSeed);
             secondSeed = (TextView)  v.findViewById(R.id.SecondSeed);
+            firstLogo = (ImageView)  v.findViewById(R.id.homeLogo);
+            secondLogo = (ImageView)  v.findViewById(R.id.awayLogo);
             summary = (TextView)  v.findViewById(R.id.summary);
             summary.setAllCaps(false);
         }
@@ -74,6 +80,16 @@ public class PlayoffsAdaptor extends RecyclerView.Adapter<PlayoffsAdaptor.GameIn
         holder.firstSeed.setText(playoffsGame.team1Seed);
         holder.secondSeed.setText(playoffsGame.team2Seed);
         holder.summary.setText(playoffsGame.summary);
+
+        int imageResource = mContext.getResources()
+                                    .getIdentifier(Helper.getImageByTeam(playoffsGame.team1),
+                                                   null, mContext.getPackageName());
+        holder.firstLogo.setImageDrawable(mContext.getResources().getDrawable(imageResource));
+        imageResource = mContext.getResources()
+                                .getIdentifier(Helper.getImageByTeam(playoffsGame.team2),
+                                              null, mContext.getPackageName());
+        holder.secondLogo.setImageDrawable(mContext.getResources().getDrawable(imageResource));
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,6 +1,6 @@
 package com.example.takomar.nospoilersnba;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -38,22 +38,30 @@ public abstract class GamesFragment extends Fragment
                                     implements MainFragmentActivity.XmlClickable,
                                                IGamesViewUpdater {
     protected GamesAdaptor mGamesAdaptor;
+    private OnSwipeTouchListener swipeTouchListener;
+    private Context mContext;
 
     @Override
     public void fillGames(List<GameInfo> games, Date date) {
-        MainFragmentActivity activity = (MainFragmentActivity) getActivity();
+        MainFragmentActivity activity = (MainFragmentActivity) mContext;
         activity.addGamesByDate(games, date);
     }
 
     @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
+
+    @Override
     public void displayTodayGames(boolean showDate) {
-        MainFragmentActivity activity = (MainFragmentActivity) getActivity();
+        MainFragmentActivity activity = (MainFragmentActivity) getGamesContext();
         mGamesAdaptor.showGames(activity.retrieveGamesByDate(mCurrentDate), showDate);
     }
 
     @Override
     public Context getGamesContext() {
-        return getActivity();
+        return mContext;
     }
 
     @Override
@@ -68,7 +76,6 @@ public abstract class GamesFragment extends Fragment
 
     @Override
     public void stopRefreshing() {
-        ((SwipeRefreshLayout)mRootView.findViewById(R.id.swipeContainer)).setRefreshing(false);
     }
 
     protected View mRootView;
@@ -86,25 +93,25 @@ public abstract class GamesFragment extends Fragment
 
     private void createGamesAdaptor(View rootView) {
         RecyclerView recViewList = (RecyclerView) rootView.findViewById(R.id.cardList);
-        mGamesAdaptor = new GamesAdaptor(getActivity());
+        mGamesAdaptor = new GamesAdaptor(getGamesContext());
         recViewList.setAdapter(mGamesAdaptor);
 
         mGamesAdaptor.SetOnItemClickListener(new GamesAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Context context, GamesAdaptor.GameInfoHolder gameInfo) {
                 if (view.getId() == R.id.buttonWatch) {
-                    openWatchNbaSite(getActivity(), gameInfo.gameCode);
+                    openWatchNbaSite(getGamesContext(), gameInfo.gameCode);
                     return;
                 }
                 if (view.getId() == R.id.buttonSearch) {
-                    openHighlights(getActivity(),
+                    openHighlights(getGamesContext(),
                             gameInfo.homeTeam.getText().toString(),
                             gameInfo.visitorTeam.getText().toString());
 
                     return;
                 }
                 if (view.getId() == R.id.custom) {
-                    Helper.chooseTimeDialog(getActivity(), gameInfo);
+                    Helper.chooseTimeDialog(getGamesContext(), gameInfo);
                     return;
                 }
 
@@ -128,36 +135,30 @@ public abstract class GamesFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mRootView = inflater.inflate(R.layout.games_fragment, container, false);
+
+        swipeTouchListener = new OnSwipeTouchListener(getGamesContext())
+        {
+            @Override
+            public void onSwipeRight() {
+                goToPrevDate(mRootView);
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                goToNextDate(mRootView);
+            }
+        };
+
         final RecyclerView recViewList = (RecyclerView) mRootView.findViewById(R.id.cardList);
         recViewList.setHasFixedSize(true);
 
-//        final LinearLayout gestLayout = (LinearLayout) mRootView.findViewById(R.id.gestureLayout);
-//        gestLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-//            @Override
-//            public void onSwipeRight() {
-//                goToPrevDate(gestLayout);
-//            }
-//
-//            @Override
-//            public void onSwipeLeft() {
-//                goToNextDate(gestLayout);
-//            }
-//        });
-
+        recViewList.setOnTouchListener(swipeTouchListener);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recViewList.setLayoutManager(llm);
         createGamesAdaptor(mRootView);
-
-        final SwipeRefreshLayout swipeContainer =(SwipeRefreshLayout) mRootView.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                new GamesByDayTask(GamesFragment.this).execute(mCurrentDate);
-            }
-        });
 
         Button datePicker = (Button) getActivity().findViewById(R.id.pickDate);
         mCurrentDate = getInitialDate();
@@ -183,6 +184,11 @@ public abstract class GamesFragment extends Fragment
         Button datePick = (Button) getActivity().findViewById(R.id.pickDate);
         datePick.setText(formatDisplayDate(mCurrentDate));
         loadGames(mCurrentDate);
+    }
+
+    @Override
+    public void dispatchEvent(MotionEvent evt) {
+        swipeTouchListener.getGestureDetector().onTouchEvent(evt);
     }
 
     @Override

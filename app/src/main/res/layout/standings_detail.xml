@@ -1,33 +1,39 @@
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/border"
     android:orientation="horizontal">
 
+    <LinearLayout
+        android:padding="4dp">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/team"
+            android:width="120dp"
+            android:textAlignment="textStart"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textStyle="normal"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            tools:ignore="RtlCompat" />
+
+    </LinearLayout>
     <TextView
-        android:id="@+id/team"
-        android:width="150dp"
+        android:id="@+id/winLoss"
         android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textStyle="normal"/>
-    <TextView
-        android:id="@+id/wins"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textStyle="normal"/>
-    <TextView
-        android:id="@+id/losses"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textStyle="normal"/>
     <TextView
         android:id="@+id/wlpct"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:paddingRight="5dp"
         android:gravity="center"
         android:textColor="@android:color/black"

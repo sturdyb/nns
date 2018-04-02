@@ -1,8 +1,8 @@
 package com.example.takomar.nospoilersnba;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 
@@ -40,6 +41,7 @@ public class MainFragmentActivity extends AppCompatActivity
         void goToCurrentStandings(View v) throws ParseException;
         void pickDate(View v, AppCompatActivity activity);
         void treatDate(Date date);
+        void dispatchEvent(MotionEvent evt);
     }
 
     private XmlClickable mCurrentFragment;
@@ -89,7 +91,7 @@ public class MainFragmentActivity extends AppCompatActivity
         //maindisplay
         Fragment fragment = new DailyFragment();
         mCurrentFragment = (XmlClickable) fragment;
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
@@ -101,6 +103,12 @@ public class MainFragmentActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        mCurrentFragment.dispatchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -123,7 +131,7 @@ public class MainFragmentActivity extends AppCompatActivity
 
     public void changeFragment(Fragment fragment) {
         mCurrentFragment = (XmlClickable) fragment;
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment).commit();
     }
 
